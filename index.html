@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conduta Médica - SMS/SP</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; max-width: 600px; margin: auto; }
+        h1 { color: #0055CC; }
+        .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        input, textarea { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: Arial; }
+        textarea { resize: vertical; }
+        button { background: #007AFF; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
+        button:hover { opacity: 0.9; }
+        .btn-excluir { background: #FF3B30; }
+        .btn-editar { background: #FF9500; }
+        .resultado { background: #e8f0fe; padding: 16px; border-radius: 8px; margin-top: 16px; }
+        .resultado button { margin-right: 8px; margin-top: 8px; }
+        .fonte { font-size: 12px; color: #666; margin-top: 8px; }
+        .aviso { background: #fef9e7; padding: 10px; border-left: 4px solid #f39c12; font-size: 13px; margin-top: 16px; }
+    </style>
+</head>
+<body>
+
+    <h1>📋 Conduta Médica</h1>
+    <p style="color: #555;">Protocolos da Prefeitura de São Paulo - SMS/SP</p>
+
+    <!-- BUSCA -->
+    <div class="card">
+        <h3>🔍 Buscar conduta</h3>
+        <input type="text" id="busca" placeholder="Digite o diagnóstico ou CID...">
+        <button onclick="buscar()">Buscar</button>
+    </div>
+
+    <!-- RESULTADO -->
+    <div id="resultado" class="card resultado" style="display:none;"></div>
+
+    <!-- CADASTRO / EDIÇÃO -->
+    <div class="card">
+        <h3 id="tituloFormulario">➕ Cadastrar nova conduta</h3>
+       
+        <input type="text" id="cid" placeholder="CID (ex: I10)">
+        <input type="text" id="diagnostico" placeholder="Diagnóstico (ex: Hipertensão Arterial)">
+        <textarea id="exames" placeholder="🧪 Exames a solicitar"></textarea>
+        <textarea id="tratamento" placeholder="💊 Tratamento"></textarea>
+        <textarea id="conduta" placeholder="📋 Conduta geral"></textarea>
+        <input type="text" id="fonte" placeholder="Fonte (ex: Protocolo SMS/SP - 2024)">
+
+        <button id="btnSalvar" onclick="salvar()">💾 Salvar</button>
+        <button onclick="cancelarEdicao()" id="btnCancelar" style="display:none; background:#999;">Cancelar</button>
+    </div>
+
+    <div class="aviso">
+        ⚠️ <strong>Lembre-se:</strong> Esta é uma ferramenta de apoio à decisão clínica.
+        A conduta final é sempre do médico responsável.
+    </div>
+
+    <script>
+        // ===== BANCO DE DADOS (localStorage) =====
+        let condutas = [];
+        let editandoId = null; // Índice da conduta que está sendo editada
+
+        // Carregar dados salvos
+        function carregar() {
+            const dados = localStorage.getItem('condutas');
+            if (dados) {
+                condutas = JSON.parse(dados);
+            } else {
+                // Dados iniciais (exemplos baseados em protocolos comuns)
+                condutas = [
+                    {
+                        cid: 'I10',
+                        diagnostico: 'Hipertensão Arterial Sistêmica',
+                        exames: 'Hemograma, Creatinina, Potássio, Glicemia, Colesterol, ECG, Fundoscopia',
+                        tratamento: 'Losartana 50mg 1x/dia ou Enalapril 10mg 2x/dia',
+                        conduta: 'Orientar redução de sal, prática de exercícios, controle ponderal, reavaliar em 30 dias',
+                        fonte: 'Protocolo SMS/SP - Atenção Básica'
+                    },
+                    {
+                        cid: 'I50',
+                        diagnostico: 'Insuficiência Cardíaca',
+                        exames: 'ECG, Raio-X tórax, BNP, Ecocardiograma, Creatinina, Potássio',
+                        tratamento: 'Furosemida 40mg + Enalapril 10mg + Carvedilol 12,5mg (ajustar conforme função renal)',
+                        conduta: 'Restrição hídrica (1,5L/dia), restrição salina, pesagem diária, reavaliar em 7 dias',
+                        fonte: 'Protocolo SMS/SP - Cardiologia'
+                    },
+                    {
+                        cid: 'E11',
+                        diagnostico: 'Diabetes Mellitus Tipo 2',
+                        exames: 'HbA1c, Glicemia jejum, Creatinina, Microalbuminúria, Lipidograma, Fundoscopia',
+                        tratamento: 'Metformina 850mg 2x/dia (após as refeições)',
+                        conduta: 'Orientar dieta com baixo índice glicêmico, atividade física regular, monitorização glicêmica',
+                        fonte: 'Protocolo SMS/SP - Endocrinologia'
+                    },
+                    {
+                        cid: 'J45',
+                        diagnostico: 'Asma Brônquica',
+                        exames: 'Espirometria, Hemograma, IgE, Raio-X tórax',
+                        tratamento: 'Corticosteroide inalatório (Budesonida 400mcg 2x/dia) + Broncodilatador (Salbutamol spray)',
+                        conduta: 'Orientar técnica inalatória, identificar fatores desencadeantes, plano de ação para crises',
+                        fonte: 'Protocolo SMS/SP - Pneumologia'
+                    }
+                ];
+                salvarDados();
+            }
+        }
+        carregar();
+
+        // Salvar no navegador
+        function salvarDados() {
+            localStorage.setItem('condutas', JSON.stringify(condutas));
+        }
+
+        // ===== FUNÇÃO SALVAR (CADASTRAR E ATUALIZAR) =====
+        function salvar() {
+            // Pegar os valores dos campos
+            const nova = {
+                cid: document.getElementById('cid').value.trim(),
+                diagnostico: document.getElementById('diagnostico').value.trim(),
+                exames: document.getElementById('exames').value.trim(),
+                tratamento: document.getElementById('tratamento').value.trim(),
+                conduta: document.getElementById('conduta').value.trim(),
+                fonte: document.getElementById('fonte').value.trim() || 'Protocolo SMS/SP'
+            };
+
+            // Validar campos obrigatórios
+            if (!nova.diagnostico || !nova.exames || !nova.tratamento) {
+                alert('⚠️ Preencha pelo menos: Diagnóstico, Exames e Tratamento!');
+                return;
+            }
+
+            if (editandoId !== null) {
+                // ===== MODO EDIÇÃO =====
+                condutas[editandoId] = nova;
+                editandoId = null;
+                document.getElementById('btnSalvar').textContent = '💾 Salvar';
+                document.getElementById('tituloFormulario').textContent = '➕ Cadastrar nova conduta';
+                document.getElementById('btnCancelar').style.display = 'none';
+                alert('✅ Conduta atualizada com sucesso!');
+            } else {
+                // ===== MODO CADASTRO =====
+                condutas.push(nova);
+                alert('✅ Conduta cadastrada com sucesso!');
+            }
+
+            salvarDados();
+            limparFormulario();
+            document.getElementById('resultado').style.display = 'none'; // Esconde resultado antigo
+        }
+
+        // ===== LIMPAR FORMULÁRIO =====
+        function limparFormulario() {
+            document.getElementById('cid').value = '';
+            document.getElementById('diagnostico').value = '';
+            document.getElementById('exames').value = '';
+            document.getElementById('tratamento').value = '';
+            document.getElementById('conduta').value = '';
+            document.getElementById('fonte').value = '';
+        }
+
+        // ===== CANCELAR EDIÇÃO =====
+        function cancelarEdicao() {
+            editandoId = null;
+            document.getElementById('btnSalvar').textContent = '💾 Salvar';
+            document.getElementById('tituloFormulario').textContent = '➕ Cadastrar nova conduta';
+            document.getElementById('btnCancelar').style.display = 'none';
+            limparFormulario();
+        }
+
+        // ===== BUSCAR CONDUTA =====
+        function buscar() {
+            const termo = document.getElementById('busca').value.toLowerCase().trim();
+            const resultadoDiv = document.getElementById('resultado');
+
+            if (!termo) {
+                resultadoDiv.innerHTML = 'Digite um diagnóstico ou CID para buscar.';
+                resultadoDiv.style.display = 'block';
+                return;
+            }
+
+            const encontrados = condutas.filter(c =>
+                c.diagnostico.toLowerCase().includes(termo) ||
+                c.cid.toLowerCase().includes(termo)
+            );
+
+            if (encontrados.length === 0) {
+                resultadoDiv.innerHTML = '❌ Nenhuma conduta encontrada. Cadastre uma nova!';
+                resultadoDiv.style.display = 'block';
+                return;
+            }
+
+            // Pega o primeiro resultado (o mais relevante)
+            const c = encontrados[0];
+            const index = condutas.indexOf(c); // Descobre a posição no array
+
+            // Monta o card de resultado com botões de ação
+            resultadoDiv.innerHTML = `
+                <h2>${c.diagnostico} (${c.cid})</h2>
+                <p><strong>🧪 Exames:</strong> ${c.exames}</p>
+                <p><strong>💊 Tratamento:</strong> ${c.tratamento}</p>
+                <p><strong>📋 Conduta:</strong> ${c.conduta}</p>
+                <p class="fonte">📚 Fonte: ${c.fonte || 'Não informada'}</p>
+               
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;">
+                    <button class="btn-editar" onclick="editarConduta(${index})">✏️ Editar</button>
+                    <button class="btn-excluir" onclick="excluirConduta(${index})">🗑️ Excluir</button>
+                </div>
+            `;
+            resultadoDiv.style.display = 'block';
+        }
+
+        // ===== EDITAR CONDUTA =====
+        function editarConduta(index) {
+            const c = condutas[index];
+
+            // Preencher o formulário com os dados da conduta
+            document.getElementById('cid').value = c.cid || '';
+            document.getElementById('diagnostico').value = c.diagnostico || '';
+            document.getElementById('exames').value = c.exames || '';
+            document.getElementById('tratamento').value = c.tratamento || '';
+            document.getElementById('conduta').value = c.conduta || '';
+            document.getElementById('fonte').value = c.fonte || '';
+
+            // Mudar para modo edição
+            editandoId = index;
+            document.getElementById('btnSalvar').textContent = '✏️ Atualizar';
+            document.getElementById('tituloFormulario').textContent = '✏️ Editando conduta';
+            document.getElementById('btnCancelar').style.display = 'inline-block';
+
+            // Rolar a tela até o formulário
+            document.querySelector('.card:last-child').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ===== EXCLUIR CONDUTA =====
+        function excluirConduta(index) {
+            if (confirm(`Tem certeza que deseja excluir "${condutas[index].diagnostico}"?`)) {
+                condutas.splice(index, 1);
+                salvarDados();
+                document.getElementById('resultado').style.display = 'none';
+               
+                // Se estava editando essa conduta, cancelar edição
+                if (editandoId !== null) {
+                    cancelarEdicao();
+                }
+                alert('🗑️ Conduta excluída com sucesso!');
+            }
+        }
+
+        // ===== PERMITIR BUSCAR COM TECLA ENTER =====
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('busca').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    buscar();
+                }
+            });
+        });
+
+        console.log('✅ App Conduta Médica carregado com sucesso!');
+        console.log(`📋 ${condutas.length} condutas disponíveis.`);
+    </script>
+
+</body>
+</html>
