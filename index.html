@@ -38,7 +38,7 @@
     <!-- CADASTRO / EDIÇÃO -->
     <div class="card">
         <h3 id="tituloFormulario">➕ Cadastrar nova conduta</h3>
-       
+        
         <input type="text" id="cid" placeholder="CID (ex: I10)">
         <input type="text" id="diagnostico" placeholder="Diagnóstico (ex: Hipertensão Arterial)">
         <textarea id="exames" placeholder="🧪 Exames a solicitar"></textarea>
@@ -51,23 +51,25 @@
     </div>
 
     <div class="aviso">
-        ⚠️ <strong>Lembre-se:</strong> Esta é uma ferramenta de apoio à decisão clínica.
+        ⚠️ <strong>Lembre-se:</strong> Esta é uma ferramenta de apoio à decisão clínica. 
         A conduta final é sempre do médico responsável.
     </div>
 
     <script>
         // ===== BANCO DE DADOS (localStorage) =====
         let condutas = [];
-        let editandoId = null; // Índice da conduta que está sendo editada
+        let editandoId = null;
 
-        // Carregar dados salvos
+        // ===== LISTA COMPLETA DE CONDUTAS (SUBSTITUÍDA PELA SUA) =====
+        // (Aqui você colocou a lista que me enviou, então eu a mantenho)
         function carregar() {
             const dados = localStorage.getItem('condutas');
             if (dados) {
                 condutas = JSON.parse(dados);
             } else {
-                // Dados iniciais (exemplos baseados em protocolos comuns)
+                // Inicializa com a lista completa que você forneceu
                 condutas = [
+                    // ===== CONDUTAS EXISTENTES =====
                     {
                         cid: 'I10',
                         diagnostico: 'Hipertensão Arterial Sistêmica',
@@ -80,8 +82,8 @@
                         cid: 'I50',
                         diagnostico: 'Insuficiência Cardíaca',
                         exames: 'ECG, Raio-X tórax, BNP, Ecocardiograma, Creatinina, Potássio',
-                        tratamento: 'Furosemida 40mg + Enalapril 10mg + Carvedilol 12,5mg (ajustar conforme função renal)',
-                        conduta: 'Restrição hídrica (1,5L/dia), restrição salina, pesagem diária, reavaliar em 7 dias',
+                        tratamento: 'Furosemida 40mg + Enalapril 10mg + Carvedilol 12,5mg',
+                        conduta: 'Restrição hídrica e salina, pesagem diária, reavaliar em 7 dias',
                         fonte: 'Protocolo SMS/SP - Cardiologia'
                     },
                     {
@@ -99,21 +101,91 @@
                         tratamento: 'Corticosteroide inalatório (Budesonida 400mcg 2x/dia) + Broncodilatador (Salbutamol spray)',
                         conduta: 'Orientar técnica inalatória, identificar fatores desencadeantes, plano de ação para crises',
                         fonte: 'Protocolo SMS/SP - Pneumologia'
+                    },
+                    // ===== NOVAS CONDUTAS =====
+                    {
+                        cid: 'I21',
+                        diagnostico: 'Infarto Agudo do Miocárdio (IAM)',
+                        exames: 'ECG urgente (em até 10min), Troponina, CPK-MB, Hemograma, Creatinina, Potássio, Glicemia',
+                        tratamento: 'AAS 200-300mg mastigado, Nitroglicerina SL (se PA > 90), Morfina (se dor), O2 (se SatO2 < 94%)',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. Estabilizar, acionar SAMU 192 imediatamente. Entregar com ECG e sinais vitais.',
+                        fonte: 'Protocolo SMS/SP - Cardiologia'
+                    },
+                    {
+                        cid: 'I64',
+                        diagnostico: 'Acidente Vascular Cerebral (AVC)',
+                        exames: 'Glicemia capilar, ECG, Hemograma, Coagulograma',
+                        tratamento: 'Manter vias aéreas pérvias, O2 se SatO2 < 94%, cabeceira elevada 30°. Não tratar PA (exceto > 220x120).',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. Acionar SAMU 192. Registrar horário do início dos sintomas (ictus).',
+                        fonte: 'Protocolo SMS/SP - Neurologia'
+                    },
+                    {
+                        cid: 'I16',
+                        diagnostico: 'Crise Hipertensiva',
+                        exames: 'Aferir PA em ambos os braços, Glicemia, Creatinina, Potássio, Sumário de urina, Fundoscopia',
+                        tratamento: 'Sem lesão de órgão-alvo: Captopril 25mg VO ou Nifedipino 10mg VO. Com lesão: estabilizar e encaminhar UPA/PSA.',
+                        conduta: 'Identificar se há emergência (com lesão). Se urgência (sem lesão), tratar e reavaliar na AMA.',
+                        fonte: 'Protocolo SMS/SP - Hipertensão'
+                    },
+                    {
+                        cid: 'G40',
+                        diagnostico: 'Crise Epiléptica (Convulsão)',
+                        exames: 'Glicemia capilar, Eletrólitos (se disponível), avaliar sinais de infecção',
+                        tratamento: 'Crise > 5min ou repetição: Diazepam 10mg IV ou Midazolam IM. Proteger cabeça e vias aéreas.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA (se crise prolongada ou 1ª crise). Estabilizar e encaminhar UPA/PSA.',
+                        fonte: 'Protocolo SMS/SP - Neurologia'
+                    },
+                    {
+                        cid: 'J44',
+                        diagnostico: 'Exacerbação de DPOC / Asma Grave',
+                        exames: 'Oximetria de pulso, Gasometria (se disponível), Raio-X de tórax (se suspeita de pneumonia)',
+                        tratamento: 'Salbutamol + Ipratrópio com espaçador (repetir a cada 20min), Prednisona 40-60mg VO ou Hidrocortisona IV, O2 para SatO2 > 92%',
+                        conduta: 'Se melhora: observação e tratamento para casa com retorno em 48h. Se sinais de gravidade: ENCAMINHAR UPA/PSA.',
+                        fonte: 'Protocolo SMS/SP - Pneumologia'
+                    },
+                    {
+                        cid: 'J11',
+                        diagnostico: 'Síndrome Gripal / Suspeita de Dengue',
+                        exames: 'Prova do laço, Hemograma com plaquetas, Glicemia, Testes rápidos (Dengue/COVID)',
+                        tratamento: 'Dipirona ou Paracetamol para dor e febre. CONTRAINDICAR AAS e AINEs (ibuprofeno, diclofenaco).',
+                        conduta: 'RESOLVE NA AMA. Orientar hidratação vigorosa e sinais de alarme. Se sinais de alarme ou plaquetas < 50k: ENCAMINHAR UPA/PSA.',
+                        fonte: 'Protocolo SMS/SP - Vigilância Epidemiológica'
+                    },
+                    {
+                        cid: 'N39',
+                        diagnostico: 'Infecção do Trato Urinário (ITU)',
+                        exames: 'Sumário de urina, Urocultura (antes do antibiótico), Hemograma, Creatinina',
+                        tratamento: 'Antibiótico empírico (Ciprofloxacino 500mg 12/12h ou Nitrofurantoína 100mg 6/6h). Dipirona/Escopolamina para cólica.',
+                        conduta: 'RESOLVE NA AMA (mulheres jovens sem comorbidades). Se febre alta, idoso, diabético: ENCAMINHAR UPA/PSA.',
+                        fonte: 'Protocolo SMS/SP - Infectologia'
+                    },
+                    {
+                        cid: 'E16',
+                        diagnostico: 'Hipoglicemia',
+                        exames: 'Glicemia capilar imediata',
+                        tratamento: 'Consciente: 15g de carboidrato rápido (suco, açúcar, glicose gel). Inconsciente: Glicose 50% IV 20-50mL ou Glucagon IM.',
+                        conduta: 'RESOLVE NA AMA. Após recuperação, orientar refeição com carboidrato de absorção lenta. Se refratária ou recorrente: ENCAMINHAR UPA/PSA.',
+                        fonte: 'Protocolo SMS/SP - Endocrinologia'
+                    },
+                    {
+                        cid: 'T14',
+                        diagnostico: 'Trauma Leve (Escoriações/Contusões)',
+                        exames: 'Avaliação primária (ABCDE), RX se suspeita de fratura',
+                        tratamento: 'Limpeza com soro fisiológico, curativo com pomada cicatrizante, Analgésico (Dipirona/Paracetamol). Verificar vacina antitetânica.',
+                        conduta: 'RESOLVE NA AMA. Orientar sinais de infecção. Se ferida extensa/profunda: ENCAMINHAR UPA/PSA.',
+                        fonte: 'Protocolo SMS/SP - Trauma'
                     }
                 ];
                 salvarDados();
             }
         }
-        carregar();
 
-        // Salvar no navegador
+        // ===== FUNÇÕES =====
         function salvarDados() {
             localStorage.setItem('condutas', JSON.stringify(condutas));
         }
 
-        // ===== FUNÇÃO SALVAR (CADASTRAR E ATUALIZAR) =====
         function salvar() {
-            // Pegar os valores dos campos
             const nova = {
                 cid: document.getElementById('cid').value.trim(),
                 diagnostico: document.getElementById('diagnostico').value.trim(),
@@ -123,14 +195,12 @@
                 fonte: document.getElementById('fonte').value.trim() || 'Protocolo SMS/SP'
             };
 
-            // Validar campos obrigatórios
             if (!nova.diagnostico || !nova.exames || !nova.tratamento) {
                 alert('⚠️ Preencha pelo menos: Diagnóstico, Exames e Tratamento!');
                 return;
             }
 
             if (editandoId !== null) {
-                // ===== MODO EDIÇÃO =====
                 condutas[editandoId] = nova;
                 editandoId = null;
                 document.getElementById('btnSalvar').textContent = '💾 Salvar';
@@ -138,17 +208,15 @@
                 document.getElementById('btnCancelar').style.display = 'none';
                 alert('✅ Conduta atualizada com sucesso!');
             } else {
-                // ===== MODO CADASTRO =====
                 condutas.push(nova);
                 alert('✅ Conduta cadastrada com sucesso!');
             }
 
             salvarDados();
             limparFormulario();
-            document.getElementById('resultado').style.display = 'none'; // Esconde resultado antigo
+            document.getElementById('resultado').style.display = 'none';
         }
 
-        // ===== LIMPAR FORMULÁRIO =====
         function limparFormulario() {
             document.getElementById('cid').value = '';
             document.getElementById('diagnostico').value = '';
@@ -158,7 +226,6 @@
             document.getElementById('fonte').value = '';
         }
 
-        // ===== CANCELAR EDIÇÃO =====
         function cancelarEdicao() {
             editandoId = null;
             document.getElementById('btnSalvar').textContent = '💾 Salvar';
@@ -167,7 +234,6 @@
             limparFormulario();
         }
 
-        // ===== BUSCAR CONDUTA =====
         function buscar() {
             const termo = document.getElementById('busca').value.toLowerCase().trim();
             const resultadoDiv = document.getElementById('resultado');
@@ -178,8 +244,8 @@
                 return;
             }
 
-            const encontrados = condutas.filter(c =>
-                c.diagnostico.toLowerCase().includes(termo) ||
+            const encontrados = condutas.filter(c => 
+                c.diagnostico.toLowerCase().includes(termo) || 
                 c.cid.toLowerCase().includes(termo)
             );
 
@@ -189,18 +255,15 @@
                 return;
             }
 
-            // Pega o primeiro resultado (o mais relevante)
             const c = encontrados[0];
-            const index = condutas.indexOf(c); // Descobre a posição no array
+            const index = condutas.indexOf(c);
 
-            // Monta o card de resultado com botões de ação
             resultadoDiv.innerHTML = `
                 <h2>${c.diagnostico} (${c.cid})</h2>
                 <p><strong>🧪 Exames:</strong> ${c.exames}</p>
                 <p><strong>💊 Tratamento:</strong> ${c.tratamento}</p>
                 <p><strong>📋 Conduta:</strong> ${c.conduta}</p>
                 <p class="fonte">📚 Fonte: ${c.fonte || 'Não informada'}</p>
-               
                 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;">
                     <button class="btn-editar" onclick="editarConduta(${index})">✏️ Editar</button>
                     <button class="btn-excluir" onclick="excluirConduta(${index})">🗑️ Excluir</button>
@@ -209,11 +272,8 @@
             resultadoDiv.style.display = 'block';
         }
 
-        // ===== EDITAR CONDUTA =====
         function editarConduta(index) {
             const c = condutas[index];
-
-            // Preencher o formulário com os dados da conduta
             document.getElementById('cid').value = c.cid || '';
             document.getElementById('diagnostico').value = c.diagnostico || '';
             document.getElementById('exames').value = c.exames || '';
@@ -221,43 +281,36 @@
             document.getElementById('conduta').value = c.conduta || '';
             document.getElementById('fonte').value = c.fonte || '';
 
-            // Mudar para modo edição
             editandoId = index;
             document.getElementById('btnSalvar').textContent = '✏️ Atualizar';
             document.getElementById('tituloFormulario').textContent = '✏️ Editando conduta';
             document.getElementById('btnCancelar').style.display = 'inline-block';
 
-            // Rolar a tela até o formulário
             document.querySelector('.card:last-child').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // ===== EXCLUIR CONDUTA =====
         function excluirConduta(index) {
             if (confirm(`Tem certeza que deseja excluir "${condutas[index].diagnostico}"?`)) {
                 condutas.splice(index, 1);
                 salvarDados();
                 document.getElementById('resultado').style.display = 'none';
-               
-                // Se estava editando essa conduta, cancelar edição
-                if (editandoId !== null) {
-                    cancelarEdicao();
-                }
+                if (editandoId !== null) cancelarEdicao();
                 alert('🗑️ Conduta excluída com sucesso!');
             }
         }
 
-        // ===== PERMITIR BUSCAR COM TECLA ENTER =====
+        // ===== INICIALIZAÇÃO =====
+        carregar();
+
+        // Buscar com Enter
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('busca').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    buscar();
-                }
+                if (e.key === 'Enter') buscar();
             });
         });
 
         console.log('✅ App Conduta Médica carregado com sucesso!');
         console.log(`📋 ${condutas.length} condutas disponíveis.`);
     </script>
-
 </body>
 </html>
