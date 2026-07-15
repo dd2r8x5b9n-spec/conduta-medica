@@ -55,21 +55,28 @@
         A conduta final é sempre do médico responsável.
     </div>
 
+    <!-- ===== REGISTRO DO SERVICE WORKER (OFFLINE) ===== -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/conduta-medica/service-worker.js')
+                .then(() => console.log('✅ Service Worker registrado com sucesso!'))
+                .catch(err => console.log('❌ Erro ao registrar Service Worker:', err));
+        }
+    </script>
+
     <script>
         // ===== BANCO DE DADOS (localStorage) =====
         let condutas = [];
         let editandoId = null;
 
-        // ===== LISTA COMPLETA DE CONDUTAS (SUBSTITUÍDA PELA SUA) =====
-        // (Aqui você colocou a lista que me enviou, então eu a mantenho)
+        // ===== LISTA COMPLETA DE CONDUTAS =====
         function carregar() {
             const dados = localStorage.getItem('condutas');
             if (dados) {
                 condutas = JSON.parse(dados);
             } else {
-                // Inicializa com a lista completa que você forneceu
+                // Condutas iniciais (exemplos)
                 condutas = [
-                    // ===== CONDUTAS EXISTENTES =====
                     {
                         cid: 'I10',
                         diagnostico: 'Hipertensão Arterial Sistêmica',
@@ -85,95 +92,6 @@
                         tratamento: 'Furosemida 40mg + Enalapril 10mg + Carvedilol 12,5mg',
                         conduta: 'Restrição hídrica e salina, pesagem diária, reavaliar em 7 dias',
                         fonte: 'Protocolo SMS/SP - Cardiologia'
-                    },
-                    {
-                        cid: 'E11',
-                        diagnostico: 'Diabetes Mellitus Tipo 2',
-                        exames: 'HbA1c, Glicemia jejum, Creatinina, Microalbuminúria, Lipidograma, Fundoscopia',
-                        tratamento: 'Metformina 850mg 2x/dia (após as refeições)',
-                        conduta: 'Orientar dieta com baixo índice glicêmico, atividade física regular, monitorização glicêmica',
-                        fonte: 'Protocolo SMS/SP - Endocrinologia'
-                    },
-                    {
-                        cid: 'J45',
-                        diagnostico: 'Asma Brônquica',
-                        exames: 'Espirometria, Hemograma, IgE, Raio-X tórax',
-                        tratamento: 'Corticosteroide inalatório (Budesonida 400mcg 2x/dia) + Broncodilatador (Salbutamol spray)',
-                        conduta: 'Orientar técnica inalatória, identificar fatores desencadeantes, plano de ação para crises',
-                        fonte: 'Protocolo SMS/SP - Pneumologia'
-                    },
-                    // ===== NOVAS CONDUTAS =====
-                    {
-                        cid: 'I21',
-                        diagnostico: 'Infarto Agudo do Miocárdio (IAM)',
-                        exames: 'ECG urgente (em até 10min), Troponina, CPK-MB, Hemograma, Creatinina, Potássio, Glicemia',
-                        tratamento: 'AAS 200-300mg mastigado, Nitroglicerina SL (se PA > 90), Morfina (se dor), O2 (se SatO2 < 94%)',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. Estabilizar, acionar SAMU 192 imediatamente. Entregar com ECG e sinais vitais.',
-                        fonte: 'Protocolo SMS/SP - Cardiologia'
-                    },
-                    {
-                        cid: 'I64',
-                        diagnostico: 'Acidente Vascular Cerebral (AVC)',
-                        exames: 'Glicemia capilar, ECG, Hemograma, Coagulograma',
-                        tratamento: 'Manter vias aéreas pérvias, O2 se SatO2 < 94%, cabeceira elevada 30°. Não tratar PA (exceto > 220x120).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. Acionar SAMU 192. Registrar horário do início dos sintomas (ictus).',
-                        fonte: 'Protocolo SMS/SP - Neurologia'
-                    },
-                    {
-                        cid: 'I16',
-                        diagnostico: 'Crise Hipertensiva',
-                        exames: 'Aferir PA em ambos os braços, Glicemia, Creatinina, Potássio, Sumário de urina, Fundoscopia',
-                        tratamento: 'Sem lesão de órgão-alvo: Captopril 25mg VO ou Nifedipino 10mg VO. Com lesão: estabilizar e encaminhar UPA/PSA.',
-                        conduta: 'Identificar se há emergência (com lesão). Se urgência (sem lesão), tratar e reavaliar na AMA.',
-                        fonte: 'Protocolo SMS/SP - Hipertensão'
-                    },
-                    {
-                        cid: 'G40',
-                        diagnostico: 'Crise Epiléptica (Convulsão)',
-                        exames: 'Glicemia capilar, Eletrólitos (se disponível), avaliar sinais de infecção',
-                        tratamento: 'Crise > 5min ou repetição: Diazepam 10mg IV ou Midazolam IM. Proteger cabeça e vias aéreas.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA (se crise prolongada ou 1ª crise). Estabilizar e encaminhar UPA/PSA.',
-                        fonte: 'Protocolo SMS/SP - Neurologia'
-                    },
-                    {
-                        cid: 'J44',
-                        diagnostico: 'Exacerbação de DPOC / Asma Grave',
-                        exames: 'Oximetria de pulso, Gasometria (se disponível), Raio-X de tórax (se suspeita de pneumonia)',
-                        tratamento: 'Salbutamol + Ipratrópio com espaçador (repetir a cada 20min), Prednisona 40-60mg VO ou Hidrocortisona IV, O2 para SatO2 > 92%',
-                        conduta: 'Se melhora: observação e tratamento para casa com retorno em 48h. Se sinais de gravidade: ENCAMINHAR UPA/PSA.',
-                        fonte: 'Protocolo SMS/SP - Pneumologia'
-                    },
-                    {
-                        cid: 'J11',
-                        diagnostico: 'Síndrome Gripal / Suspeita de Dengue',
-                        exames: 'Prova do laço, Hemograma com plaquetas, Glicemia, Testes rápidos (Dengue/COVID)',
-                        tratamento: 'Dipirona ou Paracetamol para dor e febre. CONTRAINDICAR AAS e AINEs (ibuprofeno, diclofenaco).',
-                        conduta: 'RESOLVE NA AMA. Orientar hidratação vigorosa e sinais de alarme. Se sinais de alarme ou plaquetas < 50k: ENCAMINHAR UPA/PSA.',
-                        fonte: 'Protocolo SMS/SP - Vigilância Epidemiológica'
-                    },
-                    {
-                        cid: 'N39',
-                        diagnostico: 'Infecção do Trato Urinário (ITU)',
-                        exames: 'Sumário de urina, Urocultura (antes do antibiótico), Hemograma, Creatinina',
-                        tratamento: 'Antibiótico empírico (Ciprofloxacino 500mg 12/12h ou Nitrofurantoína 100mg 6/6h). Dipirona/Escopolamina para cólica.',
-                        conduta: 'RESOLVE NA AMA (mulheres jovens sem comorbidades). Se febre alta, idoso, diabético: ENCAMINHAR UPA/PSA.',
-                        fonte: 'Protocolo SMS/SP - Infectologia'
-                    },
-                    {
-                        cid: 'E16',
-                        diagnostico: 'Hipoglicemia',
-                        exames: 'Glicemia capilar imediata',
-                        tratamento: 'Consciente: 15g de carboidrato rápido (suco, açúcar, glicose gel). Inconsciente: Glicose 50% IV 20-50mL ou Glucagon IM.',
-                        conduta: 'RESOLVE NA AMA. Após recuperação, orientar refeição com carboidrato de absorção lenta. Se refratária ou recorrente: ENCAMINHAR UPA/PSA.',
-                        fonte: 'Protocolo SMS/SP - Endocrinologia'
-                    },
-                    {
-                        cid: 'T14',
-                        diagnostico: 'Trauma Leve (Escoriações/Contusões)',
-                        exames: 'Avaliação primária (ABCDE), RX se suspeita de fratura',
-                        tratamento: 'Limpeza com soro fisiológico, curativo com pomada cicatrizante, Analgésico (Dipirona/Paracetamol). Verificar vacina antitetânica.',
-                        conduta: 'RESOLVE NA AMA. Orientar sinais de infecção. Se ferida extensa/profunda: ENCAMINHAR UPA/PSA.',
-                        fonte: 'Protocolo SMS/SP - Trauma'
                     }
                 ];
                 salvarDados();
