@@ -14,10 +14,17 @@
         button:hover { opacity: 0.9; }
         .btn-excluir { background: #FF3B30; }
         .btn-editar { background: #FF9500; }
+        .btn-cid { background: #34C759; }  /* verde para CID */
         .resultado { background: #e8f0fe; padding: 16px; border-radius: 8px; margin-top: 16px; }
         .resultado button { margin-right: 8px; margin-top: 8px; }
         .fonte { font-size: 12px; color: #666; margin-top: 8px; }
         .aviso { background: #fef9e7; padding: 10px; border-left: 4px solid #f39c12; font-size: 13px; margin-top: 16px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: #0055CC; color: white; padding: 8px; text-align: left; }
+        td { padding: 8px; border-bottom: 1px solid #ddd; }
+        tr:hover { background: #f0f8ff; cursor: pointer; }
+        .badge-cid { background: #007AFF; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; }
+        .form-cid { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 12px; display: none; }
     </style>
 </head>
 <body>
@@ -25,20 +32,19 @@
     <h1>📋 Conduta Médica</h1>
     <p style="color: #555;">Protocolos da Prefeitura de São Paulo - SMS/SP</p>
 
-    <!-- BUSCA -->
+    <!-- BUSCA DE CONDUTA -->
     <div class="card">
         <h3>🔍 Buscar conduta</h3>
         <input type="text" id="busca" placeholder="Digite o diagnóstico ou CID...">
         <button onclick="buscar()">Buscar</button>
     </div>
 
-    <!-- RESULTADO -->
+    <!-- RESULTADO DA CONDUTA -->
     <div id="resultado" class="card resultado" style="display:none;"></div>
 
-    <!-- CADASTRO / EDIÇÃO -->
+    <!-- CADASTRO / EDIÇÃO DE CONDUTA -->
     <div class="card">
         <h3 id="tituloFormulario">➕ Cadastrar nova conduta</h3>
-        
         <input type="text" id="cid" placeholder="CID (ex: I10)">
         <input type="text" id="diagnostico" placeholder="Diagnóstico (ex: Hipertensão Arterial)">
         <textarea id="exames" placeholder="🧪 Exames a solicitar"></textarea>
@@ -50,8 +56,42 @@
         <button onclick="cancelarEdicao()" id="btnCancelar" style="display:none; background:#999;">Cancelar</button>
     </div>
 
+    <!-- ============ NOVA SEÇÃO: CATÁLOGO DE CID ============ -->
+    <div class="card">
+        <h3>📋 Catálogo de CID-10</h3>
+        <p style="font-size: 14px; color: #555;">Busque por CID ou diagnóstico – a lista atualiza automaticamente.</p>
+
+        <!-- Busca de CID -->
+        <input type="text" id="buscaCID" placeholder="Digite CID (ex: N39) ou diagnóstico (ex: ITU)" 
+               oninput="carregarListaCIDs(this.value)" style="margin-bottom: 10px;">
+
+        <!-- Tabela de CIDs -->
+        <div style="max-height: 300px; overflow-y: auto;">
+            <table>
+                <thead>
+                    <tr><th style="width: 35%;">CID</th><th style="width: 65%;">Diagnóstico</th></tr>
+                </thead>
+                <tbody id="corpoTabelaCIDs">
+                    <tr><td colspan="2" style="text-align:center; color:#999;">Nenhum CID cadastrado</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Botão e formulário de cadastro de CID -->
+        <button class="btn-cid" onclick="toggleFormCID()" style="margin-top: 12px;">➕ Novo CID</button>
+
+        <div id="formCID" class="form-cid">
+            <h4 style="margin-top:0;">Cadastrar novo CID</h4>
+            <input type="text" id="codigoCID" placeholder="Código (ex: N39)" style="margin-bottom: 8px;">
+            <input type="text" id="descricaoCID" placeholder="Diagnóstico (ex: ITU)" style="margin-bottom: 8px;">
+            <button onclick="salvarCID()" style="background:#34C759;">💾 Salvar CID</button>
+            <button onclick="toggleFormCID()" style="background:#999;">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- AVISO FINAL -->
     <div class="aviso">
-        ⚠️ <strong>Lembre-se:</strong> Esta é uma ferramenta de apoio à decisão clínica. 
+        ⚠️ <strong>Lembre-se:</strong> Esta é uma ferramenta de apoio à decisão clínica.
         A conduta final é sempre do médico responsável.
     </div>
 
@@ -65,17 +105,15 @@
     </script>
 
     <script>
-        // ===== BANCO DE DADOS (localStorage) =====
+        // ==================== CONDUTAS (JÁ EXISTENTE) ====================
         let condutas = [];
         let editandoId = null;
 
-        // ===== LISTA COMPLETA DE CONDUTAS =====
         function carregar() {
             const dados = localStorage.getItem('condutas');
             if (dados) {
                 condutas = JSON.parse(dados);
             } else {
-                // Condutas iniciais (exemplos)
                 condutas = [
                     {
                         cid: 'I10',
@@ -98,7 +136,6 @@
             }
         }
 
-        // ===== FUNÇÕES =====
         function salvarDados() {
             localStorage.setItem('condutas', JSON.stringify(condutas));
         }
@@ -162,8 +199,8 @@
                 return;
             }
 
-            const encontrados = condutas.filter(c => 
-                c.diagnostico.toLowerCase().includes(termo) || 
+            const encontrados = condutas.filter(c =>
+                c.diagnostico.toLowerCase().includes(termo) ||
                 c.cid.toLowerCase().includes(termo)
             );
 
@@ -217,10 +254,104 @@
             }
         }
 
-        // ===== INICIALIZAÇÃO =====
-        carregar();
+        // ==================== NOVO: GESTÃO DE CIDS ====================
+        let cids = [];
 
-        // Buscar com Enter
+        function carregarCids() {
+            const dados = localStorage.getItem('cids');
+            if (dados) {
+                cids = JSON.parse(dados);
+            } else {
+                // CIDs iniciais (exemplo)
+                cids = [
+                    { codigo: 'N39', descricao: 'ITU' },
+                    { codigo: 'A90', descricao: 'Dengue' },
+                    { codigo: 'A09', descricao: 'GECA' },
+                    { codigo: 'R51', descricao: 'Cefaleia' },
+                    { codigo: 'R42', descricao: 'Tontura' }
+                ];
+                localStorage.setItem('cids', JSON.stringify(cids));
+            }
+        }
+
+        function salvarCids() {
+            localStorage.setItem('cids', JSON.stringify(cids));
+        }
+
+        function carregarListaCIDs(filtro = '') {
+            const tbody = document.getElementById('corpoTabelaCIDs');
+            let resultados = cids;
+
+            if (filtro.trim() !== '') {
+                const termo = filtro.toLowerCase().trim();
+                resultados = cids.filter(item =>
+                    item.codigo.toLowerCase().includes(termo) ||
+                    item.descricao.toLowerCase().includes(termo)
+                );
+            }
+
+            resultados.sort((a, b) => a.codigo.localeCompare(b.codigo));
+
+            if (resultados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="2" style="text-align:center; color:#999;">Nenhum CID encontrado</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = resultados.map(item => `
+                <tr onclick="buscarCondutaPorCID('${item.codigo}')" style="cursor:pointer;">
+                    <td><span class="badge-cid">${item.codigo}</span></td>
+                    <td>${item.descricao}</td>
+                </tr>
+            `).join('');
+        }
+
+        function salvarCID() {
+            const codigo = document.getElementById('codigoCID').value.trim().toUpperCase();
+            const descricao = document.getElementById('descricaoCID').value.trim();
+
+            if (!codigo || !descricao) {
+                alert('Preencha o código e o diagnóstico do CID!');
+                return;
+            }
+
+            // Evitar duplicados
+            if (cids.some(item => item.codigo === codigo)) {
+                alert(`O CID ${codigo} já está cadastrado!`);
+                return;
+            }
+
+            cids.push({ codigo, descricao });
+            salvarCids();
+            carregarListaCIDs(document.getElementById('buscaCID').value);
+            document.getElementById('codigoCID').value = '';
+            document.getElementById('descricaoCID').value = '';
+            document.getElementById('formCID').style.display = 'none';
+            alert(`✅ CID ${codigo} cadastrado com sucesso!`);
+        }
+
+        function toggleFormCID() {
+            const form = document.getElementById('formCID');
+            form.style.display = form.style.display === 'block' ? 'none' : 'block';
+            if (form.style.display === 'block') {
+                document.getElementById('codigoCID').focus();
+            }
+        }
+
+        // Função para buscar conduta associada ao CID clicado
+        function buscarCondutaPorCID(codigo) {
+            const termo = codigo;
+            document.getElementById('busca').value = termo;
+            buscar();
+            // Rola para o resultado
+            document.getElementById('resultado').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ==================== INICIALIZAÇÃO ====================
+        carregar();
+        carregarCids();
+        carregarListaCIDs('');
+
+        // Buscar conduta com Enter
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('busca').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') buscar();
@@ -228,7 +359,7 @@
         });
 
         console.log('✅ App Conduta Médica carregado com sucesso!');
-        console.log(`📋 ${condutas.length} condutas disponíveis.`);
+        console.log(`📋 ${condutas.length} condutas e ${cids.length} CIDs disponíveis.`);
     </script>
 </body>
 </html>
