@@ -14,7 +14,7 @@
         button:hover { opacity: 0.9; }
         .btn-excluir { background: #FF3B30; }
         .btn-editar { background: #FF9500; }
-        .btn-cid { background: #34C759; }  /* verde para CID */
+        .btn-cid { background: #34C759; }
         .resultado { background: #e8f0fe; padding: 16px; border-radius: 8px; margin-top: 16px; }
         .resultado button { margin-right: 8px; margin-top: 8px; }
         .fonte { font-size: 12px; color: #666; margin-top: 8px; }
@@ -56,7 +56,7 @@
         <button onclick="cancelarEdicao()" id="btnCancelar" style="display:none; background:#999;">Cancelar</button>
     </div>
 
-    <!-- ============ NOVA SEÇÃO: CATÁLOGO DE CID ============ -->
+    <!-- ============ CATÁLOGO DE CID-10 (CORRIGIDO) ============ -->
     <div class="card">
         <h3>📋 Catálogo de CID-10</h3>
         <p style="font-size: 14px; color: #555;">Busque por CID ou diagnóstico – a lista atualiza automaticamente.</p>
@@ -65,11 +65,14 @@
         <input type="text" id="buscaCID" placeholder="Digite CID (ex: N39) ou diagnóstico (ex: ITU)" 
                oninput="carregarListaCIDs(this.value)" style="margin-bottom: 10px;">
 
-        <!-- Tabela de CIDs -->
+        <!-- Tabela de CIDs com as duas colunas -->
         <div style="max-height: 300px; overflow-y: auto;">
             <table>
                 <thead>
-                    <tr><th style="width: 35%;">CID</th><th style="width: 65%;">Diagnóstico</th></tr>
+                    <tr>
+                        <th style="width: 35%;">CID</th>
+                        <th style="width: 65%;">Diagnóstico</th>
+                    </tr>
                 </thead>
                 <tbody id="corpoTabelaCIDs">
                     <tr><td colspan="2" style="text-align:center; color:#999;">Nenhum CID cadastrado</td></tr>
@@ -77,9 +80,10 @@
             </table>
         </div>
 
-        <!-- Botão e formulário de cadastro de CID -->
+        <!-- Botão para cadastrar novo CID -->
         <button class="btn-cid" onclick="toggleFormCID()" style="margin-top: 12px;">➕ Novo CID</button>
 
+        <!-- Formulário oculto para novo CID -->
         <div id="formCID" class="form-cid">
             <h4 style="margin-top:0;">Cadastrar novo CID</h4>
             <input type="text" id="codigoCID" placeholder="Código (ex: N39)" style="margin-bottom: 8px;">
@@ -95,7 +99,6 @@
         A conduta final é sempre do médico responsável.
     </div>
 
-    <!-- ===== REGISTRO DO SERVICE WORKER (OFFLINE) ===== -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/conduta-medica/service-worker.js')
@@ -105,7 +108,7 @@
     </script>
 
     <script>
-        // ==================== CONDUTAS (JÁ EXISTENTE) ====================
+        // ==================== CONDUTAS ====================
         let condutas = [];
         let editandoId = null;
 
@@ -254,7 +257,7 @@
             }
         }
 
-        // ==================== NOVO: GESTÃO DE CIDS ====================
+        // ==================== GESTÃO DE CIDS (CORRIGIDO) ====================
         let cids = [];
 
         function carregarCids() {
@@ -262,13 +265,26 @@
             if (dados) {
                 cids = JSON.parse(dados);
             } else {
-                // CIDs iniciais (exemplo)
+                // Lista completa com 18 CIDs (substitua se quiser)
                 cids = [
-                    { codigo: 'N39', descricao: 'ITU' },
-                    { codigo: 'A90', descricao: 'Dengue' },
-                    { codigo: 'A09', descricao: 'GECA' },
-                    { codigo: 'R51', descricao: 'Cefaleia' },
-                    { codigo: 'R42', descricao: 'Tontura' }
+                    { codigo: 'I10', descricao: 'Hipertensão Arterial Sistêmica' },
+                    { codigo: 'I50', descricao: 'Insuficiência Cardíaca' },
+                    { codigo: 'I21', descricao: 'Infarto Agudo do Miocárdio (IAM)' },
+                    { codigo: 'I64', descricao: 'Acidente Vascular Cerebral (AVC)' },
+                    { codigo: 'I16', descricao: 'Crise Hipertensiva' },
+                    { codigo: 'G40', descricao: 'Crise Epiléptica' },
+                    { codigo: 'J44', descricao: 'Exacerbação de DPOC / Asma' },
+                    { codigo: 'J11', descricao: 'Síndrome Gripal / Dengue' },
+                    { codigo: 'N39', descricao: 'Infecção do Trato Urinário (ITU)' },
+                    { codigo: 'E16', descricao: 'Hipoglicemia' },
+                    { codigo: 'T14', descricao: 'Trauma Leve' },
+                    { codigo: 'A54', descricao: 'Gonorreia' },
+                    { codigo: 'B02', descricao: 'Herpes Zoster' },
+                    { codigo: 'H10.9', descricao: 'Conjuntivite' },
+                    { codigo: 'G43.0', descricao: 'Enxaqueca sem aura' },
+                    { codigo: 'N23', descricao: 'Cólica renal' },
+                    { codigo: 'K81.0', descricao: 'Colecistite aguda' },
+                    { codigo: 'T78.4', descricao: 'Alergia não especificada' }
                 ];
                 localStorage.setItem('cids', JSON.stringify(cids));
             }
@@ -280,6 +296,8 @@
 
         function carregarListaCIDs(filtro = '') {
             const tbody = document.getElementById('corpoTabelaCIDs');
+            if (!tbody) return; // segurança
+
             let resultados = cids;
 
             if (filtro.trim() !== '') {
@@ -314,7 +332,6 @@
                 return;
             }
 
-            // Evitar duplicados
             if (cids.some(item => item.codigo === codigo)) {
                 alert(`O CID ${codigo} já está cadastrado!`);
                 return;
@@ -337,12 +354,9 @@
             }
         }
 
-        // Função para buscar conduta associada ao CID clicado
         function buscarCondutaPorCID(codigo) {
-            const termo = codigo;
-            document.getElementById('busca').value = termo;
+            document.getElementById('busca').value = codigo;
             buscar();
-            // Rola para o resultado
             document.getElementById('resultado').scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -351,7 +365,6 @@
         carregarCids();
         carregarListaCIDs('');
 
-        // Buscar conduta com Enter
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('busca').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') buscar();
