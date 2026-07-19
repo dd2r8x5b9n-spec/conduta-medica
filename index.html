@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conduta Médica - SMS/SP</title>
     <style>
-        body { font-family: Arial; padding: 20px; background: #f5f5f5; max-width: 600px; margin: auto; }
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; max-width: 600px; margin: auto; }
         h1 { color: #0055CC; }
         .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        input, textarea { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: Arial; }
+        input, textarea { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: Arial, sans-serif; }
         textarea { resize: vertical; }
         button { background: #007AFF; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
         button:hover { opacity: 0.9; }
@@ -22,7 +22,7 @@
         .catalogo table { width: 100%; border-collapse: collapse; }
         .catalogo th, .catalogo td { padding: 6px 8px; border-bottom: 1px solid #eee; text-align: left; }
         .catalogo th { background: #f0f0f0; }
-        .catalogo tr:hover { background: #f9f9f9; }
+        .catalogo tr:hover { background: #f9f9f9; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -33,7 +33,7 @@
     <!-- BUSCA -->
     <div class="card">
         <h3>🔍 Buscar conduta</h3>
-        <input type="text" id="busca" placeholder="Digite o diagnóstico ou CID...">
+        <input type="text" id="busca" placeholder="Digite o diagnóstico ou CID... (busca em tempo real)">
         <button onclick="buscar()">Buscar</button>
     </div>
 
@@ -41,7 +41,7 @@
     <div id="resultado" class="card resultado" style="display:none;"></div>
 
     <!-- CADASTRO / EDIÇÃO -->
-    <div class="card">
+    <div id="cardFormulario" class="card">
         <h3 id="tituloFormulario">➕ Cadastrar nova conduta</h3>
         <input type="text" id="cid" placeholder="CID (ex: I10)">
         <input type="text" id="diagnostico" placeholder="Diagnóstico (ex: Hipertensão Arterial)">
@@ -69,7 +69,7 @@
         ⚠️ <strong>Lembre-se:</strong> Esta é uma ferramenta de apoio à decisão clínica. A conduta final é sempre do médico responsável.
     </div>
 
-    <!-- BOTÃO EXPORTAR DADOS (substitui o "Gerar index.html") -->
+    <!-- BOTÃO EXPORTAR DADOS -->
     <div class="card" style="text-align: center;">
         <button onclick="exportarDados()" style="background: #34C759; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
             📤 Exportar dados (JSON)
@@ -190,14 +190,18 @@
             limparFormulario();
         }
 
+        // CORREÇÃO DA BUSCA: Localiza o índice real comparando os objetos por string completa
         function buscar() {
             const termo = document.getElementById('busca').value.toLowerCase().trim();
             const resultadoDiv = document.getElementById('resultado');
             if (!termo) { resultadoDiv.innerHTML = 'Digite um diagnóstico ou CID para buscar.'; resultadoDiv.style.display = 'block'; return; }
-            const encontrados = condutas.filter(c => c.diagnostico.toLowerCase().includes(termo) || c.cid.toLowerCase().includes(termo));
-            if (encontrados.length === 0) { resultadoDiv.innerHTML = '❌ Nenhuma conduta encontrada.'; resultadoDiv.style.display = 'block'; return; }
-            const c = encontrados[0];
-            const index = condutas.indexOf(c);
+            
+            // Encontra o índice real dentro do array original 'condutas'
+            const indexReal = condutas.findIndex(c => c.diagnostico.toLowerCase().includes(termo) || c.cid.toLowerCase().includes(termo));
+            
+            if (indexReal === -1) { resultadoDiv.innerHTML = '❌ Nenhuma conduta encontrada.'; resultadoDiv.style.display = 'block'; return; }
+            
+            const c = condutas[indexReal];
             resultadoDiv.innerHTML = `
                 <h2>${c.diagnostico} (${c.cid})</h2>
                 <p><strong>🧪 Exames:</strong> ${c.exames}</p>
@@ -205,13 +209,14 @@
                 <p><strong>📋 Conduta:</strong> ${c.conduta}</p>
                 <p class="fonte">📚 Fonte: ${c.fonte || 'Não informada'}</p>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;">
-                    <button class="btn-editar" onclick="editarConduta(${index})">✏️ Editar</button>
-                    <button class="btn-excluir" onclick="excluirConduta(${index})">🗑️ Excluir</button>
+                    <button class="btn-editar" onclick="editarConduta(${indexReal})">✏️ Editar</button>
+                    <button class="btn-excluir" onclick="excluirConduta(${indexReal})">🗑️ Excluir</button>
                 </div>
             `;
             resultadoDiv.style.display = 'block';
         }
 
+        // CORREÇÃO DO SCROLL: Agora aponta exatamente para o card do formulário
         function editarConduta(index) {
             const c = condutas[index];
             document.getElementById('cid').value = c.cid || '';
@@ -224,7 +229,7 @@
             document.getElementById('btnSalvar').textContent = '✏️ Atualizar';
             document.getElementById('tituloFormulario').textContent = '✏️ Editando conduta';
             document.getElementById('btnCancelar').style.display = 'inline-block';
-            document.querySelector('.card:last-child').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('cardFormulario').scrollIntoView({ behavior: 'smooth' });
         }
 
         function excluirConduta(index) {
@@ -250,7 +255,6 @@
             `).join('');
         }
 
-        // Função exportar dados (simples e segura)
         function exportarDados() {
             const dados = JSON.stringify(condutas, null, 2);
             const pre = document.getElementById('jsonExportado');
@@ -273,9 +277,18 @@
         carregar();
         atualizarCatalogo();
 
+        // MELHORIA: Além do Enter, adicionado o evento "input" para busca instantânea enquanto digita
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('busca').addEventListener('keypress', function(e) {
+            const inputBusca = document.getElementById('busca');
+            inputBusca.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') buscar();
+            });
+            inputBusca.addEventListener('input', function() {
+                if(this.value.trim() === '') {
+                    document.getElementById('resultado').style.display = 'none';
+                } else {
+                    buscar();
+                }
             });
         });
 
