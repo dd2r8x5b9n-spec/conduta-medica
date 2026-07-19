@@ -101,7 +101,6 @@
         let condutas = [];
         let editandoId = null;
 
-        // ===== CONDUTAS INICIAIS =====
         function carregar() {
             const dados = localStorage.getItem('condutas');
             if (dados) {
@@ -109,7 +108,6 @@
             } else {
                 // Lista completa com 38 CIDs
                 condutas = [
-                    // INFECÇÕES
                     {
                         cid: 'A54',
                         diagnostico: 'Gonorreia',
@@ -174,7 +172,6 @@
                         conduta: 'RESOLVE NA AMA. Tratar TODOS os contatos SIMULTANEAMENTE. Limpeza do ambiente. ⚠️ ENCAMINHAR UPA/PSA se refratário, eczema extenso, infecção secundária, sarna crostosa.',
                         fonte: 'Protocolo SMS/SP - Dermatologia'
                     },
-                    // ENDOCRINOLOGIA
                     {
                         cid: 'E16',
                         diagnostico: 'Hipoglicemia',
@@ -183,7 +180,6 @@
                         conduta: 'RESOLVE NA AMA. Orientar refeição. Se refratária ou recorrente: ENCAMINHAR UPA/PSA.',
                         fonte: 'Protocolo SMS/SP - Endocrinologia'
                     },
-                    // NEUROLOGIA
                     {
                         cid: 'G40',
                         diagnostico: 'Crise Epiléptica (Convulsão)',
@@ -200,7 +196,6 @@
                         conduta: 'RESOLVE NA AMA (critérios típicos). Repouso, hidratação, prescrever analgésico de resgate. ⚠️ ENCAMINHAR UPA/PSA se refratária, piora súbita, 1ª crise > 40 anos, sinais de alarme.',
                         fonte: 'Protocolo SMS/SP - Cefaleias'
                     },
-                    // OFTALMOLOGIA
                     {
                         cid: 'H00.0',
                         diagnostico: 'Hordéolo (Terçol)',
@@ -225,7 +220,6 @@
                         conduta: 'RESOLVE NA AMA (quadro típico estável). Repouso, hidratação. ⚠️ ENCAMINHAR UPA/PSA se sintomas intensos, perda de consciência, dificuldade para falar, visão dupla, suspeita de AVC.',
                         fonte: 'Protocolo SMS/SP - Vertigem'
                     },
-                    // CARDIOVASCULAR
                     {
                         cid: 'I10',
                         diagnostico: 'Hipertensão Arterial Sistêmica',
@@ -274,7 +268,6 @@
                         conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR UPA/PSA para US Doppler e definição terapêutica.',
                         fonte: 'Protocolo SMS/SP - TVP'
                     },
-                    // RESPIRATÓRIO
                     {
                         cid: 'J11',
                         diagnostico: 'Síndrome Gripal / Dengue',
@@ -291,7 +284,6 @@
                         conduta: 'Se melhora: observação e tratamento para casa com retorno 48h. Se sinais de gravidade: ENCAMINHAR UPA/PSA.',
                         fonte: 'Protocolo SMS/SP - Pneumologia'
                     },
-                    // GASTROINTESTINAL
                     {
                         cid: 'K81.0',
                         diagnostico: 'Colecistite aguda',
@@ -300,7 +292,6 @@
                         conduta: '⚠️ NÃO RESOLVE NA AMA. Estabilizar e encaminhar UPA/PSA com Cirurgia Geral.',
                         fonte: 'Protocolo SMS/SP - Abdome Agudo'
                     },
-                    // NEFROLOGIA / UROLOGIA
                     {
                         cid: 'N23',
                         diagnostico: 'Cólica renal (Litíase urinária)',
@@ -317,7 +308,6 @@
                         conduta: 'RESOLVE NA AMA (mulheres jovens sem comorbidades). Se febre alta, idoso, diabético: ENCAMINHAR UPA/PSA.',
                         fonte: 'Protocolo SMS/SP - Infectologia'
                     },
-                    // OBSTETRÍCIA
                     {
                         cid: 'O14',
                         diagnostico: 'Pré-eclâmpsia',
@@ -334,7 +324,6 @@
                         conduta: 'RESOLVE NA AMA (casos leves – O21.0). Alimentação fracionada, repouso. ⚠️ ENCAMINHAR UPA/PSA se desidratação grave, perda de peso > 5%, cetose, vômitos incoercíveis (O21.1).',
                         fonte: 'Protocolo SMS/SP - Obstetrícia'
                     },
-                    // SINTOMAS E SINAIS
                     {
                         cid: 'R04.0',
                         diagnostico: 'Epistaxe (Sangramento nasal)',
@@ -383,7 +372,6 @@
                         conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA. ENCAMINHAR PARA UPA/PSA IMEDIATAMENTE após estabilização. Pacote de 1 hora: lactato, hemoculturas, antibiótico, volume, vasopressor se necessário.',
                         fonte: 'Protocolo SMS/SP - Sepse'
                     },
-                    // ACIDENTES
                     {
                         cid: 'T63',
                         diagnostico: 'Acidente por animal peçonhento',
@@ -429,7 +417,6 @@
             }
         }
 
-        // ===== FUNÇÕES CRUD =====
         function salvarDados() {
             localStorage.setItem('condutas', JSON.stringify(condutas));
         }
@@ -550,7 +537,6 @@
             }
         }
 
-        // ===== CATÁLOGO =====
         function atualizarCatalogo() {
             const tabela = document.getElementById('tabelaCIDs');
             if (!tabela) return;
@@ -565,7 +551,6 @@
             `).join('');
         }
 
-        // ===== GERAR INDEX.HTML COMPLETO =====
         function gerarIndexHTML() {
             const dadosAtuais = condutas;
             const listaStr = JSON.stringify(dadosAtuais, null, 8);
