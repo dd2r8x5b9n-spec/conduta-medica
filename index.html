@@ -72,7 +72,22 @@
         A conduta final é sempre do médico responsável.
     </div>
 
-    <!-- ===== REGISTRO DO SERVICE WORKER (OFFLINE) ===== -->
+    <!-- BOTÃO GERAR HTML COMPLETO -->
+    <div class="card" style="text-align: center;">
+        <button onclick="gerarIndexHTML()" style="background: #FF9500; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
+            📄 Gerar index.html completo
+        </button>
+    </div>
+
+    <!-- ÁREA PARA EXIBIR O CÓDIGO -->
+    <div id="areaCodigo" class="card" style="display:none; background: #1e1e1e; color: #d4d4d4; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-wrap: break-word; max-height: 500px; overflow-y: auto; padding: 16px; border-radius: 8px;">
+        <pre id="codigoGerado"></pre>
+        <button onclick="copiarCodigo()" style="background: #007AFF; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; margin-top: 8px;">
+            📋 Copiar código
+        </button>
+    </div>
+
+    <!-- ===== REGISTRO DO SERVICE WORKER ===== -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/conduta-medica/service-worker.js')
@@ -82,7 +97,7 @@
     </script>
 
     <script>
-        // ===== BANCO DE DADOS (localStorage) =====
+        // ===== BANCO DE DADOS =====
         let condutas = [];
         let editandoId = null;
 
@@ -533,7 +548,6 @@
             }
         }
 
-        // ===== CATÁLOGO =====
         function atualizarCatalogo() {
             const tabela = document.getElementById('tabelaCIDs');
             if (!tabela) return;
@@ -546,6 +560,269 @@
                     <td>${c.diagnostico}</td>
                 </tr>
             `).join('');
+        }
+
+        // ===== FUNÇÃO GERAR INDEX.HTML COMPLETO =====
+        function gerarIndexHTML() {
+            const dadosAtuais = condutas;
+            const listaStr = JSON.stringify(dadosAtuais, null, 8);
+
+            const htmlCompleto = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conduta Médica - SMS/SP</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; max-width: 600px; margin: auto; }
+        h1 { color: #0055CC; }
+        .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        input, textarea { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: Arial; }
+        textarea { resize: vertical; }
+        button { background: #007AFF; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
+        button:hover { opacity: 0.9; }
+        .btn-excluir { background: #FF3B30; }
+        .btn-editar { background: #FF9500; }
+        .resultado { background: #e8f0fe; padding: 16px; border-radius: 8px; margin-top: 16px; }
+        .resultado button { margin-right: 8px; margin-top: 8px; }
+        .fonte { font-size: 12px; color: #666; margin-top: 8px; }
+        .aviso { background: #fef9e7; padding: 10px; border-left: 4px solid #f39c12; font-size: 13px; margin-top: 16px; }
+        .catalogo { font-size: 14px; }
+        .catalogo table { width: 100%; border-collapse: collapse; }
+        .catalogo th, .catalogo td { padding: 6px 8px; border-bottom: 1px solid #eee; text-align: left; }
+        .catalogo th { background: #f0f0f0; }
+        .catalogo tr:hover { background: #f9f9f9; }
+    </style>
+</head>
+<body>
+
+    <h1>📋 Conduta Médica</h1>
+    <p style="color: #555;">Protocolos da Prefeitura de São Paulo - SMS/SP</p>
+
+    <!-- BUSCA -->
+    <div class="card">
+        <h3>🔍 Buscar conduta</h3>
+        <input type="text" id="busca" placeholder="Digite o diagnóstico ou CID...">
+        <button onclick="buscar()">Buscar</button>
+    </div>
+
+    <!-- RESULTADO -->
+    <div id="resultado" class="card resultado" style="display:none;"></div>
+
+    <!-- CADASTRO / EDIÇÃO -->
+    <div class="card">
+        <h3 id="tituloFormulario">➕ Cadastrar nova conduta</h3>
+        <input type="text" id="cid" placeholder="CID (ex: I10)">
+        <input type="text" id="diagnostico" placeholder="Diagnóstico (ex: Hipertensão Arterial)">
+        <textarea id="exames" placeholder="🧪 Exames a solicitar"></textarea>
+        <textarea id="tratamento" placeholder="💊 Tratamento"></textarea>
+        <textarea id="conduta" placeholder="📋 Conduta geral"></textarea>
+        <input type="text" id="fonte" placeholder="Fonte (ex: Protocolo SMS/SP - 2024)">
+        <button id="btnSalvar" onclick="salvar()">💾 Salvar</button>
+        <button onclick="cancelarEdicao()" id="btnCancelar" style="display:none; background:#999;">Cancelar</button>
+    </div>
+
+    <!-- CATÁLOGO DE CIDs -->
+    <div class="card catalogo">
+        <h3>📋 Catálogo de CID-10</h3>
+        <p style="font-size:13px; color:#666;">Busque por CID ou diagnóstico – a lista atualiza automaticamente.</p>
+        <div id="listaCIDs">
+            <table>
+                <thead><tr><th>CID</th><th>Diagnóstico</th></tr></thead>
+                <tbody id="tabelaCIDs"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="aviso">
+        ⚠️ <strong>Lembre-se:</strong> Esta é uma ferramenta de apoio à decisão clínica. A conduta final é sempre do médico responsável.
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/conduta-medica/service-worker.js')
+                .then(() => console.log('✅ Service Worker registrado com sucesso!'))
+                .catch(err => console.log('❌ Erro ao registrar Service Worker:', err));
+        }
+
+        let condutas = [];
+        let editandoId = null;
+
+        function carregar() {
+            const dados = localStorage.getItem('condutas');
+            if (dados) {
+                condutas = JSON.parse(dados);
+            } else {
+                condutas = ${listaStr};
+                salvarDados();
+            }
+        }
+
+        function salvarDados() {
+            localStorage.setItem('condutas', JSON.stringify(condutas));
+        }
+
+        function salvar() {
+            const nova = {
+                cid: document.getElementById('cid').value.trim(),
+                diagnostico: document.getElementById('diagnostico').value.trim(),
+                exames: document.getElementById('exames').value.trim(),
+                tratamento: document.getElementById('tratamento').value.trim(),
+                conduta: document.getElementById('conduta').value.trim(),
+                fonte: document.getElementById('fonte').value.trim() || 'Protocolo SMS/SP'
+            };
+
+            if (!nova.diagnostico || !nova.exames || !nova.tratamento) {
+                alert('⚠️ Preencha pelo menos: Diagnóstico, Exames e Tratamento!');
+                return;
+            }
+
+            if (editandoId !== null) {
+                condutas[editandoId] = nova;
+                editandoId = null;
+                document.getElementById('btnSalvar').textContent = '💾 Salvar';
+                document.getElementById('tituloFormulario').textContent = '➕ Cadastrar nova conduta';
+                document.getElementById('btnCancelar').style.display = 'none';
+                alert('✅ Conduta atualizada com sucesso!');
+            } else {
+                condutas.push(nova);
+                alert('✅ Conduta cadastrada com sucesso!');
+            }
+
+            salvarDados();
+            limparFormulario();
+            document.getElementById('resultado').style.display = 'none';
+            atualizarCatalogo();
+        }
+
+        function limparFormulario() {
+            document.getElementById('cid').value = '';
+            document.getElementById('diagnostico').value = '';
+            document.getElementById('exames').value = '';
+            document.getElementById('tratamento').value = '';
+            document.getElementById('conduta').value = '';
+            document.getElementById('fonte').value = '';
+        }
+
+        function cancelarEdicao() {
+            editandoId = null;
+            document.getElementById('btnSalvar').textContent = '💾 Salvar';
+            document.getElementById('tituloFormulario').textContent = '➕ Cadastrar nova conduta';
+            document.getElementById('btnCancelar').style.display = 'none';
+            limparFormulario();
+        }
+
+        function buscar() {
+            const termo = document.getElementById('busca').value.toLowerCase().trim();
+            const resultadoDiv = document.getElementById('resultado');
+
+            if (!termo) {
+                resultadoDiv.innerHTML = 'Digite um diagnóstico ou CID para buscar.';
+                resultadoDiv.style.display = 'block';
+                return;
+            }
+
+            const encontrados = condutas.filter(c => 
+                c.diagnostico.toLowerCase().includes(termo) || 
+                c.cid.toLowerCase().includes(termo)
+            );
+
+            if (encontrados.length === 0) {
+                resultadoDiv.innerHTML = '❌ Nenhuma conduta encontrada. Cadastre uma nova!';
+                resultadoDiv.style.display = 'block';
+                return;
+            }
+
+            const c = encontrados[0];
+            const index = condutas.indexOf(c);
+
+            resultadoDiv.innerHTML = \`
+                <h2>\${c.diagnostico} (\${c.cid})</h2>
+                <p><strong>🧪 Exames:</strong> \${c.exames}</p>
+                <p><strong>💊 Tratamento:</strong> \${c.tratamento}</p>
+                <p><strong>📋 Conduta:</strong> \${c.conduta}</p>
+                <p class="fonte">📚 Fonte: \${c.fonte || 'Não informada'}</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;">
+                    <button class="btn-editar" onclick="editarConduta(\${index})">✏️ Editar</button>
+                    <button class="btn-excluir" onclick="excluirConduta(\${index})">🗑️ Excluir</button>
+                </div>
+            \`;
+            resultadoDiv.style.display = 'block';
+        }
+
+        function editarConduta(index) {
+            const c = condutas[index];
+            document.getElementById('cid').value = c.cid || '';
+            document.getElementById('diagnostico').value = c.diagnostico || '';
+            document.getElementById('exames').value = c.exames || '';
+            document.getElementById('tratamento').value = c.tratamento || '';
+            document.getElementById('conduta').value = c.conduta || '';
+            document.getElementById('fonte').value = c.fonte || '';
+
+            editandoId = index;
+            document.getElementById('btnSalvar').textContent = '✏️ Atualizar';
+            document.getElementById('tituloFormulario').textContent = '✏️ Editando conduta';
+            document.getElementById('btnCancelar').style.display = 'inline-block';
+
+            document.querySelector('.card:last-child').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function excluirConduta(index) {
+            if (confirm(\`Tem certeza que deseja excluir "\${condutas[index].diagnostico}"?\`)) {
+                condutas.splice(index, 1);
+                salvarDados();
+                document.getElementById('resultado').style.display = 'none';
+                if (editandoId !== null) cancelarEdicao();
+                atualizarCatalogo();
+                alert('🗑️ Conduta excluída com sucesso!');
+            }
+        }
+
+        function atualizarCatalogo() {
+            const tabela = document.getElementById('tabelaCIDs');
+            if (!tabela) return;
+            
+            const sorted = [...condutas].sort((a, b) => a.cid.localeCompare(b.cid));
+            
+            tabela.innerHTML = sorted.map(c => \`
+                <tr>
+                    <td><strong>\${c.cid}</strong></td>
+                    <td>\${c.diagnostico}</td>
+                </tr>
+            \`).join('');
+        }
+
+        carregar();
+        atualizarCatalogo();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('busca').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') buscar();
+            });
+        });
+
+        console.log('✅ App Conduta Médica carregado com sucesso!');
+        console.log(\`📋 \${condutas.length} condutas disponíveis.\`);
+    </script>
+</body>
+</html>`;
+
+            // Exibe o código na área
+            const area = document.getElementById('areaCodigo');
+            const pre = document.getElementById('codigoGerado');
+            pre.textContent = htmlCompleto;
+            area.style.display = 'block';
+            area.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copiarCodigo() {
+            const pre = document.getElementById('codigoGerado');
+            const texto = pre.textContent;
+            navigator.clipboard.writeText(texto).then(() => {
+                alert('✅ Código copiado para a área de transferência!');
+            }).catch(() => {
+                alert('❌ Erro ao copiar. Selecione o texto manualmente e copie.');
+            });
         }
 
         // ===== INICIALIZAÇÃO =====
