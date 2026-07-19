@@ -108,310 +108,44 @@
             } else {
                 // Lista completa com 38 CIDs
                 condutas = [
-                    {
-                        cid: 'A54',
-                        diagnostico: 'Gonorreia',
-                        exames: 'Teste rápido, Gram de secreção, Sorologias HIV/Sífilis/Hepatites.',
-                        tratamento: 'Ceftriaxona 500mg IM + Azitromicina 1g VO (dose única).',
-                        conduta: 'RESOLVE NA AMA. Orientar abstinência sexual até 7 dias após o tratamento e tratamento de parceiros. Notificar o agravo. ⚠️ ENCAMINHAR UPA/PSA se complicações.',
-                        fonte: 'Protocolo SMS/SP - ISTs'
-                    },
-                    {
-                        cid: 'A90',
-                        diagnostico: 'Dengue (Classificação de risco)',
-                        exames: 'Prova do laço, Hemograma com plaquetas, Glicemia, Testes rápidos (Dengue/COVID).',
-                        tratamento: 'Dipirona ou Paracetamol para dor e febre. CONTRAINDICAR AAS e AINEs. Hidratação oral (80mL/kg/dia).',
-                        conduta: 'RESOLVE NA AMA (classificação A e B). Orientar hidratação vigorosa e sinais de alarme. Se sinais de alarme ou plaquetas < 50k: ENCAMINHAR UPA/PSA.',
-                        fonte: 'Protocolo SMS/SP - Dengue'
-                    },
-                    {
-                        cid: 'B01',
-                        diagnostico: 'Varicela (Catapora)',
-                        exames: 'Diagnóstico clínico. Hemograma/PCR se infecção secundária.',
-                        tratamento: 'Dipirona 1g VO/EV ou Paracetamol 750mg VO. Anti-histamínico + loção de calamina. Aciclovir 800mg 5x/dia (adolescentes/adultos).',
-                        conduta: 'RESOLVE NA AMA (crianças/adultos hígidos). Isolamento até crostas (5-7 dias). Notificar. ⚠️ ENCAMINHAR UPA/PSA se gestante, imunossuprimido, pneumonia, infecção secundária extensa.',
-                        fonte: 'Protocolo SMS/SP - Infectologia'
-                    },
-                    {
-                        cid: 'B02',
-                        diagnostico: 'Herpes Zoster (Cobreiro)',
-                        exames: 'Diagnóstico clínico. Glicemia. Sorologia anti-HIV se suspeita.',
-                        tratamento: 'Aciclovir 800mg 5x/dia VO por 7 dias. Dipirona 1g VO/EV. Amitriptilina 25mg 1x/dia ou Gabapentina 300mg 1x/dia (dor neuropática).',
-                        conduta: 'RESOLVE NA AMA (imunocompetentes). Orientar evitar contato com gestantes/imunossuprimidos. ⚠️ ENCAMINHAR UPA/PSA se oftálmico, Ramsay Hunt, zoster disseminado, imunossuprimidos graves.',
-                        fonte: 'Protocolo SMS/SP - Dermatologia'
-                    },
-                    {
-                        cid: 'B04',
-                        diagnostico: 'Mpox (Varíola dos macacos)',
-                        exames: 'Diagnóstico clínico. PCR MPXV de swab de lesão.',
-                        tratamento: 'Dipirona 1g VO/EV ou Paracetamol 750mg VO. Cuidados com lesões (limpas/secas). Tecovirimat (casos graves – uso hospitalar).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. Isolamento, EPI, notificação e encaminhamento para UPA/SAE/CTA.',
-                        fonte: 'Protocolo SMS/SP - Mpox'
-                    },
-                    {
-                        cid: 'B26.0',
-                        diagnostico: 'Caxumba (Parotidite epidêmica)',
-                        exames: 'Diagnóstico clínico. Sorologia IgM (5º dia). Amilase sérica (se dor abdominal).',
-                        tratamento: 'Dipirona 1g VO/EV ou Paracetamol 750mg VO. Compressas mornas/frias. Hidratação e alimentação pastosa. Isolamento até 9º dia.',
-                        conduta: 'RESOLVE NA AMA (casos típicos). Isolamento, notificar. ⚠️ ENCAMINHAR UPA/PSA se orquite, meningite, pancreatite, encefalite.',
-                        fonte: 'Protocolo SMS/SP - Infectologia'
-                    },
-                    {
-                        cid: 'B26.0',
-                        diagnostico: 'Orquite por Caxumba (Complicação)',
-                        exames: 'Palpação testicular. Ultrassom Doppler (descartar torção). Sumário de urina.',
-                        tratamento: 'Dipirona 1g VO/EV ou Ibuprofeno 600mg VO. Compressas frias. Suspensório escrotal. Não usar corticoide.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA com vaga em urologia. Risco de atrofia e infertilidade.',
-                        fonte: 'Protocolo SMS/SP - Complicações'
-                    },
-                    {
-                        cid: 'B86',
-                        diagnostico: 'Escabiose (Sarna)',
-                        exames: 'Diagnóstico clínico. Raspado de pele (se disponível).',
-                        tratamento: 'Permetrina 5% loção (corpo todo, 8-12h, repetir 7 dias). OU Ivermectina VO 200mcg/kg (dose única, repetir 7-14 dias). Anti-histamínico oral.',
-                        conduta: 'RESOLVE NA AMA. Tratar TODOS os contatos SIMULTANEAMENTE. Limpeza do ambiente. ⚠️ ENCAMINHAR UPA/PSA se refratário, eczema extenso, infecção secundária, sarna crostosa.',
-                        fonte: 'Protocolo SMS/SP - Dermatologia'
-                    },
-                    {
-                        cid: 'E16',
-                        diagnostico: 'Hipoglicemia',
-                        exames: 'Glicemia capilar imediata.',
-                        tratamento: 'Consciente: 15g carboidrato rápido (suco, açúcar). Inconsciente: Glicose 50% IV 20-50mL ou Glucagon IM.',
-                        conduta: 'RESOLVE NA AMA. Orientar refeição. Se refratária ou recorrente: ENCAMINHAR UPA/PSA.',
-                        fonte: 'Protocolo SMS/SP - Endocrinologia'
-                    },
-                    {
-                        cid: 'G40',
-                        diagnostico: 'Crise Epiléptica (Convulsão)',
-                        exames: 'Glicemia capilar, Eletrólitos, avaliar infecção.',
-                        tratamento: 'Crise > 5min: Diazepam 10mg IV ou Midazolam IM. Proteger cabeça e vias aéreas.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA (crise prolongada/1ª crise). Estabilizar e encaminhar UPA/PSA.',
-                        fonte: 'Protocolo SMS/SP - Neurologia'
-                    },
-                    {
-                        cid: 'G43.0',
-                        diagnostico: 'Enxaqueca sem aura',
-                        exames: 'Sinais vitais, Glicemia capilar, Avaliação neurológica sumária. ECG se > 50 anos ou fatores de risco.',
-                        tratamento: 'Dipirona 1g EV/IM/VO ou Ibuprofeno 600mg VO. Metoclopramida 10mg EV/IM (náuseas). Sumatriptano 50-100mg VO (refratário).',
-                        conduta: 'RESOLVE NA AMA (critérios típicos). Repouso, hidratação, prescrever analgésico de resgate. ⚠️ ENCAMINHAR UPA/PSA se refratária, piora súbita, 1ª crise > 40 anos, sinais de alarme.',
-                        fonte: 'Protocolo SMS/SP - Cefaleias'
-                    },
-                    {
-                        cid: 'H00.0',
-                        diagnostico: 'Hordéolo (Terçol)',
-                        exames: 'Diagnóstico clínico. Acuidade visual se queixa.',
-                        tratamento: 'Compressas mornas 10-15min 3-4x/dia. Pomada antibiótica (Tobramicina/Gentamicina) 5-7 dias. Dipirona 1g VO se dor. Não espremer.',
-                        conduta: 'RESOLVE NA AMA. Orientar higiene. ⚠️ ENCAMINHAR UPA/PSA se abscesso extenso, celulite periorbitária, acometimento visual, recidivas frequentes.',
-                        fonte: 'Protocolo SMS/SP - Oftalmologia'
-                    },
-                    {
-                        cid: 'H10.9',
-                        diagnostico: 'Conjuntivite aguda não especificada',
-                        exames: 'Exame clínico com lanterna. Teste de fluoresceína (se suspeita de ceratite).',
-                        tratamento: 'Viral: Compressas frias + lubrificante. Bacteriana: Tobramicina 0,3% 1 gota 4/4h 5-7 dias. Alérgica: Antihistamínico tópico + lubrificante.',
-                        conduta: 'RESOLVE NA AMA. Afastamento trabalho/escola. Higiene das mãos. ⚠️ ENCAMINHAR UPA/PSA se dor intensa, fotofobia, baixa acuidade, ceratite, herpes ocular, oftalmia neonatal.',
-                        fonte: 'Protocolo SMS/SP - Oftalmologia'
-                    },
-                    {
-                        cid: 'H83.0',
-                        diagnostico: 'Labirintite (Inflamação do labirinto)',
-                        exames: 'Diagnóstico clínico. Exame otoneurológico (nistagmo, Romberg, Dix-Hallpike).',
-                        tratamento: 'Meclizina 25mg 8/8h ou Dimenidrato 50mg 8/8h. Ondansetrona 4mg IV ou Metoclopramida 10mg EV (náuseas).',
-                        conduta: 'RESOLVE NA AMA (quadro típico estável). Repouso, hidratação. ⚠️ ENCAMINHAR UPA/PSA se sintomas intensos, perda de consciência, dificuldade para falar, visão dupla, suspeita de AVC.',
-                        fonte: 'Protocolo SMS/SP - Vertigem'
-                    },
-                    {
-                        cid: 'I10',
-                        diagnostico: 'Hipertensão Arterial Sistêmica',
-                        exames: 'Hemograma, Creatinina, Potássio, Glicemia, Colesterol, ECG, Fundoscopia.',
-                        tratamento: 'Losartana 50mg 1x/dia ou Enalapril 10mg 2x/dia.',
-                        conduta: 'RESOLVE NA AMA. Orientar redução de sal, exercícios, controle ponderal, reavaliar em 30 dias.',
-                        fonte: 'Protocolo SMS/SP - Atenção Básica'
-                    },
-                    {
-                        cid: 'I16',
-                        diagnostico: 'Crise Hipertensiva',
-                        exames: 'Aferir PA em ambos os braços, Glicemia, Creatinina, Potássio, Sumário de urina, Fundoscopia.',
-                        tratamento: 'Sem lesão: Captopril 25mg VO ou Nifedipino 10mg VO. Com lesão: estabilizar e encaminhar UPA/PSA.',
-                        conduta: 'Identificar emergência (com lesão). Se urgência (sem lesão), tratar e reavaliar na AMA. ⚠️ ENCAMINHAR UPA/PSA se com lesão de órgão-alvo.',
-                        fonte: 'Protocolo SMS/SP - Hipertensão'
-                    },
-                    {
-                        cid: 'I21',
-                        diagnostico: 'Infarto Agudo do Miocárdio (IAM)',
-                        exames: 'ECG urgente (até 10min), Troponina, CPK-MB, Hemograma, Creatinina, Potássio, Glicemia.',
-                        tratamento: 'AAS 200-300mg mastigado, Nitroglicerina SL (se PA > 90), Morfina (se dor), O2 (se SatO2 < 94%).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. Estabilizar, acionar SAMU 192 imediatamente.',
-                        fonte: 'Protocolo SMS/SP - Cardiologia'
-                    },
-                    {
-                        cid: 'I50',
-                        diagnostico: 'Insuficiência Cardíaca',
-                        exames: 'ECG, Raio-X tórax, BNP, Ecocardiograma, Creatinina, Potássio.',
-                        tratamento: 'Furosemida 40mg + Enalapril 10mg + Carvedilol 12,5mg.',
-                        conduta: 'Restrição hídrica e salina, pesagem diária, reavaliar em 7 dias. ⚠️ ENCAMINHAR UPA/PSA se sinais de gravidade (EAP, baixo débito, refratariedade).',
-                        fonte: 'Protocolo SMS/SP - Cardiologia'
-                    },
-                    {
-                        cid: 'I64',
-                        diagnostico: 'Acidente Vascular Cerebral (AVC)',
-                        exames: 'Glicemia capilar, ECG, Hemograma, Coagulograma.',
-                        tratamento: 'Manter vias aéreas pérvias, O2 se SatO2 < 94%, cabeceira elevada 30°. Não tratar PA (exceto > 220x120).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. Acionar SAMU 192. Registrar horário do início dos sintomas (ictus).',
-                        fonte: 'Protocolo SMS/SP - Neurologia'
-                    },
-                    {
-                        cid: 'I80.9',
-                        diagnostico: 'Trombose Venosa Profunda (TVP)',
-                        exames: 'Avaliação clínica (edema, dor, empastamento, cordão venoso). Critérios de Wells. D-dímero. ECG.',
-                        tratamento: 'HBPM (Enoxaparina 1mg/kg SC 12/12h). Dipirona 1g VO/EV. Repouso com elevação do membro.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR UPA/PSA para US Doppler e definição terapêutica.',
-                        fonte: 'Protocolo SMS/SP - TVP'
-                    },
-                    {
-                        cid: 'J11',
-                        diagnostico: 'Síndrome Gripal / Dengue',
-                        exames: 'Prova do laço, Hemograma com plaquetas, Glicemia, Testes rápidos (Dengue/COVID).',
-                        tratamento: 'Dipirona ou Paracetamol. CONTRAINDICAR AAS e AINEs.',
-                        conduta: 'RESOLVE NA AMA (grupo A e B). Hidratação vigorosa e orientar sinais de alarme. Se sinais de alarme ou plaquetas < 50k: ENCAMINHAR UPA/PSA.',
-                        fonte: 'Protocolo SMS/SP - Vigilância'
-                    },
-                    {
-                        cid: 'J44',
-                        diagnostico: 'Exacerbação de DPOC / Asma Grave',
-                        exames: 'Oximetria de pulso, Gasometria, Raio-X de tórax (se pneumonia).',
-                        tratamento: 'Salbutamol + Ipratrópio com espaçador (repetir 20/20min). Prednisona 40-60mg VO ou Hidrocortisona IV. O2 para SatO2 > 92%.',
-                        conduta: 'Se melhora: observação e tratamento para casa com retorno 48h. Se sinais de gravidade: ENCAMINHAR UPA/PSA.',
-                        fonte: 'Protocolo SMS/SP - Pneumologia'
-                    },
-                    {
-                        cid: 'K81.0',
-                        diagnostico: 'Colecistite aguda',
-                        exames: 'Sinais vitais, Hemograma, PCR, Amilase, Bilirrubinas, USG de abdome (se disponível).',
-                        tratamento: 'Jejum, Hidratação venosa, Dipirona 1g EV + Escopolamina 20mg EV. Morfina 2-5mg EV (dor intensa). Antibioticoterapia empírica.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. Estabilizar e encaminhar UPA/PSA com Cirurgia Geral.',
-                        fonte: 'Protocolo SMS/SP - Abdome Agudo'
-                    },
-                    {
-                        cid: 'N23',
-                        diagnostico: 'Cólica renal (Litíase urinária)',
-                        exames: 'Sumário de urina, Glicemia capilar, Creatinina, Beta-HCG (mulheres idade fértil), USG vias urinárias.',
-                        tratamento: 'Dipirona 1g EV + Escopolamina 20mg EV. Morfina 2-5mg EV lento ou Tramadol 50-100mg EV/IM. Antiemético.',
-                        conduta: 'RESOLVE NA AMA (caso típico). Hidratação vigorosa, analgésicos para casa, retorno 48-72h. ⚠️ ENCAMINHAR UPA/PSA se febre, dor refratária, vômitos incoercíveis, oligúria/anúria, gestante, rim único.',
-                        fonte: 'Protocolo SMS/SP - Litíase Urinária'
-                    },
-                    {
-                        cid: 'N39',
-                        diagnostico: 'Infecção do Trato Urinário (ITU)',
-                        exames: 'Sumário de urina, Urocultura (antes do antibiótico), Hemograma, Creatinina.',
-                        tratamento: 'Antibiótico empírico (Ciprofloxacino 500mg 12/12h ou Nitrofurantoína 100mg 6/6h). Dipirona/Escopolamina.',
-                        conduta: 'RESOLVE NA AMA (mulheres jovens sem comorbidades). Se febre alta, idoso, diabético: ENCAMINHAR UPA/PSA.',
-                        fonte: 'Protocolo SMS/SP - Infectologia'
-                    },
-                    {
-                        cid: 'O14',
-                        diagnostico: 'Pré-eclâmpsia',
-                        exames: 'Aferir PA, Proteinúria, Hemograma (plaquetas), Creatinina, Ácido úrico, TGO/TGP, Bilirrubinas.',
-                        tratamento: 'Sulfato de Magnésio IV. Hidralazina IV ou Nifedipino VO (se PA ≥ 160x110). Corticoides (se IG < 34 sem).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA OBSTÉTRICA. Encaminhar UPA/MATERNIDADE imediatamente.',
-                        fonte: 'Protocolo SMS/SP - Síndromes Hipertensivas'
-                    },
-                    {
-                        cid: 'O21',
-                        diagnostico: 'Hiperêmese Gravídica (Vômitos na gravidez)',
-                        exames: 'Sinais vitais, Glicemia capilar, Eletrólitos, Beta-HCG, Sumário de urina (cetose).',
-                        tratamento: 'Ondansetrona 4mg 8/8h VO/EV ou Metoclopramida 10mg 8/8h. Hidratação venosa (SF 0,9% ou Ringer) se vômitos incoercíveis.',
-                        conduta: 'RESOLVE NA AMA (casos leves – O21.0). Alimentação fracionada, repouso. ⚠️ ENCAMINHAR UPA/PSA se desidratação grave, perda de peso > 5%, cetose, vômitos incoercíveis (O21.1).',
-                        fonte: 'Protocolo SMS/SP - Obstetrícia'
-                    },
-                    {
-                        cid: 'R04.0',
-                        diagnostico: 'Epistaxe (Sangramento nasal)',
-                        exames: 'Sinais vitais, Glicemia capilar, Coagulograma (se uso de anticoagulantes).',
-                        tratamento: 'Sentado com tronco inclinado para frente. Compressão digital 10-15min. Vasoconstritor tópico (adrenalina 1:1000). Cauterização (se visível). Tamponamento anterior.',
-                        conduta: 'RESOLVE NA AMA (sangramento anterior controlado). Orientar evitar assoar, esforços, manter cabeceira elevada. ⚠️ ENCAMINHAR UPA/PSA se sangramento abundante, instabilidade, falha tamponamento, anticoagulantes, recidiva.',
-                        fonte: 'Protocolo SMS/SP - Otorrinolaringologia'
-                    },
-                    {
-                        cid: 'R06.0',
-                        diagnostico: 'Dispneia (Dificuldade respiratória)',
-                        exames: 'Oximetria (SatO2), Sinais vitais (FR, FC, PA, T°), Glicemia capilar, ECG, Raio-X tórax, Gasometria (se grave).',
-                        tratamento: 'O2 (se SatO2 < 94% – manter > 92%). Broncodilatador (Salbutamol + Ipratrópio) se sibilos. Se EAP: Furosemida 40-80mg IV + Nitroglicerina SL + sedestação com pernas pendentes.',
-                        conduta: 'RESOLVE NA AMA se SatO2 > 94%, estável (FR < 24), melhora com broncodilatador/diurético. ⚠️ ENCAMINHAR UPA/PSA IMEDIATAMENTE se SatO2 < 92% persistente, FR > 30, uso intenso de musculatura acessória, confusão, TEP, pneumotórax hipertensivo, EAP refratário, rebaixamento, anafilaxia com estridor.',
-                        fonte: 'Protocolo SMS/SP - Dispneia'
-                    },
-                    {
-                        cid: 'R07.4',
-                        diagnostico: 'Dor Torácica não especificada',
-                        exames: 'Sinais vitais, ECG (em até 10min), Glicemia capilar, Troponina, Raio-X tórax, Oximetria contínua.',
-                        tratamento: 'IAM suspeito: AAS 200-300mg + Nitroglicerina SL (se PA > 90) + Morfina 2-5mg EV + O2. Costocondrite: AINE + compressa quente. DRGE: Antácido + Omeprazol 20mg VO.',
-                        conduta: '⚠️ NUNCA ignorar dor torácica. RESOLVE NA AMA se costocondrite, dor musculoesquelética, DRGE, psicogênica. ⚠️ ENCAMINHAR UPA/PSA IMEDIATAMENTE se IAM, Embolia Pulmonar, Dissecção Aórtica, Pneumotórax Hipertensivo, Pericardite Aguda, Taquiarritmia instável.',
-                        fonte: 'Protocolo SMS/SP - Dor Torácica'
-                    },
-                    {
-                        cid: 'R10.0',
-                        diagnostico: 'Abdômen Agudo (Dor abdominal aguda)',
-                        exames: 'Sinais vitais, Exame abdominal detalhado, Glicemia capilar, B-HCG (mulheres idade fértil), ECG, Hemograma, Amilase, PCR, Bilirrubinas, Creatinina, USG abdome.',
-                        tratamento: 'Jejum, Hidratação venosa, Dipirona 1g EV + Escopolamina 20mg EV. Morfina 2-5mg EV (dor intensa – com cautela). Antiemético: Ondansetrona 4mg IV ou Metoclopramida 10mg EV. Jejum zero (se cirúrgico).',
-                        conduta: '⚠️ DIFERENCIAR causas cirúrgicas de clínicas. RESOLVE NA AMA se gastroenterite, dispepsia, cólica intestinal, constipação, cistite. ⚠️ ENCAMINHAR UPA/PSA IMEDIATAMENTE se sinais de abdome agudo cirúrgico (dor intensa, rigidez/defesa, Blumberg +, peristalse ausente, febre alta), apendicite, colecistite, pancreatite, obstrução intestinal, gravidez ectópica, instabilidade hemodinâmica, perfuração de víscera.',
-                        fonte: 'Protocolo SMS/SP - Abdômen Agudo'
-                    },
-                    {
-                        cid: 'R42',
-                        diagnostico: 'Tontura e instabilidade',
-                        exames: 'Sinais vitais, Glicemia capilar, ECG, Teste de Dix-Hallpike, Avaliação neurológica sumária.',
-                        tratamento: 'Vertigem periférica: Meclizina 25mg 8/8h ou Dimenidrato 50mg 8/8h. Náuseas: Ondansetrona 4mg IV ou Metoclopramida 10mg EV. Pré-síncope: Hidratação venosa SF 0,9%.',
-                        conduta: 'RESOLVE NA AMA (estabilizado, sem déficits, VPPB). Repouso, evitar movimentos bruscos, hidratação. ⚠️ ENCAMINHAR UPA/PSA (URGÊNCIA NEUROLÓGICA) se disartria, diplopia, ataxia grave, cefaleia súbita, rebaixamento, arritmia, ou > 60 anos com fatores de risco (AVC).',
-                        fonte: 'Protocolo SMS/SP - Neurologia'
-                    },
-                    {
-                        cid: 'R65.2',
-                        diagnostico: 'Sepse / Choque Séptico',
-                        exames: 'Sinais vitais, Glicemia capilar, Lactato sérico, Gasometria, Hemograma, Creatinina, Bilirrubinas, Coagulograma, PCR, Hemoculturas, Urocultura, RX tórax.',
-                        tratamento: 'O2 (manter SatO2 ≥ 94%). Reposição volêmica agressiva: Cristaloide 20-30 mL/kg EV nas primeiras 3h. Antibiótico de amplo espectro (1ª hora). Vasopressor: Noradrenalina EV (PAM ≥ 65 mmHg).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA. ENCAMINHAR PARA UPA/PSA IMEDIATAMENTE após estabilização. Pacote de 1 hora: lactato, hemoculturas, antibiótico, volume, vasopressor se necessário.',
-                        fonte: 'Protocolo SMS/SP - Sepse'
-                    },
-                    {
-                        cid: 'T63',
-                        diagnostico: 'Acidente por animal peçonhento',
-                        exames: 'Sinais vitais, Glicemia capilar, ECG. Observar local da picada (edema, equimose, bolhas, necrose). Coagulograma se suspeita botrópica.',
-                        tratamento: 'Limpeza local, compressa fria, elevação do membro. Não fazer torniquete, não sugar, não cortar. Dipirona 1g VO/EV (dor). Vacina antitetânica (se > 5 anos). Casos graves: O2, acesso venoso, hidratação venosa, monitorização contínua.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA na maioria. ENCAMINHAR UPA/PSA (soro antiveneno). Exceção: adultos hígidos com escorpião/aranha sem toxidade sistêmica – observar 2-4h e liberar.',
-                        fonte: 'Protocolo SMS/SP - Acidentes com Animais Peçonhentos'
-                    },
-                    {
-                        cid: 'T78.2',
-                        diagnostico: 'Choque anafilático',
-                        exames: 'Diagnóstico clínico. Sinais vitais a cada 5 min, ECG, Glicemia capilar.',
-                        tratamento: 'O2 (máscara com reservatório). Adrenalina IM (1:1000) 0,3-0,5mg adultos (0,01mg/kg crianças) – repetir 5-15min. Decúbito dorsal com pernas elevadas. Acesso venoso calibroso. Reposição volêmica: SF 0,9% 20-30 mL/kg EV. Hidrocortisona 100-200mg EV ou Dexametasona 10mg EV. Difenidramina 25-50mg EV. Salbutamol se broncoespasmo.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA MÉDICA. ENCAMINHAR UPA/PSA IMEDIATAMENTE após estabilização. Monitorização contínua durante transporte.',
-                        fonte: 'Protocolo SMS/SP - Anafilaxia'
-                    },
-                    {
-                        cid: 'U07.1',
-                        diagnostico: 'COVID-19 (Síndrome Gripal / SARS-CoV-2)',
-                        exames: 'Teste rápido de antígeno ou RT-PCR. Hemograma, PCR, DHL, Ferritina, Ureia, Creatinina (se risco).',
-                        tratamento: 'Dipirona 1g VO/EV ou Paracetamol 750mg VO (febre/dor). Antiviral específico (NMV/r - Paxlovid) para elegíveis (≥65 anos ou imunossuprimidos) – até 5º dia de sintomas. NÃO prescrever corticoides na fase aguda ambulatorial.',
-                        conduta: 'RESOLVE NA AMA (quadro leve/moderado, estável, sem fatores de risco). Isolamento até resolução dos sintomas. Notificação no e-SUS VE. ⚠️ ENCAMINHAR UPA/PSA IMEDIATAMENTE se SatO2 ≤ 94%, dispneia, pressão torácica, coloração azulada, rebaixamento, hipotensão, sinais de sepse.',
-                        fonte: 'Protocolo SMS/SP - COVID-19'
-                    },
-                    {
-                        cid: 'W54',
-                        diagnostico: 'Mordedura de cão',
-                        exames: 'Avaliação da ferida (tamanho, profundidade, estruturas nobres). Sinais vitais, Glicemia capilar. Radiografia se suspeita de lesão óssea.',
-                        tratamento: 'Limpeza exaustiva com SF e água corrente. Curativo com pomada antibiótica. Profilaxia antitetânica (dT) se > 5 anos. Antibiótico profilático: Amoxicilina + Clavulanato 500mg 8/8h 5-7 dias (ou Azitromicina 500mg 1x/dia 3 dias). Dipirona 1g VO/EV (analgesia).',
-                        conduta: 'RESOLVE NA AMA (feridas superficiais, sem infecção, sem risco de raiva). ⚠️ ENCAMINHAR UPA/PSA se feridas extensas/profundas, face/mãos/pés, infecção, fratura, cão desconhecido (profilaxia da raiva).',
-                        fonte: 'Protocolo SMS/SP - Acidentes com Animais'
-                    },
-                    {
-                        cid: 'W57',
-                        diagnostico: 'Picada de inseto não venenoso',
-                        exames: 'Sinais vitais. Inspeção da lesão (presença de ferrão, sinais de infecção).',
-                        tratamento: 'Reação local: Limpeza com água e sabão, compressa fria, Dipirona 1g VO ou Ibuprofeno 600mg VO, Anti-histamínico VO (Loratadina 10mg ou Dexclorfeniramina 2mg). Anafilaxia: Adrenalina IM 0,3-0,5mg + O2 + Anti-histamínico EV + Corticoide EV.',
-                        conduta: 'RESOLVE NA AMA (reações locais leves/moderadas). ⚠️ ENCAMINHAR UPA/PSA IMEDIATAMENTE se anafilaxia, reações extensas com bolhas/necrose, infecção grave (celulite, abscessos), suspeita de doença transmitida por vetor.',
-                        fonte: 'Protocolo SMS/SP - Acidentes com Animais'
-                    }
+                    { cid: 'A54', diagnostico: 'Gonorreia', exames: 'Teste rápido, Gram, Sorologias.', tratamento: 'Ceftriaxona 500mg IM + Azitromicina 1g VO.', conduta: 'RESOLVE NA AMA. Orientar abstinência e tratamento de parceiros. ⚠️ ENCAMINHAR se complicações.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'A90', diagnostico: 'Dengue (Classificação de risco)', exames: 'Prova do laço, Hemograma com plaquetas, Glicemia, Testes rápidos.', tratamento: 'Dipirona ou Paracetamol. CONTRAINDICAR AAS e AINEs.', conduta: 'RESOLVE NA AMA (grupo A e B). Hidratação e sinais de alarme. ⚠️ ENCAMINHAR se sinais de alarme ou plaquetas < 50k.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'B01', diagnostico: 'Varicela (Catapora)', exames: 'Diagnóstico clínico.', tratamento: 'Dipirona 1g VO/EV. Anti-histamínico. Aciclovir 800mg 5x/dia (adolescentes/adultos).', conduta: 'RESOLVE NA AMA (crianças/adultos hígidos). Isolamento até crostas. ⚠️ ENCAMINHAR se gestante, imunossuprimido, pneumonia.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'B02', diagnostico: 'Herpes Zoster (Cobreiro)', exames: 'Diagnóstico clínico.', tratamento: 'Aciclovir 800mg 5x/dia VO por 7 dias. Dipirona 1g VO/EV. Amitriptilina 25mg 1x/dia (dor neuropática).', conduta: 'RESOLVE NA AMA (imunocompetentes). ⚠️ ENCAMINHAR se oftálmico, Ramsay Hunt, zoster disseminado.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'B04', diagnostico: 'Mpox (Varíola dos macacos)', exames: 'Diagnóstico clínico. PCR MPXV.', tratamento: 'Dipirona 1g VO/EV ou Paracetamol 750mg VO. Cuidados com lesões.', conduta: '⚠️ NÃO RESOLVE NA AMA. Isolamento, EPI, notificação e encaminhamento para UPA/SAE/CTA.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'B26.0', diagnostico: 'Caxumba (Parotidite epidêmica)', exames: 'Diagnóstico clínico. Sorologia IgM.', tratamento: 'Dipirona 1g VO/EV. Compressas mornas. Hidratação e alimentação pastosa.', conduta: 'RESOLVE NA AMA (casos típicos). Isolamento. ⚠️ ENCAMINHAR se orquite, meningite, pancreatite.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'B26.0', diagnostico: 'Orquite por Caxumba (Complicação)', exames: 'Palpação testicular. Ultrassom Doppler.', tratamento: 'Dipirona 1g VO/EV ou Ibuprofeno 600mg VO. Compressas frias. Suspensório escrotal.', conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA com vaga em urologia.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'B86', diagnostico: 'Escabiose (Sarna)', exames: 'Diagnóstico clínico.', tratamento: 'Permetrina 5% loção (corpo todo, 8-12h). OU Ivermectina VO 200mcg/kg.', conduta: 'RESOLVE NA AMA. Tratar TODOS os contatos SIMULTANEAMENTE. ⚠️ ENCAMINHAR se refratário, sarna crostosa.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'E16', diagnostico: 'Hipoglicemia', exames: 'Glicemia capilar imediata.', tratamento: 'Consciente: 15g carboidrato rápido. Inconsciente: Glicose 50% IV 20-50mL.', conduta: 'RESOLVE NA AMA. Orientar refeição. ⚠️ ENCAMINHAR se refratária.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'G40', diagnostico: 'Crise Epiléptica (Convulsão)', exames: 'Glicemia capilar, Eletrólitos.', tratamento: 'Crise > 5min: Diazepam 10mg IV ou Midazolam IM.', conduta: '⚠️ NÃO RESOLVE NA AMA (crise prolongada/1ª crise). Estabilizar e encaminhar UPA/PSA.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'G43.0', diagnostico: 'Enxaqueca sem aura', exames: 'Sinais vitais, Glicemia capilar, ECG se > 50 anos.', tratamento: 'Dipirona 1g EV/IM/VO ou Ibuprofeno 600mg VO. Metoclopramida 10mg EV/IM.', conduta: 'RESOLVE NA AMA (critérios típicos). Repouso. ⚠️ ENCAMINHAR se refratária, piora súbita, sinais de alarme.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'H00.0', diagnostico: 'Hordéolo (Terçol)', exames: 'Diagnóstico clínico.', tratamento: 'Compressas mornas 10-15min 3-4x/dia. Pomada antibiótica (Tobramicina) 5-7 dias.', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se abscesso extenso, celulite periorbitária, recidivas.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'H10.9', diagnostico: 'Conjuntivite aguda não especificada', exames: 'Exame clínico com lanterna.', tratamento: 'Viral: Compressas frias. Bacteriana: Tobramicina 0,3% 1 gota 4/4h.', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se dor intensa, fotofobia, baixa acuidade, ceratite.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'H83.0', diagnostico: 'Labirintite (Inflamação do labirinto)', exames: 'Diagnóstico clínico.', tratamento: 'Meclizina 25mg 8/8h ou Dimenidrato 50mg 8/8h. Ondansetrona 4mg IV.', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se sintomas intensos, perda de consciência, suspeita de AVC.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'I10', diagnostico: 'Hipertensão Arterial Sistêmica', exames: 'Hemograma, Creatinina, Potássio, Glicemia, Colesterol, ECG, Fundoscopia.', tratamento: 'Losartana 50mg 1x/dia ou Enalapril 10mg 2x/dia.', conduta: 'RESOLVE NA AMA. Orientar redução de sal, exercícios, reavaliar em 30 dias.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'I16', diagnostico: 'Crise Hipertensiva', exames: 'Aferir PA, Glicemia, Creatinina, Potássio, Fundoscopia.', tratamento: 'Sem lesão: Captopril 25mg VO. Com lesão: estabilizar e encaminhar UPA/PSA.', conduta: 'Identificar emergência (com lesão). ⚠️ ENCAMINHAR se lesão de órgão-alvo.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'I21', diagnostico: 'Infarto Agudo do Miocárdio (IAM)', exames: 'ECG urgente, Troponina, CPK-MB, Hemograma, Creatinina, Potássio.', tratamento: 'AAS 200-300mg mastigado, Nitroglicerina SL (se PA > 90), Morfina, O2.', conduta: '⚠️ NÃO RESOLVE NA AMA. Estabilizar, acionar SAMU 192.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'I50', diagnostico: 'Insuficiência Cardíaca', exames: 'ECG, Raio-X tórax, BNP, Ecocardiograma, Creatinina, Potássio.', tratamento: 'Furosemida 40mg + Enalapril 10mg + Carvedilol 12,5mg.', conduta: 'Restrição hídrica e salina, pesagem diária. ⚠️ ENCAMINHAR se sinais de gravidade (EAP, baixo débito).', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'I64', diagnostico: 'Acidente Vascular Cerebral (AVC)', exames: 'Glicemia capilar, ECG, Hemograma, Coagulograma.', tratamento: 'Manter vias aéreas, O2, cabeceira elevada 30°. Não tratar PA (exceto > 220x120).', conduta: '⚠️ NÃO RESOLVE NA AMA. Acionar SAMU 192. Registrar horário do início dos sintomas.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'I80.9', diagnostico: 'Trombose Venosa Profunda (TVP)', exames: 'Avaliação clínica, Critérios de Wells, D-dímero.', tratamento: 'HBPM (Enoxaparina 1mg/kg SC 12/12h). Dipirona 1g VO/EV.', conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR UPA/PSA para US Doppler.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'J11', diagnostico: 'Síndrome Gripal / Dengue', exames: 'Prova do laço, Hemograma com plaquetas, Glicemia, Testes rápidos.', tratamento: 'Dipirona ou Paracetamol. CONTRAINDICAR AAS e AINEs.', conduta: 'RESOLVE NA AMA (grupo A e B). ⚠️ ENCAMINHAR se sinais de alarme ou plaquetas < 50k.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'J44', diagnostico: 'Exacerbação de DPOC / Asma Grave', exames: 'Oximetria de pulso, Gasometria, Raio-X de tórax.', tratamento: 'Salbutamol + Ipratrópio com espaçador. Prednisona 40-60mg VO ou Hidrocortisona IV. O2.', conduta: 'Se melhora: observação. ⚠️ ENCAMINHAR se sinais de gravidade.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'K81.0', diagnostico: 'Colecistite aguda', exames: 'Sinais vitais, Hemograma, PCR, Amilase, Bilirrubinas, USG.', tratamento: 'Jejum, Hidratação venosa, Dipirona 1g EV + Escopolamina 20mg EV. Antibioticoterapia.', conduta: '⚠️ NÃO RESOLVE NA AMA. Estabilizar e encaminhar UPA/PSA com Cirurgia Geral.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'N23', diagnostico: 'Cólica renal (Litíase urinária)', exames: 'Sumário de urina, Glicemia capilar, Creatinina, USG.', tratamento: 'Dipirona 1g EV + Escopolamina 20mg EV. Morfina 2-5mg EV lento.', conduta: 'RESOLVE NA AMA (caso típico). ⚠️ ENCAMINHAR se febre, dor refratária, gestante, rim único.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'N39', diagnostico: 'Infecção do Trato Urinário (ITU)', exames: 'Sumário de urina, Urocultura, Hemograma, Creatinina.', tratamento: 'Antibiótico empírico (Ciprofloxacino 500mg 12/12h). Dipirona.', conduta: 'RESOLVE NA AMA (mulheres jovens). ⚠️ ENCAMINHAR se febre alta, idoso, diabético.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'O14', diagnostico: 'Pré-eclâmpsia', exames: 'Aferir PA, Proteinúria, Hemograma, Creatinina, Ácido úrico.', tratamento: 'Sulfato de Magnésio IV. Hidralazina IV (se PA ≥ 160x110).', conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA OBSTÉTRICA. Encaminhar UPA/MATERNIDADE imediatamente.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'O21', diagnostico: 'Hiperêmese Gravídica (Vômitos na gravidez)', exames: 'Sinais vitais, Glicemia capilar, Eletrólitos.', tratamento: 'Ondansetrona 4mg 8/8h VO ou EV. Hidratação venosa se vômitos incoercíveis.', conduta: 'RESOLVE NA AMA (casos leves). ⚠️ ENCAMINHAR se desidratação grave, perda de peso > 5%.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'R04.0', diagnostico: 'Epistaxe (Sangramento nasal)', exames: 'Sinais vitais, Coagulograma (se anticoagulantes).', tratamento: 'Compressão digital, Vasoconstritor tópico, Tamponamento anterior.', conduta: 'RESOLVE NA AMA (sangramento anterior). ⚠️ ENCAMINHAR se sangramento abundante, falha tamponamento.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'R06.0', diagnostico: 'Dispneia (Dificuldade respiratória)', exames: 'Oximetria, Sinais vitais, ECG, Raio-X tórax.', tratamento: 'O2 se SatO2 < 94%. Broncodilatador. Se EAP: Furosemida IV + Nitroglicerina SL.', conduta: 'RESOLVE NA AMA se SatO2 > 94%. ⚠️ ENCAMINHAR IMEDIATAMENTE se SatO2 < 92%, FR > 30, confusão.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'R07.4', diagnostico: 'Dor Torácica não especificada', exames: 'Sinais vitais, ECG (em até 10min), Glicemia capilar, Troponina.', tratamento: 'IAM suspeito: AAS + Nitroglicerina SL + Morfina + O2.', conduta: '⚠️ NUNCA ignorar. RESOLVE NA AMA se costocondrite, DRGE. ⚠️ ENCAMINHAR IMEDIATAMENTE se IAM, Embolia Pulmonar, Dissecção Aórtica.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'R10.0', diagnostico: 'Abdômen Agudo (Dor abdominal aguda)', exames: 'Sinais vitais, Exame abdominal, Glicemia capilar, B-HCG, ECG, Hemograma, Amilase, PCR.', tratamento: 'Jejum, Dipirona 1g EV + Escopolamina 20mg EV. Morfina 2-5mg EV (dor intensa).', conduta: '⚠️ DIFERENCIAR causas cirúrgicas de clínicas. ⚠️ ENCAMINHAR IMEDIATAMENTE se apendicite, colecistite, pancreatite, obstrução, gravidez ectópica.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'R42', diagnostico: 'Tontura e instabilidade', exames: 'Sinais vitais, Glicemia capilar, ECG, Dix-Hallpike.', tratamento: 'Meclizina 25mg 8/8h. Náuseas: Ondansetrona 4mg IV.', conduta: 'RESOLVE NA AMA (VPPB). ⚠️ ENCAMINHAR UPA/PSA se disartria, diplopia, ataxia grave, cefaleia súbita (AVC).', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'R65.2', diagnostico: 'Sepse / Choque Séptico', exames: 'Sinais vitais, Lactato sérico, Gasometria, Hemograma, Creatinina, Hemoculturas.', tratamento: 'O2 (SatO2 ≥ 94%). Reposição volêmica 20-30 mL/kg EV. Antibiótico de amplo espectro.', conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA. ENCAMINHAR PARA UPA/PSA IMEDIATAMENTE.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'T63', diagnostico: 'Acidente por animal peçonhento', exames: 'Sinais vitais, Observar local da picada, Coagulograma.', tratamento: 'Limpeza local, compressa fria. Não fazer torniquete. Vacina antitetânica.', conduta: '⚠️ NÃO RESOLVE NA AMA na maioria. ENCAMINHAR UPA/PSA (soro antiveneno).', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'T78.2', diagnostico: 'Choque anafilático', exames: 'Diagnóstico clínico. Sinais vitais a cada 5 min.', tratamento: 'Adrenalina IM (1:1000) 0,3-0,5mg adultos. O2. Reposição volêmica. Hidrocortisona EV.', conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA MÉDICA. ENCAMINHAR UPA/PSA IMEDIATAMENTE.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'U07.1', diagnostico: 'COVID-19 (Síndrome Gripal)', exames: 'Teste rápido de antígeno ou RT-PCR. Hemograma, PCR, DHL.', tratamento: 'Dipirona 1g VO/EV. Antiviral (NMV/r) para elegíveis. NÃO prescrever corticoides.', conduta: 'RESOLVE NA AMA (quadro leve/moderado). Isolamento. ⚠️ ENCAMINHAR se SatO2 ≤ 94%, dispneia, rebaixamento.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'W54', diagnostico: 'Mordedura de cão', exames: 'Avaliação da ferida, Sinais vitais, Radiografia (se fratura).', tratamento: 'Limpeza exaustiva com SF. Antibiótico profilático (Amoxicilina + Clavulanato). Profilaxia antitetânica.', conduta: 'RESOLVE NA AMA (feridas superficiais). ⚠️ ENCAMINHAR se feridas profundas, face/mãos/pés, cão desconhecido.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'W57', diagnostico: 'Picada de inseto não venenoso', exames: 'Sinais vitais. Inspeção da lesão.', tratamento: 'Limpeza, compressa fria, Dipirona 1g VO, Anti-histamínico VO. Anafilaxia: Adrenalina IM.', conduta: 'RESOLVE NA AMA (reações locais). ⚠️ ENCAMINHAR IMEDIATAMENTE se anafilaxia, infecção grave.', fonte: 'Protocolo SMS/SP' }
                 ];
                 salvarDados();
             }
