@@ -43,297 +43,6 @@
     <!-- CADASTRO / EDIÇÃO -->
     <div class="card">
         <h3 id="tituloFormulario">➕ Cadastrar nova conduta</h3>
-        
-        <input type="text" id="cid" placeholder="CID (ex: I10)">
-        <input type="text" id="diagnostico" placeholder="Diagnóstico (ex: Hipertensão Arterial)">
-        <textarea id="exames" placeholder="🧪 Exames a solicitar"></textarea>
-        <textarea id="tratamento" placeholder="💊 Tratamento"></textarea>
-        <textarea id="conduta" placeholder="📋 Conduta geral"></textarea>
-        <input type="text" id="fonte" placeholder="Fonte (ex: Protocolo SMS/SP - 2024)">
-
-        <button id="btnSalvar" onclick="salvar()">💾 Salvar</button>
-        <button onclick="cancelarEdicao()" id="btnCancelar" style="display:none; background:#999;">Cancelar</button>
-    </div>
-
-    <!-- CATÁLOGO DE CIDs -->
-    <div class="card catalogo">
-        <h3>📋 Catálogo de CID-10</h3>
-        <p style="font-size:13px; color:#666;">Busque por CID ou diagnóstico – a lista atualiza automaticamente.</p>
-        <div id="listaCIDs">
-            <table>
-                <thead><tr><th>CID</th><th>Diagnóstico</th></tr></thead>
-                <tbody id="tabelaCIDs"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="aviso">
-        ⚠️ <strong>Lembre-se:</strong> Esta é uma ferramenta de apoio à decisão clínica. 
-        A conduta final é sempre do médico responsável.
-    </div>
-
-    <!-- BOTÃO GERAR HTML COMPLETO -->
-    <div class="card" style="text-align: center;">
-        <button onclick="gerarIndexHTML()" style="background: #FF9500; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
-            📄 Gerar index.html completo
-        </button>
-    </div>
-
-    <!-- ÁREA PARA EXIBIR O CÓDIGO -->
-    <div id="areaCodigo" class="card" style="display:none; background: #1e1e1e; color: #d4d4d4; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-wrap: break-word; max-height: 500px; overflow-y: auto; padding: 16px; border-radius: 8px;">
-        <pre id="codigoGerado"></pre>
-        <button onclick="copiarCodigo()" style="background: #007AFF; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; margin-top: 8px;">
-            📋 Copiar código
-        </button>
-    </div>
-
-    <!-- ===== REGISTRO DO SERVICE WORKER ===== -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/conduta-medica/service-worker.js')
-                .then(() => console.log('✅ Service Worker registrado com sucesso!'))
-                .catch(err => console.log('❌ Erro ao registrar Service Worker:', err));
-        }
-    </script>
-
-    <script>
-        // ===== BANCO DE DADOS =====
-        let condutas = [];
-        let editandoId = null;
-
-        function carregar() {
-            const dados = localStorage.getItem('condutas');
-            if (dados) {
-                condutas = JSON.parse(dados);
-            } else {
-                // Lista completa com 38 CIDs
-                condutas = [
-                    { cid: 'A54', diagnostico: 'Gonorreia', exames: 'Teste rápido, Gram, Sorologias.', tratamento: 'Ceftriaxona 500mg IM + Azitromicina 1g VO.', conduta: 'RESOLVE NA AMA. Orientar abstinência e tratamento de parceiros. ⚠️ ENCAMINHAR se complicações.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'A90', diagnostico: 'Dengue (Classificação de risco)', exames: 'Prova do laço, Hemograma com plaquetas, Glicemia, Testes rápidos.', tratamento: 'Dipirona ou Paracetamol. CONTRAINDICAR AAS e AINEs.', conduta: 'RESOLVE NA AMA (grupo A e B). Hidratação e sinais de alarme. ⚠️ ENCAMINHAR se sinais de alarme ou plaquetas < 50k.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'B01', diagnostico: 'Varicela (Catapora)', exames: 'Diagnóstico clínico.', tratamento: 'Dipirona 1g VO/EV. Anti-histamínico. Aciclovir 800mg 5x/dia (adolescentes/adultos).', conduta: 'RESOLVE NA AMA (crianças/adultos hígidos). Isolamento até crostas. ⚠️ ENCAMINHAR se gestante, imunossuprimido, pneumonia.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'B02', diagnostico: 'Herpes Zoster (Cobreiro)', exames: 'Diagnóstico clínico.', tratamento: 'Aciclovir 800mg 5x/dia VO por 7 dias. Dipirona 1g VO/EV. Amitriptilina 25mg 1x/dia (dor neuropática).', conduta: 'RESOLVE NA AMA (imunocompetentes). ⚠️ ENCAMINHAR se oftálmico, Ramsay Hunt, zoster disseminado.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'B04', diagnostico: 'Mpox (Varíola dos macacos)', exames: 'Diagnóstico clínico. PCR MPXV.', tratamento: 'Dipirona 1g VO/EV ou Paracetamol 750mg VO. Cuidados com lesões.', conduta: '⚠️ NÃO RESOLVE NA AMA. Isolamento, EPI, notificação e encaminhamento para UPA/SAE/CTA.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'B26.0', diagnostico: 'Caxumba (Parotidite epidêmica)', exames: 'Diagnóstico clínico. Sorologia IgM.', tratamento: 'Dipirona 1g VO/EV. Compressas mornas. Hidratação e alimentação pastosa.', conduta: 'RESOLVE NA AMA (casos típicos). Isolamento. ⚠️ ENCAMINHAR se orquite, meningite, pancreatite.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'B26.0', diagnostico: 'Orquite por Caxumba (Complicação)', exames: 'Palpação testicular. Ultrassom Doppler.', tratamento: 'Dipirona 1g VO/EV ou Ibuprofeno 600mg VO. Compressas frias. Suspensório escrotal.', conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA com vaga em urologia.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'B86', diagnostico: 'Escabiose (Sarna)', exames: 'Diagnóstico clínico.', tratamento: 'Permetrina 5% loção (corpo todo, 8-12h). OU Ivermectina VO 200mcg/kg.', conduta: 'RESOLVE NA AMA. Tratar TODOS os contatos SIMULTANEAMENTE. ⚠️ ENCAMINHAR se refratário, sarna crostosa.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'E16', diagnostico: 'Hipoglicemia', exames: 'Glicemia capilar imediata.', tratamento: 'Consciente: 15g carboidrato rápido. Inconsciente: Glicose 50% IV 20-50mL.', conduta: 'RESOLVE NA AMA. Orientar refeição. ⚠️ ENCAMINHAR se refratária.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'G40', diagnostico: 'Crise Epiléptica (Convulsão)', exames: 'Glicemia capilar, Eletrólitos.', tratamento: 'Crise > 5min: Diazepam 10mg IV ou Midazolam IM.', conduta: '⚠️ NÃO RESOLVE NA AMA (crise prolongada/1ª crise). Estabilizar e encaminhar UPA/PSA.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'G43.0', diagnostico: 'Enxaqueca sem aura', exames: 'Sinais vitais, Glicemia capilar, ECG se > 50 anos.', tratamento: 'Dipirona 1g EV/IM/VO ou Ibuprofeno 600mg VO. Metoclopramida 10mg EV/IM.', conduta: 'RESOLVE NA AMA (critérios típicos). Repouso. ⚠️ ENCAMINHAR se refratária, piora súbita, sinais de alarme.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'H00.0', diagnostico: 'Hordéolo (Terçol)', exames: 'Diagnóstico clínico.', tratamento: 'Compressas mornas 10-15min 3-4x/dia. Pomada antibiótica (Tobramicina) 5-7 dias.', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se abscesso extenso, celulite periorbitária, recidivas.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'H10.9', diagnostico: 'Conjuntivite aguda não especificada', exames: 'Exame clínico com lanterna.', tratamento: 'Viral: Compressas frias. Bacteriana: Tobramicina 0,3% 1 gota 4/4h.', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se dor intensa, fotofobia, baixa acuidade, ceratite.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'H83.0', diagnostico: 'Labirintite (Inflamação do labirinto)', exames: 'Diagnóstico clínico.', tratamento: 'Meclizina 25mg 8/8h ou Dimenidrato 50mg 8/8h. Ondansetrona 4mg IV.', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se sintomas intensos, perda de consciência, suspeita de AVC.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'I10', diagnostico: 'Hipertensão Arterial Sistêmica', exames: 'Hemograma, Creatinina, Potássio, Glicemia, Colesterol, ECG, Fundoscopia.', tratamento: 'Losartana 50mg 1x/dia ou Enalapril 10mg 2x/dia.', conduta: 'RESOLVE NA AMA. Orientar redução de sal, exercícios, reavaliar em 30 dias.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'I16', diagnostico: 'Crise Hipertensiva', exames: 'Aferir PA, Glicemia, Creatinina, Potássio, Fundoscopia.', tratamento: 'Sem lesão: Captopril 25mg VO. Com lesão: estabilizar e encaminhar UPA/PSA.', conduta: 'Identificar emergência (com lesão). ⚠️ ENCAMINHAR se lesão de órgão-alvo.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'I21', diagnostico: 'Infarto Agudo do Miocárdio (IAM)', exames: 'ECG urgente, Troponina, CPK-MB, Hemograma, Creatinina, Potássio.', tratamento: 'AAS 200-300mg mastigado, Nitroglicerina SL (se PA > 90), Morfina, O2.', conduta: '⚠️ NÃO RESOLVE NA AMA. Estabilizar, acionar SAMU 192.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'I50', diagnostico: 'Insuficiência Cardíaca', exames: 'ECG, Raio-X tórax, BNP, Ecocardiograma, Creatinina, Potássio.', tratamento: 'Furosemida 40mg + Enalapril 10mg + Carvedilol 12,5mg.', conduta: 'Restrição hídrica e salina, pesagem diária. ⚠️ ENCAMINHAR se sinais de gravidade (EAP, baixo débito).', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'I64', diagnostico: 'Acidente Vascular Cerebral (AVC)', exames: 'Glicemia capilar, ECG, Hemograma, Coagulograma.', tratamento: 'Manter vias aéreas, O2, cabeceira elevada 30°. Não tratar PA (exceto > 220x120).', conduta: '⚠️ NÃO RESOLVE NA AMA. Acionar SAMU 192. Registrar horário do início dos sintomas.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'I80.9', diagnostico: 'Trombose Venosa Profunda (TVP)', exames: 'Avaliação clínica, Critérios de Wells, D-dímero.', tratamento: 'HBPM (Enoxaparina 1mg/kg SC 12/12h). Dipirona 1g VO/EV.', conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR UPA/PSA para US Doppler.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'J11', diagnostico: 'Síndrome Gripal / Dengue', exames: 'Prova do laço, Hemograma com plaquetas, Glicemia, Testes rápidos.', tratamento: 'Dipirona ou Paracetamol. CONTRAINDICAR AAS e AINEs.', conduta: 'RESOLVE NA AMA (grupo A e B). ⚠️ ENCAMINHAR se sinais de alarme ou plaquetas < 50k.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'J44', diagnostico: 'Exacerbação de DPOC / Asma Grave', exames: 'Oximetria de pulso, Gasometria, Raio-X de tórax.', tratamento: 'Salbutamol + Ipratrópio com espaçador. Prednisona 40-60mg VO ou Hidrocortisona IV. O2.', conduta: 'Se melhora: observação. ⚠️ ENCAMINHAR se sinais de gravidade.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'K81.0', diagnostico: 'Colecistite aguda', exames: 'Sinais vitais, Hemograma, PCR, Amilase, Bilirrubinas, USG.', tratamento: 'Jejum, Hidratação venosa, Dipirona 1g EV + Escopolamina 20mg EV. Antibioticoterapia.', conduta: '⚠️ NÃO RESOLVE NA AMA. Estabilizar e encaminhar UPA/PSA com Cirurgia Geral.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'N23', diagnostico: 'Cólica renal (Litíase urinária)', exames: 'Sumário de urina, Glicemia capilar, Creatinina, USG.', tratamento: 'Dipirona 1g EV + Escopolamina 20mg EV. Morfina 2-5mg EV lento.', conduta: 'RESOLVE NA AMA (caso típico). ⚠️ ENCAMINHAR se febre, dor refratária, gestante, rim único.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'N39', diagnostico: 'Infecção do Trato Urinário (ITU)', exames: 'Sumário de urina, Urocultura, Hemograma, Creatinina.', tratamento: 'Antibiótico empírico (Ciprofloxacino 500mg 12/12h). Dipirona.', conduta: 'RESOLVE NA AMA (mulheres jovens). ⚠️ ENCAMINHAR se febre alta, idoso, diabético.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'O14', diagnostico: 'Pré-eclâmpsia', exames: 'Aferir PA, Proteinúria, Hemograma, Creatinina, Ácido úrico.', tratamento: 'Sulfato de Magnésio IV. Hidralazina IV (se PA ≥ 160x110).', conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA OBSTÉTRICA. Encaminhar UPA/MATERNIDADE imediatamente.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'O21', diagnostico: 'Hiperêmese Gravídica (Vômitos na gravidez)', exames: 'Sinais vitais, Glicemia capilar, Eletrólitos.', tratamento: 'Ondansetrona 4mg 8/8h VO ou EV. Hidratação venosa se vômitos incoercíveis.', conduta: 'RESOLVE NA AMA (casos leves). ⚠️ ENCAMINHAR se desidratação grave, perda de peso > 5%.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'R04.0', diagnostico: 'Epistaxe (Sangramento nasal)', exames: 'Sinais vitais, Coagulograma (se anticoagulantes).', tratamento: 'Compressão digital, Vasoconstritor tópico, Tamponamento anterior.', conduta: 'RESOLVE NA AMA (sangramento anterior). ⚠️ ENCAMINHAR se sangramento abundante, falha tamponamento.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'R06.0', diagnostico: 'Dispneia (Dificuldade respiratória)', exames: 'Oximetria, Sinais vitais, ECG, Raio-X tórax.', tratamento: 'O2 se SatO2 < 94%. Broncodilatador. Se EAP: Furosemida IV + Nitroglicerina SL.', conduta: 'RESOLVE NA AMA se SatO2 > 94%. ⚠️ ENCAMINHAR IMEDIATAMENTE se SatO2 < 92%, FR > 30, confusão.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'R07.4', diagnostico: 'Dor Torácica não especificada', exames: 'Sinais vitais, ECG (em até 10min), Glicemia capilar, Troponina.', tratamento: 'IAM suspeito: AAS + Nitroglicerina SL + Morfina + O2.', conduta: '⚠️ NUNCA ignorar. RESOLVE NA AMA se costocondrite, DRGE. ⚠️ ENCAMINHAR IMEDIATAMENTE se IAM, Embolia Pulmonar, Dissecção Aórtica.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'R10.0', diagnostico: 'Abdômen Agudo (Dor abdominal aguda)', exames: 'Sinais vitais, Exame abdominal, Glicemia capilar, B-HCG, ECG, Hemograma, Amilase, PCR.', tratamento: 'Jejum, Dipirona 1g EV + Escopolamina 20mg EV. Morfina 2-5mg EV (dor intensa).', conduta: '⚠️ DIFERENCIAR causas cirúrgicas de clínicas. ⚠️ ENCAMINHAR IMEDIATAMENTE se apendicite, colecistite, pancreatite, obstrução, gravidez ectópica.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'R42', diagnostico: 'Tontura e instabilidade', exames: 'Sinais vitais, Glicemia capilar, ECG, Dix-Hallpike.', tratamento: 'Meclizina 25mg 8/8h. Náuseas: Ondansetrona 4mg IV.', conduta: 'RESOLVE NA AMA (VPPB). ⚠️ ENCAMINHAR UPA/PSA se disartria, diplopia, ataxia grave, cefaleia súbita (AVC).', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'R65.2', diagnostico: 'Sepse / Choque Séptico', exames: 'Sinais vitais, Lactato sérico, Gasometria, Hemograma, Creatinina, Hemoculturas.', tratamento: 'O2 (SatO2 ≥ 94%). Reposição volêmica 20-30 mL/kg EV. Antibiótico de amplo espectro.', conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA. ENCAMINHAR PARA UPA/PSA IMEDIATAMENTE.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'T63', diagnostico: 'Acidente por animal peçonhento', exames: 'Sinais vitais, Observar local da picada, Coagulograma.', tratamento: 'Limpeza local, compressa fria. Não fazer torniquete. Vacina antitetânica.', conduta: '⚠️ NÃO RESOLVE NA AMA na maioria. ENCAMINHAR UPA/PSA (soro antiveneno).', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'T78.2', diagnostico: 'Choque anafilático', exames: 'Diagnóstico clínico. Sinais vitais a cada 5 min.', tratamento: 'Adrenalina IM (1:1000) 0,3-0,5mg adultos. O2. Reposição volêmica. Hidrocortisona EV.', conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA MÉDICA. ENCAMINHAR UPA/PSA IMEDIATAMENTE.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'U07.1', diagnostico: 'COVID-19 (Síndrome Gripal)', exames: 'Teste rápido de antígeno ou RT-PCR. Hemograma, PCR, DHL.', tratamento: 'Dipirona 1g VO/EV. Antiviral (NMV/r) para elegíveis. NÃO prescrever corticoides.', conduta: 'RESOLVE NA AMA (quadro leve/moderado). Isolamento. ⚠️ ENCAMINHAR se SatO2 ≤ 94%, dispneia, rebaixamento.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'W54', diagnostico: 'Mordedura de cão', exames: 'Avaliação da ferida, Sinais vitais, Radiografia (se fratura).', tratamento: 'Limpeza exaustiva com SF. Antibiótico profilático (Amoxicilina + Clavulanato). Profilaxia antitetânica.', conduta: 'RESOLVE NA AMA (feridas superficiais). ⚠️ ENCAMINHAR se feridas profundas, face/mãos/pés, cão desconhecido.', fonte: 'Protocolo SMS/SP' },
-                    { cid: 'W57', diagnostico: 'Picada de inseto não venenoso', exames: 'Sinais vitais. Inspeção da lesão.', tratamento: 'Limpeza, compressa fria, Dipirona 1g VO, Anti-histamínico VO. Anafilaxia: Adrenalina IM.', conduta: 'RESOLVE NA AMA (reações locais). ⚠️ ENCAMINHAR IMEDIATAMENTE se anafilaxia, infecção grave.', fonte: 'Protocolo SMS/SP' }
-                ];
-                salvarDados();
-            }
-        }
-
-        function salvarDados() {
-            localStorage.setItem('condutas', JSON.stringify(condutas));
-        }
-
-        function salvar() {
-            const nova = {
-                cid: document.getElementById('cid').value.trim(),
-                diagnostico: document.getElementById('diagnostico').value.trim(),
-                exames: document.getElementById('exames').value.trim(),
-                tratamento: document.getElementById('tratamento').value.trim(),
-                conduta: document.getElementById('conduta').value.trim(),
-                fonte: document.getElementById('fonte').value.trim() || 'Protocolo SMS/SP'
-            };
-
-            if (!nova.diagnostico || !nova.exames || !nova.tratamento) {
-                alert('⚠️ Preencha pelo menos: Diagnóstico, Exames e Tratamento!');
-                return;
-            }
-
-            if (editandoId !== null) {
-                condutas[editandoId] = nova;
-                editandoId = null;
-                document.getElementById('btnSalvar').textContent = '💾 Salvar';
-                document.getElementById('tituloFormulario').textContent = '➕ Cadastrar nova conduta';
-                document.getElementById('btnCancelar').style.display = 'none';
-                alert('✅ Conduta atualizada com sucesso!');
-            } else {
-                condutas.push(nova);
-                alert('✅ Conduta cadastrada com sucesso!');
-            }
-
-            salvarDados();
-            limparFormulario();
-            document.getElementById('resultado').style.display = 'none';
-            atualizarCatalogo();
-        }
-
-        function limparFormulario() {
-            document.getElementById('cid').value = '';
-            document.getElementById('diagnostico').value = '';
-            document.getElementById('exames').value = '';
-            document.getElementById('tratamento').value = '';
-            document.getElementById('conduta').value = '';
-            document.getElementById('fonte').value = '';
-        }
-
-        function cancelarEdicao() {
-            editandoId = null;
-            document.getElementById('btnSalvar').textContent = '💾 Salvar';
-            document.getElementById('tituloFormulario').textContent = '➕ Cadastrar nova conduta';
-            document.getElementById('btnCancelar').style.display = 'none';
-            limparFormulario();
-        }
-
-        function buscar() {
-            const termo = document.getElementById('busca').value.toLowerCase().trim();
-            const resultadoDiv = document.getElementById('resultado');
-
-            if (!termo) {
-                resultadoDiv.innerHTML = 'Digite um diagnóstico ou CID para buscar.';
-                resultadoDiv.style.display = 'block';
-                return;
-            }
-
-            const encontrados = condutas.filter(c => 
-                c.diagnostico.toLowerCase().includes(termo) || 
-                c.cid.toLowerCase().includes(termo)
-            );
-
-            if (encontrados.length === 0) {
-                resultadoDiv.innerHTML = '❌ Nenhuma conduta encontrada. Cadastre uma nova!';
-                resultadoDiv.style.display = 'block';
-                return;
-            }
-
-            const c = encontrados[0];
-            const index = condutas.indexOf(c);
-
-            resultadoDiv.innerHTML = `
-                <h2>${c.diagnostico} (${c.cid})</h2>
-                <p><strong>🧪 Exames:</strong> ${c.exames}</p>
-                <p><strong>💊 Tratamento:</strong> ${c.tratamento}</p>
-                <p><strong>📋 Conduta:</strong> ${c.conduta}</p>
-                <p class="fonte">📚 Fonte: ${c.fonte || 'Não informada'}</p>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;">
-                    <button class="btn-editar" onclick="editarConduta(${index})">✏️ Editar</button>
-                    <button class="btn-excluir" onclick="excluirConduta(${index})">🗑️ Excluir</button>
-                </div>
-            `;
-            resultadoDiv.style.display = 'block';
-        }
-
-        function editarConduta(index) {
-            const c = condutas[index];
-            document.getElementById('cid').value = c.cid || '';
-            document.getElementById('diagnostico').value = c.diagnostico || '';
-            document.getElementById('exames').value = c.exames || '';
-            document.getElementById('tratamento').value = c.tratamento || '';
-            document.getElementById('conduta').value = c.conduta || '';
-            document.getElementById('fonte').value = c.fonte || '';
-
-            editandoId = index;
-            document.getElementById('btnSalvar').textContent = '✏️ Atualizar';
-            document.getElementById('tituloFormulario').textContent = '✏️ Editando conduta';
-            document.getElementById('btnCancelar').style.display = 'inline-block';
-
-            document.querySelector('.card:last-child').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function excluirConduta(index) {
-            if (confirm(`Tem certeza que deseja excluir "${condutas[index].diagnostico}"?`)) {
-                condutas.splice(index, 1);
-                salvarDados();
-                document.getElementById('resultado').style.display = 'none';
-                if (editandoId !== null) cancelarEdicao();
-                atualizarCatalogo();
-                alert('🗑️ Conduta excluída com sucesso!');
-            }
-        }
-
-        function atualizarCatalogo() {
-            const tabela = document.getElementById('tabelaCIDs');
-            if (!tabela) return;
-            
-            const sorted = [...condutas].sort((a, b) => a.cid.localeCompare(b.cid));
-            
-            tabela.innerHTML = sorted.map(c => `
-                <tr>
-                    <td><strong>${c.cid}</strong></td>
-                    <td>${c.diagnostico}</td>
-                </tr>
-            `).join('');
-        }
-
-        function gerarIndexHTML() {
-            const dadosAtuais = condutas;
-            const listaStr = JSON.stringify(dadosAtuais, null, 8);
-
-            const htmlCompleto = `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conduta Médica - SMS/SP</title>
-    <style>
-        body { font-family: Arial; padding: 20px; background: #f5f5f5; max-width: 600px; margin: auto; }
-        h1 { color: #0055CC; }
-        .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        input, textarea { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: Arial; }
-        textarea { resize: vertical; }
-        button { background: #007AFF; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
-        button:hover { opacity: 0.9; }
-        .btn-excluir { background: #FF3B30; }
-        .btn-editar { background: #FF9500; }
-        .resultado { background: #e8f0fe; padding: 16px; border-radius: 8px; margin-top: 16px; }
-        .resultado button { margin-right: 8px; margin-top: 8px; }
-        .fonte { font-size: 12px; color: #666; margin-top: 8px; }
-        .aviso { background: #fef9e7; padding: 10px; border-left: 4px solid #f39c12; font-size: 13px; margin-top: 16px; }
-        .catalogo { font-size: 14px; }
-        .catalogo table { width: 100%; border-collapse: collapse; }
-        .catalogo th, .catalogo td { padding: 6px 8px; border-bottom: 1px solid #eee; text-align: left; }
-        .catalogo th { background: #f0f0f0; }
-        .catalogo tr:hover { background: #f9f9f9; }
-    </style>
-</head>
-<body>
-
-    <h1>📋 Conduta Médica</h1>
-    <p style="color: #555;">Protocolos da Prefeitura de São Paulo - SMS/SP</p>
-
-    <!-- BUSCA -->
-    <div class="card">
-        <h3>🔍 Buscar conduta</h3>
-        <input type="text" id="busca" placeholder="Digite o diagnóstico ou CID...">
-        <button onclick="buscar()">Buscar</button>
-    </div>
-
-    <!-- RESULTADO -->
-    <div id="resultado" class="card resultado" style="display:none;"></div>
-
-    <!-- CADASTRO / EDIÇÃO -->
-    <div class="card">
-        <h3 id="tituloFormulario">➕ Cadastrar nova conduta</h3>
         <input type="text" id="cid" placeholder="CID (ex: I10)">
         <input type="text" id="diagnostico" placeholder="Diagnóstico (ex: Hipertensão Arterial)">
         <textarea id="exames" placeholder="🧪 Exames a solicitar"></textarea>
@@ -360,13 +69,29 @@
         ⚠️ <strong>Lembre-se:</strong> Esta é uma ferramenta de apoio à decisão clínica. A conduta final é sempre do médico responsável.
     </div>
 
+    <!-- BOTÃO EXPORTAR DADOS (substitui o "Gerar index.html") -->
+    <div class="card" style="text-align: center;">
+        <button onclick="exportarDados()" style="background: #34C759; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
+            📤 Exportar dados (JSON)
+        </button>
+    </div>
+    <div id="areaExportacao" class="card" style="display:none; background: #1e1e1e; color: #d4d4d4; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-wrap: break-word; max-height: 400px; overflow-y: auto; padding: 16px; border-radius: 8px;">
+        <pre id="jsonExportado"></pre>
+        <button onclick="copiarJSON()" style="background: #007AFF; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; margin-top: 8px;">📋 Copiar JSON</button>
+        <p style="color: #aaa; font-size: 11px; margin-top: 8px;">Copie este JSON e cole no lugar da lista `condutas` no arquivo `index.html`.</p>
+    </div>
+
+    <!-- SERVICE WORKER -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/conduta-medica/service-worker.js')
-                .then(() => console.log('✅ Service Worker registrado com sucesso!'))
-                .catch(err => console.log('❌ Erro ao registrar Service Worker:', err));
+                .then(() => console.log('✅ Service Worker registrado'))
+                .catch(err => console.log('❌ Erro:', err));
         }
+    </script>
 
+    <script>
+        // ===== BANCO DE DADOS =====
         let condutas = [];
         let editandoId = null;
 
@@ -375,14 +100,51 @@
             if (dados) {
                 condutas = JSON.parse(dados);
             } else {
-                condutas = ${listaStr};
+                condutas = [
+                    { cid: 'A54', diagnostico: 'Gonorreia', exames: 'Teste rápido, Gram.', tratamento: 'Ceftriaxona 500mg + Azitromicina 1g.', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se complicações.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'A90', diagnostico: 'Dengue', exames: 'Prova do laço, Hemograma.', tratamento: 'Dipirona ou Paracetamol. CONTRAINDICAR AAS.', conduta: 'RESOLVE NA AMA (grupo A/B). ⚠️ ENCAMINHAR se sinais de alarme.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'B01', diagnostico: 'Varicela', exames: 'Diagnóstico clínico.', tratamento: 'Dipirona. Aciclovir (adolescentes/adultos).', conduta: 'RESOLVE NA AMA. Isolamento. ⚠️ ENCAMINHAR se gestante/imunossuprimido.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'B02', diagnostico: 'Herpes Zoster', exames: 'Diagnóstico clínico.', tratamento: 'Aciclovir 800mg 5x/dia. Dipirona. Amitriptilina (dor).', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se oftálmico ou disseminado.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'B04', diagnostico: 'Mpox', exames: 'PCR MPXV.', tratamento: 'Dipirona. Cuidados com lesões.', conduta: '⚠️ NÃO RESOLVE NA AMA. Isolamento + encaminhar.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'B26.0', diagnostico: 'Caxumba', exames: 'Sorologia IgM.', tratamento: 'Dipirona. Compressas mornas.', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se orquite/meningite.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'B26.0', diagnostico: 'Orquite por Caxumba', exames: 'Palpação, US Doppler.', tratamento: 'Dipirona ou Ibuprofeno. Compressas frias.', conduta: '⚠️ NÃO RESOLVE. Encaminhar UPA/PSA.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'B86', diagnostico: 'Escabiose', exames: 'Diagnóstico clínico.', tratamento: 'Permetrina 5% loção. OU Ivermectina VO.', conduta: 'RESOLVE NA AMA. Tratar contatos. ⚠️ ENCAMINHAR se crostosa.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'E16', diagnostico: 'Hipoglicemia', exames: 'Glicemia capilar.', tratamento: 'Consciente: 15g carboidrato. Inconsciente: Glicose 50% IV.', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se refratária.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'G40', diagnostico: 'Crise Epiléptica', exames: 'Glicemia, Eletrólitos.', tratamento: 'Diazepam 10mg IV ou Midazolam IM.', conduta: '⚠️ NÃO RESOLVE NA AMA. Encaminhar UPA/PSA.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'G43.0', diagnostico: 'Enxaqueca sem aura', exames: 'Sinais vitais, Glicemia.', tratamento: 'Dipirona 1g EV/IM. Metoclopramida.', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se refratária ou sinais de alarme.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'H00.0', diagnostico: 'Hordéolo', exames: 'Diagnóstico clínico.', tratamento: 'Compressas mornas. Pomada Tobramicina.', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se abscesso ou celulite.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'H10.9', diagnostico: 'Conjuntivite', exames: 'Exame clínico.', tratamento: 'Viral: compressas frias. Bacteriana: Tobramicina.', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se dor intensa ou baixa acuidade.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'H83.0', diagnostico: 'Labirintite', exames: 'Diagnóstico clínico.', tratamento: 'Meclizina 25mg 8/8h. Ondansetrona.', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se perda de consciência ou suspeita de AVC.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'I10', diagnostico: 'Hipertensão Arterial', exames: 'Hemograma, Creatinina, ECG.', tratamento: 'Losartana 50mg 1x/dia.', conduta: 'RESOLVE NA AMA. Orientar estilo de vida, reavaliar em 30 dias.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'I16', diagnostico: 'Crise Hipertensiva', exames: 'PA, Glicemia, Creatinina.', tratamento: 'Captopril 25mg VO. Se lesão: encaminhar.', conduta: 'Identificar lesão. ⚠️ ENCAMINHAR se lesão de órgão-alvo.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'I21', diagnostico: 'IAM', exames: 'ECG urgente, Troponina.', tratamento: 'AAS 200-300mg, Nitroglicerina, Morfina, O2.', conduta: '⚠️ NÃO RESOLVE. Acionar SAMU 192.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'I50', diagnostico: 'Insuficiência Cardíaca', exames: 'ECG, Raio-X tórax, BNP.', tratamento: 'Furosemida 40mg + Enalapril + Carvedilol.', conduta: 'Restrição hídrica. ⚠️ ENCAMINHAR se EAP ou refratário.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'I64', diagnostico: 'AVC', exames: 'Glicemia, ECG, Hemograma.', tratamento: 'O2, cabeceira 30°. Não tratar PA (exceto > 220x120).', conduta: '⚠️ NÃO RESOLVE. Acionar SAMU 192.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'I80.9', diagnostico: 'TVP', exames: 'Critérios de Wells, D-dímero.', tratamento: 'Enoxaparina 1mg/kg SC 12/12h.', conduta: '⚠️ NÃO RESOLVE. Encaminhar UPA/PSA.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'J11', diagnostico: 'Síndrome Gripal / Dengue', exames: 'Prova do laço, Hemograma.', tratamento: 'Dipirona ou Paracetamol. CONTRAINDICAR AAS.', conduta: 'RESOLVE NA AMA (grupo A/B). ⚠️ ENCAMINHAR se sinais de alarme.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'J44', diagnostico: 'Exacerbação DPOC / Asma', exames: 'Oximetria, Gasometria.', tratamento: 'Salbutamol + Ipratrópio, Prednisona, O2.', conduta: 'RESOLVE NA AMA se melhora. ⚠️ ENCAMINHAR se sinais de gravidade.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'K81.0', diagnostico: 'Colecistite aguda', exames: 'Sinais vitais, Hemograma, USG.', tratamento: 'Jejum, hidratação, Dipirona + Escopolamina, Antibiótico.', conduta: '⚠️ NÃO RESOLVE. Encaminhar UPA/PSA com Cirurgia.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'N23', diagnostico: 'Cólica renal', exames: 'Sumário de urina, USG.', tratamento: 'Dipirona 1g EV + Escopolamina. Morfina se necessário.', conduta: 'RESOLVE NA AMA (caso típico). ⚠️ ENCAMINHAR se febre, dor refratária, gestante.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'N39', diagnostico: 'ITU', exames: 'Sumário de urina, Urocultura.', tratamento: 'Ciprofloxacino 500mg 12/12h. Dipirona.', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se febre alta, idoso, diabético.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'O14', diagnostico: 'Pré-eclâmpsia', exames: 'PA, Proteinúria, Plaquetas.', tratamento: 'Sulfato de Magnésio IV. Hidralazina IV (se PA ≥ 160x110).', conduta: '⚠️ NÃO RESOLVE. EMERGÊNCIA. Encaminhar MATERNIDADE.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'O21', diagnostico: 'Hiperêmese Gravídica', exames: 'Sinais vitais, Eletrólitos.', tratamento: 'Ondansetrona 4mg 8/8h. Hidratação venosa.', conduta: 'RESOLVE NA AMA (leve). ⚠️ ENCAMINHAR se desidratação grave, perda > 5% peso.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'R04.0', diagnostico: 'Epistaxe', exames: 'Sinais vitais, Coagulograma.', tratamento: 'Compressão, vasoconstritor, tamponamento.', conduta: 'RESOLVE NA AMA (anterior). ⚠️ ENCAMINHAR se sangramento abundante.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'R06.0', diagnostico: 'Dispneia', exames: 'Oximetria, ECG, Raio-X.', tratamento: 'O2 se SatO2 < 94%. Broncodilatador. Se EAP: Furosemida + Nitro.', conduta: 'RESOLVE NA AMA se SatO2 > 94%. ⚠️ ENCAMINHAR se SatO2 < 92%, FR > 30.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'R07.4', diagnostico: 'Dor Torácica', exames: 'ECG em 10min, Troponina.', tratamento: 'AAS + Nitro + Morfina + O2 (se IAM).', conduta: '⚠️ NUNCA ignorar. RESOLVE NA AMA se costocondrite/DRGE. ⚠️ ENCAMINHAR se IAM, embolia, dissecção.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'R10.0', diagnostico: 'Abdômen Agudo', exames: 'Exame abdominal, B-HCG, Hemograma, Amilase.', tratamento: 'Jejum, Dipirona + Escopolamina. Morfina se dor intensa.', conduta: '⚠️ DIFERENCIAR cirúrgico de clínico. ⚠️ ENCAMINHAR se apendicite, colecistite, pancreatite, obstrução, gravidez ectópica.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'R42', diagnostico: 'Tontura e instabilidade', exames: 'Glicemia, ECG, Dix-Hallpike.', tratamento: 'Meclizina 25mg 8/8h. Ondansetrona.', conduta: 'RESOLVE NA AMA (VPPB). ⚠️ ENCAMINHAR se disartria, diplopia, ataxia grave (AVC).', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'R65.2', diagnostico: 'Sepse / Choque Séptico', exames: 'Lactato, Hemoculturas, Gasometria.', tratamento: 'O2, reposição volêmica 20-30 mL/kg, antibiótico amplo espectro.', conduta: '⚠️ NÃO RESOLVE. EMERGÊNCIA. Encaminhar UPA/PSA.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'T63', diagnostico: 'Acidente por animal peçonhento', exames: 'Sinais vitais, Coagulograma.', tratamento: 'Limpeza, compressa fria. Não fazer torniquete.', conduta: '⚠️ NÃO RESOLVE na maioria. Encaminhar UPA/PSA para soro.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'T78.2', diagnostico: 'Choque anafilático', exames: 'Diagnóstico clínico. Sinais vitais.', tratamento: 'Adrenalina IM 0,3-0,5mg. O2. Reposição volêmica. Hidrocortisona.', conduta: '⚠️ NÃO RESOLVE. EMERGÊNCIA. Encaminhar UPA/PSA.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'U07.1', diagnostico: 'COVID-19', exames: 'Teste rápido, Hemograma, PCR.', tratamento: 'Dipirona. Antiviral (NMV/r) se elegível.', conduta: 'RESOLVE NA AMA (leve). ⚠️ ENCAMINHAR se SatO2 ≤ 94%, dispneia, rebaixamento.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'W54', diagnostico: 'Mordedura de cão', exames: 'Avaliação da ferida.', tratamento: 'Limpeza, antibiótico profilático, antitetânica.', conduta: 'RESOLVE NA AMA (superficial). ⚠️ ENCAMINHAR se profunda, face/mãos/pés, cão desconhecido.', fonte: 'Protocolo SMS/SP' },
+                    { cid: 'W57', diagnostico: 'Picada de inseto não venenoso', exames: 'Inspeção da lesão.', tratamento: 'Limpeza, compressa fria, anti-histamínico.', conduta: 'RESOLVE NA AMA. ⚠️ ENCAMINHAR se anafilaxia, infecção grave.', fonte: 'Protocolo SMS/SP' }
+                ];
                 salvarDados();
             }
         }
 
-        function salvarDados() {
-            localStorage.setItem('condutas', JSON.stringify(condutas));
-        }
+        function salvarDados() { localStorage.setItem('condutas', JSON.stringify(condutas)); }
 
         function salvar() {
             const nova = {
@@ -393,24 +155,18 @@
                 conduta: document.getElementById('conduta').value.trim(),
                 fonte: document.getElementById('fonte').value.trim() || 'Protocolo SMS/SP'
             };
-
-            if (!nova.diagnostico || !nova.exames || !nova.tratamento) {
-                alert('⚠️ Preencha pelo menos: Diagnóstico, Exames e Tratamento!');
-                return;
-            }
-
+            if (!nova.diagnostico || !nova.exames || !nova.tratamento) { alert('⚠️ Preencha os campos obrigatórios.'); return; }
             if (editandoId !== null) {
                 condutas[editandoId] = nova;
                 editandoId = null;
                 document.getElementById('btnSalvar').textContent = '💾 Salvar';
                 document.getElementById('tituloFormulario').textContent = '➕ Cadastrar nova conduta';
                 document.getElementById('btnCancelar').style.display = 'none';
-                alert('✅ Conduta atualizada com sucesso!');
+                alert('✅ Conduta atualizada!');
             } else {
                 condutas.push(nova);
-                alert('✅ Conduta cadastrada com sucesso!');
+                alert('✅ Conduta cadastrada!');
             }
-
             salvarDados();
             limparFormulario();
             document.getElementById('resultado').style.display = 'none';
@@ -437,38 +193,22 @@
         function buscar() {
             const termo = document.getElementById('busca').value.toLowerCase().trim();
             const resultadoDiv = document.getElementById('resultado');
-
-            if (!termo) {
-                resultadoDiv.innerHTML = 'Digite um diagnóstico ou CID para buscar.';
-                resultadoDiv.style.display = 'block';
-                return;
-            }
-
-            const encontrados = condutas.filter(c => 
-                c.diagnostico.toLowerCase().includes(termo) || 
-                c.cid.toLowerCase().includes(termo)
-            );
-
-            if (encontrados.length === 0) {
-                resultadoDiv.innerHTML = '❌ Nenhuma conduta encontrada. Cadastre uma nova!';
-                resultadoDiv.style.display = 'block';
-                return;
-            }
-
+            if (!termo) { resultadoDiv.innerHTML = 'Digite um diagnóstico ou CID para buscar.'; resultadoDiv.style.display = 'block'; return; }
+            const encontrados = condutas.filter(c => c.diagnostico.toLowerCase().includes(termo) || c.cid.toLowerCase().includes(termo));
+            if (encontrados.length === 0) { resultadoDiv.innerHTML = '❌ Nenhuma conduta encontrada.'; resultadoDiv.style.display = 'block'; return; }
             const c = encontrados[0];
             const index = condutas.indexOf(c);
-
-            resultadoDiv.innerHTML = \`
-                <h2>\${c.diagnostico} (\${c.cid})</h2>
-                <p><strong>🧪 Exames:</strong> \${c.exames}</p>
-                <p><strong>💊 Tratamento:</strong> \${c.tratamento}</p>
-                <p><strong>📋 Conduta:</strong> \${c.conduta}</p>
-                <p class="fonte">📚 Fonte: \${c.fonte || 'Não informada'}</p>
+            resultadoDiv.innerHTML = `
+                <h2>${c.diagnostico} (${c.cid})</h2>
+                <p><strong>🧪 Exames:</strong> ${c.exames}</p>
+                <p><strong>💊 Tratamento:</strong> ${c.tratamento}</p>
+                <p><strong>📋 Conduta:</strong> ${c.conduta}</p>
+                <p class="fonte">📚 Fonte: ${c.fonte || 'Não informada'}</p>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;">
-                    <button class="btn-editar" onclick="editarConduta(\${index})">✏️ Editar</button>
-                    <button class="btn-excluir" onclick="excluirConduta(\${index})">🗑️ Excluir</button>
+                    <button class="btn-editar" onclick="editarConduta(${index})">✏️ Editar</button>
+                    <button class="btn-excluir" onclick="excluirConduta(${index})">🗑️ Excluir</button>
                 </div>
-            \`;
+            `;
             resultadoDiv.style.display = 'block';
         }
 
@@ -480,73 +220,56 @@
             document.getElementById('tratamento').value = c.tratamento || '';
             document.getElementById('conduta').value = c.conduta || '';
             document.getElementById('fonte').value = c.fonte || '';
-
             editandoId = index;
             document.getElementById('btnSalvar').textContent = '✏️ Atualizar';
             document.getElementById('tituloFormulario').textContent = '✏️ Editando conduta';
             document.getElementById('btnCancelar').style.display = 'inline-block';
-
             document.querySelector('.card:last-child').scrollIntoView({ behavior: 'smooth' });
         }
 
         function excluirConduta(index) {
-            if (confirm(\`Tem certeza que deseja excluir "\${condutas[index].diagnostico}"?\`)) {
+            if (confirm(`Tem certeza que deseja excluir "${condutas[index].diagnostico}"?`)) {
                 condutas.splice(index, 1);
                 salvarDados();
                 document.getElementById('resultado').style.display = 'none';
                 if (editandoId !== null) cancelarEdicao();
                 atualizarCatalogo();
-                alert('🗑️ Conduta excluída com sucesso!');
+                alert('🗑️ Conduta excluída!');
             }
         }
 
         function atualizarCatalogo() {
             const tabela = document.getElementById('tabelaCIDs');
             if (!tabela) return;
-            
             const sorted = [...condutas].sort((a, b) => a.cid.localeCompare(b.cid));
-            
-            tabela.innerHTML = sorted.map(c => \`
+            tabela.innerHTML = sorted.map(c => `
                 <tr>
-                    <td><strong>\${c.cid}</strong></td>
-                    <td>\${c.diagnostico}</td>
+                    <td><strong>${c.cid}</strong></td>
+                    <td>${c.diagnostico}</td>
                 </tr>
-            \`).join('');
+            `).join('');
         }
 
-        carregar();
-        atualizarCatalogo();
-
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('busca').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') buscar();
-            });
-        });
-
-        console.log('✅ App Conduta Médica carregado com sucesso!');
-        console.log(\`📋 \${condutas.length} condutas disponíveis.\`);
-    </script>
-</body>
-</html>`;
-
-            const area = document.getElementById('areaCodigo');
-            const pre = document.getElementById('codigoGerado');
-            pre.textContent = htmlCompleto;
-            area.style.display = 'block';
-            area.scrollIntoView({ behavior: 'smooth' });
+        // Função exportar dados (simples e segura)
+        function exportarDados() {
+            const dados = JSON.stringify(condutas, null, 2);
+            const pre = document.getElementById('jsonExportado');
+            pre.textContent = dados;
+            document.getElementById('areaExportacao').style.display = 'block';
+            document.getElementById('areaExportacao').scrollIntoView({ behavior: 'smooth' });
         }
 
-        function copiarCodigo() {
-            const pre = document.getElementById('codigoGerado');
+        function copiarJSON() {
+            const pre = document.getElementById('jsonExportado');
             const texto = pre.textContent;
             navigator.clipboard.writeText(texto).then(() => {
-                alert('✅ Código copiado para a área de transferência!');
+                alert('✅ JSON copiado!');
             }).catch(() => {
-                alert('❌ Erro ao copiar. Selecione o texto manualmente e copie.');
+                alert('❌ Erro ao copiar. Selecione manualmente.');
             });
         }
 
-        // ===== INICIALIZAÇÃO =====
+        // Inicialização
         carregar();
         atualizarCatalogo();
 
