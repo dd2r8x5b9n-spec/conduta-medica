@@ -1,0 +1,277 @@
+[22/07/2026 20:48] Khalil Hasan Tim: <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REMUME - UBS/AMA (Medicamentos SP)</title>
+  <!-- React e ReactDOM via CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <!-- Babel para JSX no navegador -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    /* Reset e estilos globais */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, system-ui, sans-serif; background: #EEF2EF; }
+    .app { max-width: 820px; margin: 0 auto; padding: 28px 18px 60px; }
+    .card { background: #fff; border-radius: 12px; border: 1px solid #DCE5E0; padding: 12px 14px; margin-bottom: 8px; cursor: pointer; transition: border 0.2s; }
+    .card:hover { border-color: #1F6F5C; }
+    .badge-popular { background: #F5A623; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-injetavel { background: #2E86AB; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-ama { background: #8B5CF6; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-ubs { background: #1F6F5C; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .tag { background: #F0F4F2; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-right: 4px; }
+    .dark .tag { background: #1F332C; color: #DCE8E0; }
+    .dark .card { background: #1A2E28; border-color: #2A4A3E; color: #DCE8E0; }
+    .dark .card:hover { border-color: #5CB89B; }
+    .dark body { background: #0F1A15; }
+    .input-search { flex: 1; border: none; outline: none; font-size: 15px; background: transparent; color: inherit; }
+    .btn-filter { font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1.5px solid #C7D6CF; background: #fff; cursor: pointer; }
+    .btn-filter.active { background: #14231D; color: #fff; border-color: #14231D; }
+    .dark .btn-filter { background: #1A2E28; border-color: #2A4A3E; color: #DCE8E0; }
+    .dark .btn-filter.active { background: #14231D; color: #fff; border-color: #14231D; }
+    .chip-group { font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1.5px solid #C7D6CF; background: #fff; cursor: pointer; white-space: nowrap; }
+    .chip-group.active { color: #fff; }
+    .dark .chip-group { background: #1A2E28; border-color: #2A4A3E; color: #DCE8E0; }
+    .dark .chip-group.active { color: #fff; }
+    @media (max-width: 600px) { .hide-mobile { display: none; } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo, useEffect } = React;
+
+    // ============================================================
+    // DADOS COMPLETOS (MANUAIS) - Atualize aqui quando necessário
+    // Inclui: UBS (oral/tópico) + AMA (injetáveis) + inaláveis
+    // ============================================================
+    const MEDS = [
+      // ===== ANALGÉSICOS / ANTITÉRMICOS =====
+      { id:"dipirona_500", n:"Dipirona sódica 500 mg comprimido", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg-1g 6/6h", indicacoes:["Febre","Dor aguda"], contraindicacoes:["Alergia","Discrasias"], interacoes:["Clorpromazina","Metotrexato"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Risco de agranulocitose", popular:true, custo:"Baixo" },
+[22/07/2026 20:48] Khalil Hasan Tim: { id:"dipirona_gotas", n:"Dipirona sódica 500 mg/mL solução oral gotas", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Adulto: 20-40 gotas | Criança: 1 gota/kg", indicacoes:["Febre","Dor"], contraindicacoes:["< 3 meses","Alergia"], interacoes:["Clorpromazina"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Contraindicado < 3 meses", popular:true, custo:"Baixo" },
+      { id:"paracetamol_500", n:"Paracetamol 500 mg comprimido", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg-1g 6/6h (máx 4g/dia)", indicacoes:["Febre","Dor leve-moderada"], contraindicacoes:["Insuf. hepática grave"], interacoes:["Álcool","Anticoagulantes"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Hepatotóxico em overdose", popular:true, custo:"Baixo" },
+      { id:"ibuprofeno_300", n:"Ibuprofeno 300 mg comprimido", g:"Anti-inflamatórios (AINEs)", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 300-600mg 6/8h", indicacoes:["Dor musculoesquelética","Artrite"], contraindicacoes:["Úlcera péptica","Insuf. renal"], interacoes:["Anticoagulantes","Lítio"], antidotos:["Suporte"], alerta:"⚠️ Risco cardiovascular", popular:true, custo:"Médio" },
+      { id:"diclofenaco_50", n:"Diclofenaco 50 mg comprimido", g:"Anti-inflamatórios (AINEs)", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 50mg 8/8h", indicacoes:["Artrite","Dor aguda"], contraindicacoes:["Úlcera","Asma"], interacoes:["Anticoagulantes","Digoxina"], antidotos:["Suporte"], alerta:"⚠️ Risco GI e CV", popular:true, custo:"Médio" },
+      { id:"tramadol_50", n:"Tramadol 50 mg comprimido", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 50-100mg 4/6h", indicacoes:["Dor moderada-intensa"], contraindicacoes:["Convulsões","Insuf. hepática"], interacoes:["Antidepressivos","Álcool"], antidotos:["Naloxona"], alerta:"⚠️ Risco de dependência", popular:false, custo:"Médio" },
+      
+      // ===== INJETÁVEIS (AMA) =====
+      { id:"dipirona_inj", n:"Dipirona sódica 500 mg/mL solução injetável", g:"Analgésicos / Antitérmicos", l:"AMA", forma:"Solução injetável", via:"IV/IM", dose:"Adulto: 1-2g IV/IM 6/6h", indicacoes:["Dor intensa","Febre alta","Cólica renal"], contraindicacoes:["Alergia","Discrasias"], interacoes:["Clorpromazina","Metotrexato"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Administrar lentamente - risco de hipotensão", popular:true, custo:"Baixo" },
+      { id:"paracetamol_inj", n:"Paracetamol 10 mg/mL solução injetável", g:"Analgésicos / Antitérmicos", l:"AMA", forma:"Solução injetável", via:"IV", dose:"Adulto: 1g IV 6/6h (máx 4g/dia)", indicacoes:["Dor moderada-intensa","Febre"], contraindicacoes:["Insuf. hepática grave"], interacoes:["Álcool","Anticoagulantes"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Hepatotóxico - não exceder 4g/dia", popular:true, custo:"Médio" },
+      { id:"morfina_inj", n:"Morfina 10 mg/mL solução injetável", g:"Analgésicos / Antitérmicos", l:"AMA", forma:"Solução injetável", via:"IV/IM/SC", dose:"Adulto: 10mg 4/4h", indicacoes:["Dor intensa","Infarto","Dor oncológica"], contraindicacoes:["Insuf. respiratória","DPOC grave"], interacoes:["Álcool","Sedativos","IMAO"], antidotos:["Naloxona IV"], alerta:"⚠️ TABELA A1 - Depressão respiratória", popular:false, custo:"Médio" },
+      { id:"benzilpenicilina_benzatina", n:"Benzilpenicilina benzatina 1.200.000 UI pó injetável", g:"Antibióticos", l:"AMA", forma:"Pó para solução injetável", via:"IM", dose:"Adulto: 1.200.000 UI dose única", indicacoes:["Sífilis","Infecções estreptocócicas"], contraindicacoes:["Alergia a penicilinas"], interacoes:["Probenecida"], antidotos:["Adrenalina"], alerta:"⚠️ Teste cutâneo prévio", popular:true, custo:"Baixo" },
+[22/07/2026 20:48] Khalil Hasan Tim: { id:"ceftriaxona_inj", n:"Ceftriaxona 1g pó para solução injetável", g:"Antibióticos", l:"AMA", forma:"Pó para solução injetável", via:"IV/IM", dose:"Adulto: 1-2g IV/IM 12-24h", indicacoes:["Infecções graves","Pneumonia","Sífilis"], contraindicacoes:["Alergia a cefalosporinas"], interacoes:["Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ Alergia cruzada penicilinas (15%)", popular:true, custo:"Médio" },
+      { id:"enoxaparina_40", n:"Enoxaparina sódica 40 mg seringa SC", g:"Cardiovascular", l:"AMA", forma:"Seringa preenchida", via:"SC", dose:"Adulto: 40mg SC 1x/dia (profilaxia)", indicacoes:["Profilaxia TVP","SCA"], contraindicacoes:["Hemorragia ativa","Trombocitopenia"], interacoes:["Anticoagulantes","AINEs"], antidotos:["Sulfato de protamina"], alerta:"⚠️ Monitorar plaquetas - risco de sangramento", popular:true, custo:"Alto" },
+      
+      // ===== ANTIBIÓTICOS ORAIS =====
+      { id:"amoxicilina_500", n:"Amoxicilina 500 mg cápsula", g:"Antibióticos", l:"UBS", forma:"Cápsula", via:"Oral", dose:"Adulto: 500mg 8/8h", indicacoes:["Infecções respiratórias","ITU","Otite"], contraindicacoes:["Alergia a penicilinas"], interacoes:["Alopurinol","Probenecida"], antidotos:["Suporte"], alerta:"⚠️ Reações alérgicas", popular:true, custo:"Baixo" },
+      { id:"cefalexina_500", n:"Cefalexina 500 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg 6/6h", indicacoes:["Infecções respiratórias","Pele","ITU"], contraindicacoes:["Alergia a cefalosporinas"], interacoes:["Anticoagulantes","Probenecida"], antidotos:["Suporte"], alerta:"⚠️ Alergia cruzada com penicilinas (10%)", popular:true, custo:"Médio" },
+      { id:"azitromicina_500", n:"Azitromicina 500 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg/dia por 3 dias", indicacoes:["Infecções respiratórias","DST"], contraindicacoes:["Alergia a macrolídeos"], interacoes:["Digoxina","Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ Curta duração - dose única diária", popular:true, custo:"Médio" },
+      { id:"sulfametoxazol_tmp", n:"Sulfametoxazol 800mg + Trimetoprima 160mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 1 comp 12/12h", indicacoes:["ITU","Infecções respiratórias"], contraindicacoes:["Insuf. renal","G6PD","Gestação"], interacoes:["Varfarina","Anticonvulsivantes"], antidotos:["Ácido folínico"], alerta:"⚠️ Risco de Stevens-Johnson", popular:true, custo:"Baixo" },
+      
+      // ===== CARDIOVASCULARES ORAIS =====
+      { id:"losartana_50", n:"Losartana 50 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 50-100mg/dia", indicacoes:["Hipertensão","Insuf. cardíaca"], contraindicacoes:["Gestação","Insuf. renal grave"], interacoes:["AINEs","Lítio"], antidotos:["Suporte"], alerta:"⚠️ Contraindicado na gestação", popular:true, custo:"Baixo" },
+      { id:"anlodipino_5", n:"Anlodipino 5 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 5-10mg/dia", indicacoes:["Hipertensão","Angina"], contraindicacoes:["Shock cardiogênico"], interacoes:["Grapefruit"], antidotos:["Suporte","Cálcio IV"], alerta:"⚠️ Edema de membros inferiores", popular:true, custo:"Médio" },
+      { id:"propranolol_40", n:"Propranolol 40 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 40-160mg/dia", indicacoes:["Hipertensão","Migrânia","Taquicardia"], contraindicacoes:["Asma","Bradicardia","DPOC"], interacoes:["Verapamil","Digoxina"], antidotos:["Atropina","Glucagon"], alerta:"⚠️ Não suspender abruptamente", popular:true, custo:"Baixo" },
+      { id:"aas_100", n:"Ácido acetilsalicílico 100 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 100mg/dia", indicacoes:["Prevenção cardiovascular","Prevenção AVC"], contraindicacoes:["Úlcera","Hemorragia","Asma"], interacoes:["Anticoagulantes","AINEs"], antidotos:["Bicarbonato"], alerta:"⚠️ Proteção gástrica em idosos", popular:true, custo:"Baixo" },
+[22/07/2026 20:48] Khalil Hasan Tim: { id:"furosemida_40", n:"Furosemida 40 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 40-80mg/dia", indicacoes:["Edema","Insuf. cardíaca"], contraindicacoes:["Anúria","Hipocalemia"], interacoes:["Digoxina","AINEs"], antidotos:["Eletrólitos"], alerta:"⚠️ Monitorar potássio", popular:true, custo:"Baixo" },
+      
+      // ===== DIABETES =====
+      { id:"metformina_500", n:"Metformina 500 mg comprimido", g:"Endócrino / Hormônios", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500-850mg 2-3x/dia", indicacoes:["Diabetes tipo 2"], contraindicacoes:["Insuf. renal","Insuf. hepática"], interacoes:["Contraste iodado","Álcool"], antidotos:["Bicarbonato","Hemodiálise"], alerta:"⚠️ Risco de acidose láctica", popular:true, custo:"Baixo" },
+      { id:"gliclazida_60", n:"Gliclazida 60 mg comprimido LP", g:"Endócrino / Hormônios", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 60-120mg/dia", indicacoes:["Diabetes tipo 2"], contraindicacoes:["Diabetes tipo 1","Cetoacidose"], interacoes:["Álcool","AINEs"], antidotos:["Glicose IV","Diazóxido"], alerta:"⚠️ Risco de hipoglicemia", popular:true, custo:"Médio" },
+      
+      // ===== INSULINAS (UBS/AMA) =====
+      { id:"insulina_nph", n:"Insulina NPH 100 UI/mL suspensão injetável frasco", g:"Endócrino / Hormônios", l:"UBS/AMA", forma:"Suspensão injetável", via:"SC", dose:"Adulto: 10-40 UI SC 1-2x/dia", indicacoes:["Diabetes tipo 1","Diabetes tipo 2"], contraindicacoes:["Hipoglicemia ativa"], interacoes:["Álcool","Beta-bloqueadores"], antidotos:["Glicose IV","Glucagon"], alerta:"⚠️ Homogeneizar antes de usar - não congelar", popular:true, custo:"Baixo" },
+      { id:"insulina_regular", n:"Insulina regular 100 UI/mL solução injetável frasco", g:"Endócrino / Hormônios", l:"UBS/AMA", forma:"Solução injetável", via:"IV/SC", dose:"Adulto: 5-10 UI SC (ajuste)", indicacoes:["Diabetes","Cetoacidose","Emergência"], contraindicacoes:["Hipoglicemia ativa"], interacoes:["Álcool","Corticosteroides"], antidotos:["Glicose IV","Glucagon"], alerta:"⚠️ Única insulina para uso IV em emergência", popular:true, custo:"Baixo" },
+      
+      // ===== RESPIRATÓRIOS / INALÁVEIS =====
+      { id:"salbutamol_spray", n:"Salbutamol 100 mcg/dose aerossol oral", g:"Respiratório", l:"UBS", forma:"Aerossol oral", via:"Inalatória", dose:"Adulto: 1-2 jatos 4/4h (máx 8)", indicacoes:["Asma","DPOC","Broncoespasmo"], contraindicacoes:["Taquiarritmia"], interacoes:["Beta-bloqueadores"], antidotos:["Suporte"], alerta:"⚠️ Uso excessivo pode mascarar piora", popular:true, custo:"Baixo" },
+      { id:"beclometasona_200", n:"Beclometasona 200 mcg/dose aerossol oral", g:"Respiratório", l:"UBS", forma:"Aerossol oral", via:"Inalatória", dose:"Adulto: 200-400mcg 2x/dia", indicacoes:["Asma","DPOC"], contraindicacoes:["Infecção respiratória ativa"], interacoes:["Corticosteroides sistêmicos"], antidotos:["Suporte"], alerta:"⚠️ Enxaguar boca após uso", popular:true, custo:"Médio" },
+      { id:"formoterol_budesonida", n:"Formoterol 6 mcg + Budesonida 200 mcg pó inalatório", g:"Respiratório", l:"UBS", forma:"Cápsula para inalação", via:"Inalatória", dose:"Adulto: 1 cápsula 2x/dia", indicacoes:["Asma","DPOC"], contraindicacoes:["Hipersensibilidade"], interacoes:["Beta-bloqueadores"], antidotos:["Suporte"], alerta:"⚠️ Enxaguar boca após uso", popular:true, custo:"Médio" },
+      { id:"fenoterol_inal", n:"Fenoterol 5 mg/mL solução inalante gotas", g:"Respiratório", l:"UBS", forma:"Solução para inalação", via:"Inalatória (nebulização)", dose:"Adulto: 0,5-1mL (2,5-5mg) 4/4h", indicacoes:["Crise asmática","DPOC"], contraindicacoes:["Taquiarritmia"], interacoes:["Beta-bloqueadores"], antidotos:["Suporte"], alerta:"⚠️ Solução para nebulização", popular:true, custo:"Baixo" },
+      
+      // ===== NEUROLÓGICOS / PSIQUIÁTRICOS =====
+[22/07/2026 20:48] Khalil Hasan Tim: { id:"carbamazepina_200", n:"Carbamazepina 200 mg comprimido", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 200-400mg 2x/dia", indicacoes:["Epilepsia","Neuralgia trigêmeo"], contraindicacoes:["Bloqueio AV","Porfiria"], interacoes:["Varfarina","Anticoncepcionais"], antidotos:["Suporte"], alerta:"⚠️ Monitorar níveis séricos", popular:true, custo:"Baixo" },
+      { id:"fluoxetina_20", n:"Fluoxetina 20 mg cápsula", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Cápsula", via:"Oral", dose:"Adulto: 20mg/dia", indicacoes:["Depressão","TOC","Bulimia"], contraindicacoes:["IMAO","Gestação"], interacoes:["IMAO","Tramadol","Warfarina"], antidotos:["Ciproheptadina"], alerta:"⚠️ Risco de síndrome serotoninérgica", popular:true, custo:"Baixo" },
+      { id:"diazepam_5", n:"Diazepam 5 mg comprimido", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 5-10mg 2-4x/dia", indicacoes:["Ansiedade","Insônia","Convulsões"], contraindicacoes:["Insuf. respiratória","Miastenia"], interacoes:["Álcool","Opioides"], antidotos:["Flumazenil"], alerta:"⚠️ TABELA B1 - dependência", popular:true, custo:"Baixo" },
+      
+      // ===== GASTROINTESTINAIS =====
+      { id:"omeprazol_20", n:"Omeprazol 20 mg cápsula", g:"Gastrointestinal", l:"UBS", forma:"Cápsula", via:"Oral", dose:"Adulto: 20-40mg/dia", indicacoes:["Doença péptica","Refluxo"], contraindicacoes:["Hipersensibilidade"], interacoes:["Warfarina","Antifúngicos"], antidotos:["Suporte"], alerta:"⚠️ Uso prolongado: deficiência B12", popular:true, custo:"Baixo" },
+      { id:"loperamida_2", n:"Loperamida 2 mg comprimido", g:"Gastrointestinal", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 1 comp após cada evacuação (máx 8/dia)", indicacoes:["Diarreia aguda"], contraindicacoes:["Diarreia sanguinolenta","< 2 anos"], interacoes:[], antidotos:["Suporte"], alerta:"⚠️ Não usar em diarreia infecciosa", popular:true, custo:"Baixo" },
+      
+      // ===== VITAMINAS =====
+      { id:"sulfato_ferroso", n:"Sulfato ferroso 40 mg/mL solução oral gotas", g:"Vitaminas e Suplementos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Criança: 1 gota/kg | Adulto: 20-40 gotas", indicacoes:["Anemia ferropriva"], contraindicacoes:["Hemocromatose"], interacoes:["Antiácidos","Tetraciclinas"], antidotos:["Desferroxamina"], alerta:"⚠️ Intoxicação grave em crianças", popular:true, custo:"Baixo" },
+      { id:"acido_folico_5", n:"Ácido fólico 5 mg comprimido", g:"Vitaminas e Suplementos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Gestante: 5mg/dia", indicacoes:["Profilaxia gestacional"], contraindicacoes:["Anemia perniciosa"], interacoes:["Metotrexato","Anticonvulsivantes"], antidotos:["Suporte"], alerta:"⚠️ Fundamental na gestação", popular:true, custo:"Baixo" },
+      
+      // ===== ANTIPARASITÁRIOS =====
+      { id:"albendazol_400", n:"Albendazol 400 mg comprimido mastigável", g:"Antiparasitários", l:"UBS", forma:"Comprimido mastigável", via:"Oral", dose:"Adulto: 400mg dose única", indicacoes:["Enterobíase","Ascaridíase"], contraindicacoes:["Gestação"], interacoes:["Dexametasona"], antidotos:["Suporte"], alerta:"⚠️ Dose única - mastigar bem", popular:true, custo:"Baixo" },
+      { id:"metronidazol_250", n:"Metronidazol 250 mg comprimido", g:"Antiparasitários", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 250-500mg 8/8h", indicacoes:["Infecções anaeróbicas","Tricomoníase"], contraindicacoes:["Gestação (1º tri)"], interacoes:["Álcool (efeito dissulfiram)"], antidotos:["Suporte"], alerta:"⚠️ Álcool proibido durante uso", popular:true, custo:"Baixo" }
+    ];
+
+    // ============================================================
+    // COMPONENTE PRINCIPAL
+    // ============================================================
+    function App() {
+      const [query, setQuery] = useState("");
+      const [activeGroup, setActiveGroup] = useState(null);
+      const [openIdx, setOpenIdx] = useState(null);
+      const [darkMode, setDarkMode] = useState(false);
+      const [showOnlyPopular, setShowOnlyPopular] = useState(false);
+[22/07/2026 20:48] Khalil Hasan Tim: const [filterLocal, setFilterLocal] = useState('all');
+      const [filterVia, setFilterVia] = useState('all');
+      const [favorites, setFavorites] = useState(() => {
+        try { return JSON.parse(localStorage.getItem('remume_fav') || '[]'); } catch { return []; }
+      });
+
+      useEffect(() => {
+        localStorage.setItem('remume_fav', JSON.stringify(favorites));
+      }, [favorites]);
+
+      const groups = [...new Set(MEDS.map(m => m.g))].sort();
+      const groupColors = {
+        "Analgésicos / Antitérmicos":"#B5651D","Anti-inflamatórios (AINEs)":"#8A5A2B",
+        "Antibióticos":"#1F6F5C","Cardiovascular":"#A62B2B",
+        "Respiratório":"#2F8A8A","Neurológico / Psiquiátrico":"#5C4A9E",
+        "Endócrino / Hormônios":"#B2842E","Gastrointestinal":"#7A5230",
+        "Vitaminas e Suplementos":"#3A8A5C","Antiparasitários":"#4A7C2F",
+        "Outros / Diversos":"#5A5A5A"
+      };
+
+      const results = useMemo(() => {
+        const q = query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        return MEDS.filter(m => {
+          const matchQ = q.length === 0 || 
+            m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(q) ||
+            m.g.toLowerCase().includes(q) ||
+            (m.indicacoes && m.indicacoes.join(' ').toLowerCase().includes(q));
+          const matchG = !activeGroup || m.g === activeGroup;
+          const matchL = filterLocal === 'all'  m.l === filterLocal  m.l.includes(filterLocal);
+          const matchV = filterVia === 'all'  m.via === filterVia  
+            (filterVia === 'Injetável' && ['IV','IM','IV/IM','SC'].includes(m.via)) ||
+            (filterVia === 'Oral' && m.via === 'Oral') ||
+            (filterVia === 'Inalatória' && m.via === 'Inalatória');
+          const matchP = !showOnlyPopular || m.popular;
+          return matchQ && matchG && matchL && matchV && matchP;
+        });
+      }, [query, activeGroup, filterLocal, filterVia, showOnlyPopular]);
+
+      const toggleFav = (id) => {
+        setFavorites(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
+      };
+
+      return (
+        <div className="app" style={{ background: darkMode ? '#0F1A15' : '#EEF2EF', minHeight: '100vh', color: darkMode ? '#DCE8E0' : '#14231D' }}>
+          <header style={{ marginBottom: 22 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  <span style={{ fontFamily: 'monospace', fontSize: 13, fontWeight: 700, color: '#1F6F5C', background: '#DCEAE5', padding: '3px 8px', borderRadius: 4 }}>🏥 REMUME</span>
+                  <span style={{ fontSize: 12, background: '#DCEAE5', padding: '2px 8px', borderRadius: 4, color: '#51665D' }}>UBS + AMA</span>
+                  <span style={{ fontSize: 12, background: '#DCEAE5', padding: '2px 8px', borderRadius: 4, color: '#51665D' }}>{MEDS.length} medicamentos</span>
+                </div>
+                <h1 style={{ fontSize: 26, fontWeight: 800, margin: '10px 0 4px' }}>Medicamentos da rede municipal</h1>
+                <p style={{ fontSize: 14, color: darkMode ? '#7A9A8A' : '#51665D' }}>UBS (oral/tópico) + AMA (injetáveis) + Inaláveis</p>
+              </div>
+              <button onClick={() => setDarkMode(!darkMode)} style={{ background: darkMode ? '#1A2E28' : '#fff', border: '1.5px solid #C7D6CF', borderRadius: 8, padding: '8px 10px', cursor: 'pointer' }}>
+                {darkMode ? '☀️' : '🌙'}
+              </button>
+            </div>
+          </header>
+
+          {/* Search */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: darkMode ? '#1A2E28' : '#fff', border: 1.5px solid ${darkMode ? '#2A4A3E' : '#C7D6CF'}, borderRadius: 12, padding: '10px 12px', marginBottom: 10 }}>
+            <span>🔍</span>
+            <input className="input-search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Pesquise por nome, grupo ou indicação...
+[22/07/2026 20:48] Khalil Hasan Tim: " style={{ color: darkMode ? '#DCE8E0' : '#14231D' }} />
+            {query && <button onClick={() => setQuery('')} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>✕</button>}
+          </div>
+
+          {/* Filtros */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
+            <button className={`btn-filter ${showOnlyPopular ? 'active' : ''}`} onClick={() => setShowOnlyPopular(!showOnlyPopular)}>⭐ Mais usados</button>
+            <select className="btn-filter" value={filterLocal} onChange={e => setFilterLocal(e.target.value)} style={{ background: darkMode ? '#1A2E28' : '#fff', color: 'inherit' }}>
+              <option value="all">📍 Todos locais</option>
+              <option value="UBS">🏥 UBS</option>
+              <option value="AMA">💉 AMA</option>
+            </select>
+            <select className="btn-filter" value={filterVia} onChange={e => setFilterVia(e.target.value)} style={{ background: darkMode ? '#1A2E28' : '#fff', color: 'inherit' }}>
+              <option value="all">💊 Todas vias</option>
+              <option value="Oral">Oral</option>
+              <option value="Injetável">Injetável</option>
+              <option value="Inalatória">Inalatória</option>
+            </select>
+            <span style={{ fontSize: 12, marginLeft: 'auto', color: darkMode ? '#7A9A8A' : '#51665D' }}>{results.length} resultados</span>
+          </div>
+
+          {/* Grupos */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
+            <button className={`chip-group ${!activeGroup ? 'active' : ''}`} onClick={() => setActiveGroup(null)} style={!activeGroup ? { background: '#14231D', color: '#fff', borderColor: '#14231D' } : {}}>Todos</button>
+            {groups.map(g => {
+              const active = activeGroup === g;
+              const color = groupColors[g] || '#51665D';
+              return <button key={g} className={`chip-group ${active ? 'active' : ''}`} onClick={() => setActiveGroup(active ? null : g)} style={active ? { background: color, borderColor: color, color: '#fff' } : {}}>{g}</button>;
+            })}
+          </div>
+
+          {/* Resultados */}
+          {results.length === 0 && <div style={{ padding: 32, textAlign: 'center', color: darkMode ? '#7A9A8A' : '#51665D', background: darkMode ? '#1A2E28' : '#fff', borderRadius: 12 }}>🔍 Nenhum medicamento encontrado</div>}
+
+          {results.map((m, i) => {
+            const isOpen = openIdx === i;
+            const isFav = favorites.includes(m.id);
+            const isInj = ['IV','IM','IV/IM','SC'].includes(m.via);
+            const color = groupColors[m.g] || '#51665D';
+            return (
+              <div key={m.id} className="card" style={{ borderColor: isOpen ? color : (darkMode ? '#2A4A3E' : '#DCE5E0') }} onClick={() => setOpenIdx(isOpen ? null : i)}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, alignItems: 'center' }}>
+                      {isFav && <span>⭐</span>}
+                      {m.popular && <span className="badge-popular">Popular</span>}
+                      {isInj && <span className="badge-injetavel">💉 Injetável</span>}
+                      {m.l === 'AMA' && <span className="badge-ama">AMA</span>}
+                      {m.l === 'UBS' && <span className="badge-ubs">UBS</span>}
+                      <span style={{ fontFamily: 'monospace', fontWeight: 600, fontSize: 14 }}>{m.n}</span>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 4, fontSize: 12, color: darkMode ? '#7A9A8A' : '#51665D' }}>
+                      <span className="tag">💊 {m.forma}</span>
+                      <span className="tag">{m.via}</span>
+                      <span className="tag">📍 {m.l}</span>
+                      <span className="tag">💰 {m.custo}</span>
+                    </div>
+                  </div>
+[22/07/2026 20:48] Khalil Hasan Tim: <span style={{ fontSize: 11, fontWeight: 700, color, background: ${color}18, padding: '4px 8px', borderRadius: 6, whiteSpace: 'nowrap' }}>{m.g}</span>
+                </div>
+
+                <div style={{ display: 'flex', gap: 8, marginTop: 8, borderTop: 1px solid ${darkMode ? '#2A4A3E' : '#DCE5E0'}, paddingTop: 8 }}>
+                  <button onClick={(e) => { e.stopPropagation(); toggleFav(m.id); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, display: 'flex', gap: 4, alignItems: 'center' }}>{isFav ? '⭐ Favorito' : '☆ Favoritar'}</button>
+                  <button onClick={(e) => { e.stopPropagation(); setOpenIdx(isOpen ? null : i); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, marginLeft: 'auto' }}>{isOpen ? '🔼 Menos' : '🔽 Mais detalhes'}</button>
+                </div>
+
+                {isOpen && (
+                  <div style={{ marginTop: 10, paddingTop: 10, borderTop: 2px solid ${color} }}>
+                    {m.dose && <div style={{ background: darkMode ? '#1F332C' : '#E8F4F0', padding: '8px 10px', borderRadius: 6, marginBottom: 6 }}><strong>💊 Dose:</strong> {m.dose}</div>}
+                    {m.indicacoes && <div style={{ marginBottom: 6 }}><strong>✓ Indicações:</strong> {m.indicacoes.join(', ')}</div>}
+                    {m.contraindicacoes && <div style={{ marginBottom: 6, color: '#E74C3C' }}><strong>⚠️ Contraindicações:</strong> {m.contraindicacoes.join(', ')}</div>}
+                    {m.interacoes && m.interacoes.length > 0 && <div style={{ marginBottom: 6 }}><strong>🔄 Interações:</strong> {m.interacoes.join(', ')}</div>}
+                    {m.antidotos && m.antidotos.length > 0 && <div style={{ marginBottom: 6, color: '#27AE60' }}><strong>💉 Antídotos:</strong> {m.antidotos.join(', ')}</div>}
+                    {m.alerta && <div style={{ background: darkMode ? '#2A1A1A' : '#FFF3E0', padding: '8px 10px', borderRadius: 6, border: '1px solid #E67E22', color: '#E67E22', fontWeight: 600 }}>⚠️ {m.alerta}</div>}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          <footer style={{ marginTop: 28, fontSize: 11.5, color: darkMode ? '#3A5A4E' : '#8AA098', borderTop: 1px solid ${darkMode ? '#1A2E28' : '#DCE5E0'}, paddingTop: 16 }}>
+            <p>REMUME - SMS-SP · Dados manuais atualizados jun/2026 · {MEDS.length} medicamentos</p>
+            <p style={{ marginTop: 4 }}>Este app é referência rápida e não substitui avaliação médica ou sistema oficial "Remédio na Hora".</p>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
