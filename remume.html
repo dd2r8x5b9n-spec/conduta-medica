@@ -115,7 +115,7 @@
           return MEDS.filter(m => {
             const matchG = !activeGroup || m.g === activeGroup;
             const matchL = filterLocal === 'all' || m.l === filterLocal || m.l.includes(filterLocal);
-            const matchV = filterVia === 'all' || m.via === filterVia || 
+            const matchV = filterVia === 'all' || m.via === filterVia ||
               (filterVia === 'Injetável' && ['IV','IM','IV/IM','SC'].includes(m.via)) ||
               (filterVia === 'Oral' && m.via === 'Oral') ||
               (filterVia === 'Inalatória' && m.via === 'Inalatória');
@@ -132,7 +132,7 @@
             // Filtros de grupo, local, via, popular (já aplicados)
             const matchG = !activeGroup || m.g === activeGroup;
             const matchL = filterLocal === 'all' || m.l === filterLocal || m.l.includes(filterLocal);
-            const matchV = filterVia === 'all' || m.via === filterVia || 
+            const matchV = filterVia === 'all' || m.via === filterVia ||
               (filterVia === 'Injetável' && ['IV','IM','IV/IM','SC'].includes(m.via)) ||
               (filterVia === 'Oral' && m.via === 'Oral') ||
               (filterVia === 'Inalatória' && m.via === 'Inalatória');
@@ -145,9 +145,9 @@
             const indNorm = (m.indicacoes || []).join(' ').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
             // Verifica se todas as palavras estão em algum lugar (AND)
-            return palavras.every(palavra => 
-              nomeNorm.includes(palavra) || 
-              grupoNorm.includes(palavra) || 
+            return palavras.every(palavra =>
+              nomeNorm.includes(palavra) ||
+              grupoNorm.includes(palavra) ||
               indNorm.includes(palavra)
             );
           })
