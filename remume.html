@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>REMUME - UBS/AMA (Medicamentos SP)</title>
+  <title>REMUME - Medicamentos SP</title>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -31,7 +31,6 @@
     .chip-group.active { color: #fff; }
     .dark .chip-group { background: #1A2E28; border-color: #2A4A3E; color: #DCE8E0; }
     .dark .chip-group.active { color: #fff; }
-    /* Botão lista alfabética */
     .btn-lista { background: #1F6F5C; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
     .btn-lista:hover { background: #155a4a; }
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; justify-content: center; align-items: center; }
@@ -59,18 +58,142 @@
   <script type="text/babel">
     const { useState, useMemo, useEffect } = React;
 
+    // ================================================================
+    // LISTA COMPLETA DE MEDICAMENTOS (70+ itens)
+    // Inclui: orais, injetáveis, inaláveis, oftálmicos, nasais, etc.
+    // ================================================================
     const MEDS = [
-      // ===== Todos os medicamentos (incluindo os 8 oftálmicos) =====
-      // ... (mantenha exatamente a mesma lista de medicamentos que te passei antes, com os 8 oftálmicos)
-      // Para não repetir 300 linhas aqui, use o código completo que já te enviei.
-      // Se preferir, copie do último código completo que te mandei (o que já tem os oftálmicos).
-      // Vou colocar um resumo aqui, mas você deve usar o código completo que já tem.
-      // ===== ATENÇÃO: Use o código completo do último e-mail =====
+      // ===== Analgésicos / Antitérmicos =====
+      { id:"dipirona_500", n:"Dipirona sódica 500 mg comprimido", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg-1g 6/6h", indicacoes:["Febre","Dor aguda"], contraindicacoes:["Alergia","Discrasias"], interacoes:["Clorpromazina","Metotrexato"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Risco de agranulocitose", popular:true, custo:"Baixo" },
+      { id:"dipirona_gotas", n:"Dipirona sódica 500 mg/mL solução oral gotas", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Adulto: 20-40 gotas | Criança: 1 gota/kg", indicacoes:["Febre","Dor"], contraindicacoes:["< 3 meses","Alergia"], interacoes:["Clorpromazina"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Contraindicado < 3 meses", popular:true, custo:"Baixo" },
+      { id:"paracetamol_500", n:"Paracetamol 500 mg comprimido", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg-1g 6/6h (máx 4g/dia)", indicacoes:["Febre","Dor leve-moderada"], contraindicacoes:["Insuf. hepática grave"], interacoes:["Álcool","Anticoagulantes"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Hepatotóxico em overdose", popular:true, custo:"Baixo" },
+      { id:"paracetamol_gotas", n:"Paracetamol 200 mg/mL solução oral gotas", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Criança: 10-15mg/kg/dose", indicacoes:["Febre","Dor"], contraindicacoes:["Insuf. hepática"], interacoes:["Álcool","Anticoagulantes"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Dose pediátrica rigorosa", popular:true, custo:"Baixo" },
+      { id:"ibuprofeno_300", n:"Ibuprofeno 300 mg comprimido", g:"Anti-inflamatórios (AINEs)", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 300-600mg 6/8h", indicacoes:["Dor musculoesquelética","Artrite"], contraindicacoes:["Úlcera péptica","Insuf. renal"], interacoes:["Anticoagulantes","Lítio"], antidotos:["Suporte"], alerta:"⚠️ Risco cardiovascular", popular:true, custo:"Médio" },
+      { id:"ibuprofeno_gotas", n:"Ibuprofeno 50 mg/mL suspensão oral gotas", g:"Anti-inflamatórios (AINEs)", l:"UBS", forma:"Suspensão oral", via:"Oral", dose:"Criança: 5-10mg/kg/dose", indicacoes:["Febre","Dor"], contraindicacoes:["Úlcera","Insuf. renal"], interacoes:["Anticoagulantes","Corticosteroides"], antidotos:["Suporte"], alerta:"⚠️ Dose pediátrica: 5-10mg/kg", popular:true, custo:"Médio" },
+      { id:"diclofenaco_50", n:"Diclofenaco 50 mg comprimido", g:"Anti-inflamatórios (AINEs)", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 50mg 8/8h", indicacoes:["Artrite","Dor aguda"], contraindicacoes:["Úlcera","Asma"], interacoes:["Anticoagulantes","Digoxina"], antidotos:["Suporte"], alerta:"⚠️ Risco GI e CV", popular:true, custo:"Médio" },
+      { id:"tramadol_50", n:"Tramadol 50 mg comprimido", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 50-100mg 4/6h", indicacoes:["Dor moderada-intensa"], contraindicacoes:["Convulsões","Insuf. hepática"], interacoes:["Antidepressivos","Álcool"], antidotos:["Naloxona"], alerta:"⚠️ Risco de dependência", popular:false, custo:"Médio" },
+      { id:"morfina_30", n:"Morfina 30 mg comprimido de liberação modificada", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 30mg 12/12h (ajuste)", indicacoes:["Dor intensa","Dor oncológica"], contraindicacoes:["Insuf. respiratória","DPOC grave"], interacoes:["Álcool","Sedativos","IMAO"], antidotos:["Naloxona"], alerta:"⚠️ TABELA A1 - Depressão respiratória", popular:false, custo:"Médio" },
+
+      // ===== Antibióticos =====
+      { id:"amoxicilina_500", n:"Amoxicilina 500 mg cápsula", g:"Antibióticos", l:"UBS", forma:"Cápsula", via:"Oral", dose:"Adulto: 500mg 8/8h", indicacoes:["Infecções respiratórias","ITU","Otite"], contraindicacoes:["Alergia a penicilinas"], interacoes:["Alopurinol","Probenecida"], antidotos:["Suporte"], alerta:"⚠️ Reações alérgicas", popular:true, custo:"Baixo" },
+      { id:"amoxicilina_susp", n:"Amoxicilina 50 mg/mL pó para suspensão oral", g:"Antibióticos", l:"UBS", forma:"Suspensão oral", via:"Oral", dose:"Criança: 40-50mg/kg/dia", indicacoes:["Otite","Amigdalite","Sinusite"], contraindicacoes:["Alergia a penicilinas"], interacoes:["Alopurinol","Probenecida"], antidotos:["Suporte"], alerta:"⚠️ Dose pediátrica: 40-50mg/kg/dia", popular:true, custo:"Baixo" },
+      { id:"cefalexina_500", n:"Cefalexina 500 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg 6/6h", indicacoes:["Infecções respiratórias","Pele","ITU"], contraindicacoes:["Alergia a cefalosporinas"], interacoes:["Anticoagulantes","Probenecida"], antidotos:["Suporte"], alerta:"⚠️ Alergia cruzada com penicilinas (10%)", popular:true, custo:"Médio" },
+      { id:"cefalexina_susp", n:"Cefalexina 50 mg/mL suspensão oral", g:"Antibióticos", l:"UBS", forma:"Suspensão oral", via:"Oral", dose:"Criança: 25-50mg/kg/dia", indicacoes:["Otite","Impetigo"], contraindicacoes:["Alergia a cefalosporinas"], interacoes:["Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ Dose pediátrica: 25-50mg/kg/dia", popular:true, custo:"Médio" },
+      { id:"azitromicina_500", n:"Azitromicina 500 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg/dia por 3 dias", indicacoes:["Infecções respiratórias","DST"], contraindicacoes:["Alergia a macrolídeos"], interacoes:["Digoxina","Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ Curta duração - dose única diária", popular:true, custo:"Médio" },
+      { id:"azitromicina_susp", n:"Azitromicina 40 mg/mL suspensão oral", g:"Antibióticos", l:"UBS", forma:"Suspensão oral", via:"Oral", dose:"Criança: 10mg/kg/dia por 3 dias", indicacoes:["Otite","Faringite"], contraindicacoes:["Alergia a macrolídeos"], interacoes:["Digoxina","Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ Dose pediátrica: 10mg/kg/dia", popular:true, custo:"Médio" },
+      { id:"sulfametoxazol_tmp", n:"Sulfametoxazol 800mg + Trimetoprima 160mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 1 comp 12/12h", indicacoes:["ITU","Infecções respiratórias"], contraindicacoes:["Insuf. renal","G6PD","Gestação"], interacoes:["Varfarina","Anticonvulsivantes"], antidotos:["Ácido folínico"], alerta:"⚠️ Risco de Stevens-Johnson", popular:true, custo:"Baixo" },
+      { id:"claritromicina_500", n:"Claritromicina 500 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg 12/12h", indicacoes:["Infecções respiratórias","H. pylori"], contraindicacoes:["Alergia a macrolídeos","Insuf. hepática"], interacoes:["Digoxina","Anticoagulantes","Estatinas"], antidotos:["Suporte"], alerta:"⚠️ Muitas interações", popular:true, custo:"Médio" },
+      { id:"doxiciclina_100", n:"Doxiciclina 100 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 100mg 12/12h", indicacoes:["Acne","Infecções atípicas"], contraindicacoes:["Gestação","Crianças <8 anos"], interacoes:["Antiácidos","Ferro","Cálcio"], antidotos:["Suporte"], alerta:"⚠️ Fotosensibilidade", popular:true, custo:"Médio" },
+
+      // ===== Cardiovasculares =====
+      { id:"losartana_50", n:"Losartana 50 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 50-100mg/dia", indicacoes:["Hipertensão","Insuf. cardíaca"], contraindicacoes:["Gestação","Insuf. renal grave"], interacoes:["AINEs","Lítio"], antidotos:["Suporte"], alerta:"⚠️ Contraindicado na gestação", popular:true, custo:"Baixo" },
+      { id:"enalapril_5", n:"Enalapril 5 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 5-40mg/dia", indicacoes:["Hipertensão","Insuf. cardíaca"], contraindicacoes:["Gestação","Angioedema"], interacoes:["AINEs","Lítio","Diuréticos"], antidotos:["Suporte","Expansão volêmica"], alerta:"⚠️ Risco de angioedema", popular:true, custo:"Baixo" },
+      { id:"captopril_25", n:"Captopril 25 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 25-50mg 8/12h", indicacoes:["Hipertensão","Insuf. cardíaca"], contraindicacoes:["Gestação","Insuf. renal"], interacoes:["AINEs","Lítio","Diuréticos"], antidotos:["Suporte","Expansão volêmica"], alerta:"⚠️ Tomar 1h antes ou 2h após refeições", popular:true, custo:"Baixo" },
+      { id:"anlodipino_5", n:"Anlodipino 5 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 5-10mg/dia", indicacoes:["Hipertensão","Angina"], contraindicacoes:["Shock cardiogênico"], interacoes:["Grapefruit"], antidotos:["Suporte","Cálcio IV"], alerta:"⚠️ Edema de membros inferiores", popular:true, custo:"Médio" },
+      { id:"propranolol_40", n:"Propranolol 40 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 40-160mg/dia", indicacoes:["Hipertensão","Migrânia","Taquicardia"], contraindicacoes:["Asma","Bradicardia","DPOC"], interacoes:["Verapamil","Digoxina"], antidotos:["Atropina","Glucagon"], alerta:"⚠️ Não suspender abruptamente", popular:true, custo:"Baixo" },
+      { id:"aas_100", n:"Ácido acetilsalicílico 100 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 100mg/dia", indicacoes:["Prevenção cardiovascular","Prevenção AVC"], contraindicacoes:["Úlcera","Hemorragia","Asma"], interacoes:["Anticoagulantes","AINEs"], antidotos:["Bicarbonato"], alerta:"⚠️ Proteção gástrica em idosos", popular:true, custo:"Baixo" },
+      { id:"atenolol_50", n:"Atenolol 50 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 50-100mg/dia", indicacoes:["Hipertensão","Angina"], contraindicacoes:["Bradicardia","Asma","DPOC"], interacoes:["Verapamil","Digoxina"], antidotos:["Atropina","Glucagon"], alerta:"⚠️ Monitorar FC e PA", popular:true, custo:"Baixo" },
+      { id:"furosemida_40", n:"Furosemida 40 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 40-80mg/dia", indicacoes:["Edema","Insuf. cardíaca"], contraindicacoes:["Anúria","Hipocalemia"], interacoes:["Digoxina","AINEs"], antidotos:["Eletrólitos"], alerta:"⚠️ Monitorar potássio", popular:true, custo:"Baixo" },
+      { id:"hidroclorotiazida_25", n:"Hidroclorotiazida 25 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 25-50mg/dia", indicacoes:["Hipertensão","Edema"], contraindicacoes:["Anúria","Insuf. renal"], interacoes:["Digoxina","Lítio","AINEs"], antidotos:["Eletrólitos"], alerta:"⚠️ Hiperuricemia - piora da gota", popular:true, custo:"Baixo" },
+      { id:"espironolactona_25", n:"Espironolactona 25 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 25-100mg/dia", indicacoes:["Hipertensão","Insuf. cardíaca","Ascite"], contraindicacoes:["Hipercalemia","Insuf. renal"], interacoes:["AINEs","Inibidores ECA","Potássio"], antidotos:["Diuréticos de alça"], alerta:"⚠️ Risco de hipercalemia", popular:true, custo:"Baixo" },
+      { id:"sinvastatina_20", n:"Sinvastatina 20 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 20-40mg/dia", indicacoes:["Hipercolesterolemia"], contraindicacoes:["Insuf. hepática","Gestação"], interacoes:["Grapefruit","Fibratos","Anticoagulantes"], antidotos:["Ubiquinona (Q10)"], alerta:"⚠️ Monitorar ALT e CPK", popular:true, custo:"Baixo" },
+      { id:"digoxina_025", n:"Digoxina 0,25 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 0,125-0,25mg/dia", indicacoes:["Insuf. cardíaca","Fibrilação atrial"], contraindicacoes:["Bloqueio AV","Taquicardia ventricular"], interacoes:["Diuréticos (hipocalemia)","Amiodarona","Verapamil"], antidotos:["Anticorpos digitalicos (Fab)"], alerta:"⚠️ Intervalo terapêutico estreito", popular:true, custo:"Baixo" },
+      { id:"amiodarona_200", n:"Amiodarona 200 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 200-400mg/dia", indicacoes:["Arritmias ventriculares","Fibrilação atrial"], contraindicacoes:["Bradicardia","Doença tireoidiana"], interacoes:["Digoxina","Anticoagulantes","Grapefruit"], antidotos:["Suporte"], alerta:"⚠️ Monitorar tireóide e pulmão", popular:false, custo:"Médio" },
+
+      // ===== Diabetes =====
+      { id:"metformina_500", n:"Metformina 500 mg comprimido", g:"Endócrino / Hormônios", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500-850mg 2-3x/dia", indicacoes:["Diabetes tipo 2"], contraindicacoes:["Insuf. renal","Insuf. hepática"], interacoes:["Contraste iodado","Álcool"], antidotos:["Bicarbonato","Hemodiálise"], alerta:"⚠️ Risco de acidose láctica", popular:true, custo:"Baixo" },
+      { id:"metformina_850", n:"Metformina 850 mg comprimido", g:"Endócrino / Hormônios", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 850mg 2x/dia", indicacoes:["Diabetes tipo 2"], contraindicacoes:["Insuf. renal","Insuf. hepática"], interacoes:["Contraste iodado","Álcool"], antidotos:["Bicarbonato","Hemodiálise"], alerta:"⚠️ Suspender 48h antes de contraste iodado", popular:true, custo:"Baixo" },
+      { id:"gliclazida_60", n:"Gliclazida 60 mg comprimido LP", g:"Endócrino / Hormônios", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 60-120mg/dia", indicacoes:["Diabetes tipo 2"], contraindicacoes:["Diabetes tipo 1","Cetoacidose"], interacoes:["Álcool","AINEs","Beta-bloqueadores"], antidotos:["Glicose IV","Diazóxido"], alerta:"⚠️ Risco de hipoglicemia", popular:true, custo:"Médio" },
+
+      // ===== Insulinas =====
+      { id:"insulina_nph", n:"Insulina NPH 100 UI/mL suspensão injetável frasco", g:"Endócrino / Hormônios", l:"UBS/AMA", forma:"Suspensão injetável", via:"SC", dose:"Adulto: 10-40 UI SC 1-2x/dia", indicacoes:["Diabetes tipo 1","Diabetes tipo 2"], contraindicacoes:["Hipoglicemia ativa"], interacoes:["Álcool","Beta-bloqueadores"], antidotos:["Glicose IV","Glucagon"], alerta:"⚠️ Homogeneizar antes de usar - não congelar", popular:true, custo:"Baixo" },
+      { id:"insulina_nph_caneta", n:"Insulina NPH 100 UI/mL suspensão injetável caneta", g:"Endócrino / Hormônios", l:"UBS/AMA", forma:"Suspensão injetável (caneta)", via:"SC", dose:"Adulto: 10-40 UI SC 1-2x/dia", indicacoes:["Diabetes tipo 1","Diabetes tipo 2"], contraindicacoes:["Hipoglicemia ativa"], interacoes:["Álcool","Beta-bloqueadores"], antidotos:["Glicose IV","Glucagon"], alerta:"⚠️ Agulhas descartáveis - trocar a cada aplicação", popular:true, custo:"Médio" },
+      { id:"insulina_regular", n:"Insulina regular 100 UI/mL solução injetável frasco", g:"Endócrino / Hormônios", l:"UBS/AMA", forma:"Solução injetável", via:"IV/SC", dose:"Adulto: 5-10 UI SC (ajuste)", indicacoes:["Diabetes","Cetoacidose","Emergência"], contraindicacoes:["Hipoglicemia ativa"], interacoes:["Álcool","Corticosteroides"], antidotos:["Glicose IV","Glucagon"], alerta:"⚠️ Única insulina para uso IV em emergência", popular:true, custo:"Baixo" },
+
+      // ===== Respiratórios / Inaláveis =====
+      { id:"salbutamol_spray", n:"Salbutamol 100 mcg/dose aerossol oral", g:"Respiratório", l:"UBS", forma:"Aerossol oral", via:"Inalatória", dose:"Adulto: 1-2 jatos 4/4h (máx 8)", indicacoes:["Asma","DPOC","Broncoespasmo"], contraindicacoes:["Taquiarritmia"], interacoes:["Beta-bloqueadores"], antidotos:["Suporte"], alerta:"⚠️ Uso excessivo pode mascarar piora", popular:true, custo:"Baixo" },
+      { id:"beclometasona_200", n:"Beclometasona 200 mcg/dose aerossol oral", g:"Respiratório", l:"UBS", forma:"Aerossol oral", via:"Inalatória", dose:"Adulto: 200-400mcg 2x/dia", indicacoes:["Asma","DPOC"], contraindicacoes:["Infecção respiratória ativa"], interacoes:["Corticosteroides sistêmicos"], antidotos:["Suporte"], alerta:"⚠️ Enxaguar boca após uso", popular:true, custo:"Médio" },
+      { id:"beclometasona_50_nasal", n:"Beclometasona 50 mcg/dose aerossol nasal", g:"Respiratório", l:"UBS", forma:"Aerossol nasal", via:"Nasal", dose:"Adulto: 1-2 jatos/narina 2x/dia", indicacoes:["Rinite alérgica"], contraindicacoes:["Infecção nasal ativa"], interacoes:["Corticosteroides"], antidotos:["Suporte"], alerta:"⚠️ Uso contínuo - não intermitente", popular:true, custo:"Médio" },
+      { id:"formoterol_budesonida_6_200", n:"Formoterol 6 mcg + Budesonida 200 mcg pó inalatório", g:"Respiratório", l:"UBS", forma:"Cápsula para inalação", via:"Inalatória", dose:"Adulto: 1 cápsula 2x/dia", indicacoes:["Asma","DPOC"], contraindicacoes:["Hipersensibilidade"], interacoes:["Beta-bloqueadores"], antidotos:["Suporte"], alerta:"⚠️ Enxaguar boca após uso", popular:true, custo:"Médio" },
+      { id:"formoterol_budesonida_12_400", n:"Formoterol 12 mcg + Budesonida 400 mcg pó inalatório", g:"Respiratório", l:"UBS", forma:"Cápsula para inalação", via:"Inalatória", dose:"Adulto: 1 cápsula 2x/dia", indicacoes:["Asma grave","DPOC grave"], contraindicacoes:["Hipersensibilidade"], interacoes:["Beta-bloqueadores"], antidotos:["Suporte"], alerta:"⚠️ Dose mais alta - monitorar efeitos colaterais", popular:false, custo:"Médio" },
+      { id:"fenoterol_inal", n:"Fenoterol 5 mg/mL solução inalante gotas", g:"Respiratório", l:"UBS", forma:"Solução para inalação", via:"Inalatória (nebulização)", dose:"Adulto: 0,5-1mL (2,5-5mg) 4/4h", indicacoes:["Crise asmática","DPOC"], contraindicacoes:["Taquiarritmia"], interacoes:["Beta-bloqueadores"], antidotos:["Suporte"], alerta:"⚠️ Solução para nebulização", popular:true, custo:"Baixo" },
+      { id:"ipratropio_inal", n:"Ipratrópio 0,25 mg/mL solução inalante gotas", g:"Respiratório", l:"UBS", forma:"Solução para inalação", via:"Inalatória (nebulização)", dose:"Adulto: 0,5mg (2mL) 4/6h", indicacoes:["DPOC","Asma","Broncoespasmo"], contraindicacoes:["Glaucoma de ângulo fechado"], interacoes:["Anticolinérgicos","Beta-agonistas"], antidotos:["Suporte"], alerta:"⚠️ Solução para nebulização", popular:true, custo:"Baixo" },
+
+      // ===== Neurológicos / Psiquiátricos =====
+      { id:"carbamazepina_200", n:"Carbamazepina 200 mg comprimido", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 200-400mg 2x/dia", indicacoes:["Epilepsia","Neuralgia trigêmeo"], contraindicacoes:["Bloqueio AV","Porfiria"], interacoes:["Varfarina","Anticoncepcionais"], antidotos:["Suporte"], alerta:"⚠️ Monitorar níveis séricos", popular:true, custo:"Baixo" },
+      { id:"fenitoina_100", n:"Fenitoína 100 mg comprimido", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 100-300mg/dia (ajuste)", indicacoes:["Epilepsia","Convulsões"], contraindicacoes:["Bradicardia","Bloqueio AV"], interacoes:["Varfarina","Anticoncepcionais","Rifampicina"], antidotos:["Suporte"], alerta:"⚠️ Intervalo terapêutico estreito", popular:true, custo:"Baixo" },
+      { id:"fenobarbital_100", n:"Fenobarbital 100 mg comprimido", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 50-100mg 2x/dia", indicacoes:["Epilepsia","Sedação"], contraindicacoes:["Insuf. hepática","Porfiria"], interacoes:["Álcool","Anticoagulantes","Anticoncepcionais"], antidotos:["Suporte"], alerta:"⚠️ TABELA B1 - dependência", popular:true, custo:"Baixo" },
+      { id:"valproato_sodico", n:"Valproato de sódio 250 mg comprimido", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 250-500mg 2x/dia", indicacoes:["Epilepsia","Transtorno bipolar","Enxaqueca"], contraindicacoes:["Insuf. hepática","Porfiria","Gestação"], interacoes:["Carbamazepina","Fenitoína","Anticoagulantes"], antidotos:["N-acetilcisteína (hepatotoxicidade)"], alerta:"⚠️ Monitorar função hepática - teratogênico", popular:true, custo:"Baixo" },
+      { id:"fluoxetina_20", n:"Fluoxetina 20 mg cápsula", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Cápsula", via:"Oral", dose:"Adulto: 20mg/dia", indicacoes:["Depressão","TOC","Bulimia"], contraindicacoes:["IMAO","Gestação"], interacoes:["IMAO","Tramadol","Warfarina"], antidotos:["Ciproheptadina"], alerta:"⚠️ Risco de síndrome serotoninérgica", popular:true, custo:"Baixo" },
+      { id:"sertralina_50", n:"Sertralina 50 mg comprimido", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 50mg/dia (máx 200mg)", indicacoes:["Depressão","TOC","Pânico","TEPT"], contraindicacoes:["IMAO","Hipersensibilidade"], interacoes:["IMAO","Cimetidina","Warfarina","AINEs"], antidotos:["Ciproheptadina"], alerta:"⚠️ Menos interações que outros ISRS", popular:true, custo:"Baixo" },
+      { id:"amitriptilina_25", n:"Amitriptilina 25 mg comprimido", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 25-50mg/dia", indicacoes:["Depressão","Neuropatia","Enxaqueca","Insônia"], contraindicacoes:["IAM recente","Glaucoma","Retenção urinária"], interacoes:["IMAO","Álcool","Anticolinérgicos"], antidotos:["Fisostigmina"], alerta:"⚠️ Efeitos anticolinérgicos - cuidado em idosos", popular:true, custo:"Baixo" },
+      { id:"risperidona_2", n:"Risperidona 2 mg comprimido", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 2-6mg/dia", indicacoes:["Esquizofrenia","Transtorno bipolar"], contraindicacoes:["Demência (mortalidade)"], interacoes:["Carbamazepina","Cimetidina","Clozapina"], antidotos:["Suporte"], alerta:"⚠️ Efeitos extrapiramidais", popular:true, custo:"Médio" },
+      { id:"haloperidol_5", n:"Haloperidol 5 mg comprimido", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 5-20mg/dia", indicacoes:["Esquizofrenia","Agitação"], contraindicacoes:["Parkinson","Demência com corpos de Lewy"], interacoes:["Anticolinérgicos","Álcool"], antidotos:["Biperideno (efeitos extrapiramidais)"], alerta:"⚠️ Síndrome maligna dos neurolépticos", popular:true, custo:"Baixo" },
+      { id:"clorpromazina_25", n:"Clorpromazina 25 mg comprimido", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 25-100mg 2-4x/dia", indicacoes:["Esquizofrenia","Agitação","Náusea"], contraindicacoes:["Parkinson","Porfiria"], interacoes:["Álcool","Anticolinérgicos","Anti-hipertensivos"], antidotos:["Suporte"], alerta:"⚠️ Efeitos extrapiramidais e sedação", popular:false, custo:"Baixo" },
+      { id:"diazepam_5", n:"Diazepam 5 mg comprimido", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 5-10mg 2-4x/dia", indicacoes:["Ansiedade","Insônia","Convulsões"], contraindicacoes:["Insuf. respiratória","Miastenia"], interacoes:["Álcool","Opioides"], antidotos:["Flumazenil"], alerta:"⚠️ TABELA B1 - dependência", popular:true, custo:"Baixo" },
+      { id:"clonazepam_2", n:"Clonazepam 2 mg comprimido", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 0,5-2mg 2-3x/dia", indicacoes:["Epilepsia","Ansiedade","Pânico"], contraindicacoes:["Insuf. respiratória","Miastenia"], interacoes:["Álcool","Opioides"], antidotos:["Flumazenil"], alerta:"⚠️ TABELA B1 - dependência", popular:true, custo:"Baixo" },
+      { id:"biperideno_2", n:"Biperideno 2 mg comprimido", g:"Neurológico / Psiquiátrico", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 2mg 1-4x/dia", indicacoes:["Efeitos extrapiramidais","Parkinsonismo"], contraindicacoes:["Glaucoma","Retenção urinária","Miastenia"], interacoes:["Anticolinérgicos","Antidepressivos"], antidotos:["Fisostigmina"], alerta:"⚠️ Efeitos anticolinérgicos - boca seca, visão turva", popular:true, custo:"Baixo" },
+
+      // ===== Gastrointestinais =====
+      { id:"omeprazol_20", n:"Omeprazol 20 mg cápsula", g:"Gastrointestinal", l:"UBS", forma:"Cápsula", via:"Oral", dose:"Adulto: 20-40mg/dia", indicacoes:["Doença péptica","Refluxo"], contraindicacoes:["Hipersensibilidade"], interacoes:["Warfarina","Antifúngicos","Antiretrovirais"], antidotos:["Suporte"], alerta:"⚠️ Uso prolongado: deficiência B12", popular:true, custo:"Baixo" },
+      { id:"hidroxido_aluminio", n:"Hidróxido de alumínio suspensão oral", g:"Gastrointestinal", l:"UBS", forma:"Suspensão oral", via:"Oral", dose:"Adulto: 10-20mL 4x/dia", indicacoes:["Dispepsia","Úlcera","Refluxo"], contraindicacoes:["Insuf. renal","Hipofosfatemia"], interacoes:["Tetraciclinas","Fluoroquinolonas","Digoxina"], antidotos:["Suporte"], alerta:"⚠️ Pode causar constipação", popular:true, custo:"Baixo" },
+      { id:"loperamida_2", n:"Loperamida 2 mg comprimido", g:"Gastrointestinal", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 1 comp após cada evacuação (máx 8/dia)", indicacoes:["Diarreia aguda"], contraindicacoes:["Diarreia sanguinolenta","< 2 anos"], interacoes:[], antidotos:["Suporte"], alerta:"⚠️ Não usar em diarreia infecciosa", popular:true, custo:"Baixo" },
+      { id:"escopolamina_10", n:"Escopolamina 10 mg comprimido", g:"Gastrointestinal", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 10mg 3x/dia", indicacoes:["Cólica intestinal","SII"], contraindicacoes:["Glaucoma","Retenção urinária","Miastenia"], interacoes:["Anticolinérgicos","Antidepressivos"], antidotos:["Fisostigmina"], alerta:"⚠️ Efeitos anticolinérgicos", popular:true, custo:"Baixo" },
+
+      // ===== Antiparasitários =====
+      { id:"albendazol_400", n:"Albendazol 400 mg comprimido mastigável", g:"Antiparasitários", l:"UBS", forma:"Comprimido mastigável", via:"Oral", dose:"Adulto: 400mg dose única", indicacoes:["Enterobíase","Ascaridíase"], contraindicacoes:["Gestação"], interacoes:["Dexametasona","Cimetidina"], antidotos:["Suporte"], alerta:"⚠️ Dose única - mastigar bem", popular:true, custo:"Baixo" },
+      { id:"mebendazol_susp", n:"Mebendazol 20 mg/mL suspensão oral", g:"Antiparasitários", l:"UBS", forma:"Suspensão oral", via:"Oral", dose:"Adulto: 10mL dose única | Criança: 5mL", indicacoes:["Enterobíase","Ascaridíase"], contraindicacoes:["Gestação","<1 ano"], interacoes:["Cimetidina"], antidotos:["Suporte"], alerta:"⚠️ Dose pediátrica: 5mL", popular:true, custo:"Baixo" },
+      { id:"metronidazol_250", n:"Metronidazol 250 mg comprimido", g:"Antiparasitários", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 250-500mg 8/8h", indicacoes:["Infecções anaeróbicas","Tricomoníase","Amebíase"], contraindicacoes:["Gestação (1º tri)"], interacoes:["Álcool (efeito dissulfiram)","Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ Álcool proibido durante uso", popular:true, custo:"Baixo" },
+
+      // ===== Antifúngicos =====
+      { id:"fluconazol_150", n:"Fluconazol 150 mg cápsula", g:"Antifúngicos", l:"UBS", forma:"Cápsula", via:"Oral", dose:"Adulto: 150mg dose única", indicacoes:["Candidíase vaginal","Candidíase oral"], contraindicacoes:["Gestação","Insuf. hepática"], interacoes:["Varfarina","Anticoagulantes","Antiarrítmicos"], antidotos:["Suporte"], alerta:"⚠️ Dose única usual - hepatotoxicidade em uso prolongado", popular:true, custo:"Médio" },
+      { id:"itraconazol_100", n:"Itraconazol 100 mg cápsula", g:"Antifúngicos", l:"UBS", forma:"Cápsula", via:"Oral", dose:"Adulto: 100-200mg 1-2x/dia", indicacoes:["Dermatofitose","Onicomicose"], contraindicacoes:["Insuf. cardíaca","Gestação","Insuf. hepática"], interacoes:["Digoxina","Anticoagulantes","Benzodiazepínicos"], antidotos:["Suporte"], alerta:"⚠️ Tomar com alimentos gordurosos", popular:true, custo:"Médio" },
+
+      // ===== Vitaminas e Suplementos =====
+      { id:"sulfato_ferroso", n:"Sulfato ferroso 40 mg/mL solução oral gotas", g:"Vitaminas e Suplementos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Criança: 1 gota/kg | Adulto: 20-40 gotas", indicacoes:["Anemia ferropriva"], contraindicacoes:["Hemocromatose","Anemia hemolítica"], interacoes:["Antiácidos","Tetraciclinas","Hormônios tireoidianos"], antidotos:["Desferroxamina (intoxicação)"], alerta:"⚠️ Intoxicação grave em crianças", popular:true, custo:"Baixo" },
+      { id:"sulfato_ferroso_comp", n:"Sulfato ferroso 40 mg comprimido", g:"Vitaminas e Suplementos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 40-60mg/dia", indicacoes:["Anemia ferropriva"], contraindicacoes:["Hemocromatose"], interacoes:["Antiácidos","Tetraciclinas","Hormônios tireoidianos"], antidotos:["Desferroxamina"], alerta:"⚠️ Tomar 1h antes ou 2h após refeições", popular:true, custo:"Baixo" },
+      { id:"acido_folico_5", n:"Ácido fólico 5 mg comprimido", g:"Vitaminas e Suplementos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Gestante: 5mg/dia | Adulto: 1-5mg/dia", indicacoes:["Profilaxia gestacional","Anemia megaloblástica"], contraindicacoes:["Anemia perniciosa (não diagnosticada)"], interacoes:["Metotrexato","Anticonvulsivantes"], antidotos:["Suporte"], alerta:"⚠️ Fundamental na gestação", popular:true, custo:"Baixo" },
+      { id:"acido_folico_gotas", n:"Ácido fólico 0,2 mg/mL solução oral gotas", g:"Vitaminas e Suplementos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Criança: 0,5-1mg/dia | Adulto: 1-5mg/dia", indicacoes:["Suplementação","Anemia megaloblástica"], contraindicacoes:["Anemia perniciosa"], interacoes:["Metotrexato","Anticonvulsivantes"], antidotos:["Suporte"], alerta:"⚠️ Dose pediátrica rigorosa", popular:true, custo:"Baixo" },
+      { id:"levotiroxina_50", n:"Levotiroxina 50 mcg comprimido", g:"Endócrino / Hormônios", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 50-100mcg/dia", indicacoes:["Hipotireoidismo","Bócio"], contraindicacoes:["Tireotoxicose","Infarto agudo"], interacoes:["Antiácidos (diminuem absorção)","Ferro","Cálcio"], antidotos:["Suporte"], alerta:"⚠️ Tomar em jejum 30-60 min antes do café", popular:true, custo:"Baixo" },
+
+      // ===== Anti-histamínicos =====
+      { id:"loratadina_10", n:"Loratadina 10 mg comprimido", g:"Anti-histamínicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 10mg/dia", indicacoes:["Rinite alérgica","Urticária"], contraindicacoes:["Hipersensibilidade"], interacoes:["Eritromicina","Cetoconazol","Cimetidina"], antidotos:["Suporte"], alerta:"⚠️ Não causa sonolência", popular:true, custo:"Baixo" },
+      { id:"loratadina_susp", n:"Loratadina 1 mg/mL solução oral", g:"Anti-histamínicos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Criança (>2a): 5-10mL/dia", indicacoes:["Rinite alérgica","Urticária"], contraindicacoes:["<2 anos","Hipersensibilidade"], interacoes:["Eritromicina","Cetoconazol"], antidotos:["Suporte"], alerta:"⚠️ Dose pediátrica: 5-10mL/dia", popular:true, custo:"Baixo" },
+      { id:"prometazina_25", n:"Prometazina 25 mg comprimido", g:"Anti-histamínicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 25-50mg/dia", indicacoes:["Alergias","Náusea","Insônia"], contraindicacoes:["<2 anos","Glaucoma","Hiperplasia prostática"], interacoes:["Depressores SNC","Anticolinérgicos"], antidotos:["Suporte"], alerta:"⚠️ Causa sonolência - cuidado ao dirigir", popular:true, custo:"Baixo" },
+
+      // ===== Injetáveis (AMA) =====
+      { id:"dipirona_inj", n:"Dipirona sódica 500 mg/mL solução injetável", g:"Analgésicos / Antitérmicos", l:"AMA", forma:"Solução injetável", via:"IV/IM", dose:"Adulto: 1-2g IV/IM 6/6h", indicacoes:["Dor intensa","Febre alta","Cólica renal"], contraindicacoes:["Alergia","Discrasias"], interacoes:["Clorpromazina","Metotrexato"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Administrar lentamente - risco de hipotensão", popular:true, custo:"Baixo" },
+      { id:"paracetamol_inj", n:"Paracetamol 10 mg/mL solução injetável", g:"Analgésicos / Antitérmicos", l:"AMA", forma:"Solução injetável", via:"IV", dose:"Adulto: 1g IV 6/6h (máx 4g/dia)", indicacoes:["Dor moderada-intensa","Febre"], contraindicacoes:["Insuf. hepática grave"], interacoes:["Álcool","Anticoagulantes"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Hepatotóxico - não exceder 4g/dia", popular:true, custo:"Médio" },
+      { id:"tramadol_inj", n:"Tramadol 50 mg/mL solução injetável", g:"Analgésicos / Antitérmicos", l:"AMA", forma:"Solução injetável", via:"IV/IM", dose:"Adulto: 50-100mg IV/IM 4/6h", indicacoes:["Dor moderada-intensa"], contraindicacoes:["Convulsões","Insuf. hepática"], interacoes:["Antidepressivos","Álcool"], antidotos:["Naloxona"], alerta:"⚠️ Risco de dependência", popular:false, custo:"Médio" },
+      { id:"morfina_inj", n:"Morfina 10 mg/mL solução injetável", g:"Analgésicos / Antitérmicos", l:"AMA", forma:"Solução injetável", via:"IV/IM/SC", dose:"Adulto: 10mg 4/4h", indicacoes:["Dor intensa","Infarto","Dor oncológica"], contraindicacoes:["Insuf. respiratória","DPOC grave"], interacoes:["Álcool","Sedativos","IMAO"], antidotos:["Naloxona IV"], alerta:"⚠️ TABELA A1 - Depressão respiratória", popular:false, custo:"Médio" },
+      { id:"diclofenaco_inj", n:"Diclofenaco sódico 25 mg/mL solução injetável", g:"Anti-inflamatórios (AINEs)", l:"AMA", forma:"Solução injetável", via:"IM", dose:"Adulto: 75mg IM 1-2x/dia", indicacoes:["Dor aguda","Cólica renal"], contraindicacoes:["Úlcera","Insuf. renal","Asma"], interacoes:["Anticoagulantes","Lítio","Digoxina"], antidotos:["Suporte"], alerta:"⚠️ Risco cardiovascular e GI", popular:true, custo:"Médio" },
+      { id:"benzilpenicilina_benzatina_1200", n:"Benzilpenicilina benzatina 1.200.000 UI pó injetável", g:"Antibióticos", l:"AMA", forma:"Pó para solução injetável", via:"IM", dose:"Adulto: 1.200.000 UI dose única", indicacoes:["Sífilis","Infecções estreptocócicas"], contraindicacoes:["Alergia a penicilinas"], interacoes:["Probenecida"], antidotos:["Adrenalina"], alerta:"⚠️ Teste cutâneo prévio", popular:true, custo:"Baixo" },
+      { id:"benzilpenicilina_benzatina_600", n:"Benzilpenicilina benzatina 600.000 UI pó injetável", g:"Antibióticos", l:"AMA", forma:"Pó para solução injetável", via:"IM", dose:"Criança: 600.000 UI dose única", indicacoes:["Sífilis","Infecções estreptocócicas"], contraindicacoes:["Alergia a penicilinas"], interacoes:["Probenecida"], antidotos:["Adrenalina"], alerta:"⚠️ Dose pediátrica - teste cutâneo prévio", popular:true, custo:"Baixo" },
+      { id:"ceftriaxona_inj", n:"Ceftriaxona 1g pó para solução injetável", g:"Antibióticos", l:"AMA", forma:"Pó para solução injetável", via:"IV/IM", dose:"Adulto: 1-2g IV/IM 12-24h", indicacoes:["Infecções graves","Pneumonia","Sífilis"], contraindicacoes:["Alergia a cefalosporinas"], interacoes:["Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ Alergia cruzada penicilinas (15%)", popular:true, custo:"Médio" },
+      { id:"gentamicina_inj", n:"Gentamicina 40 mg/mL solução injetável", g:"Antibióticos", l:"AMA", forma:"Solução injetável", via:"IV/IM", dose:"Adulto: 3-5mg/kg/dia IV/IM", indicacoes:["Infecções graves","Sepse"], contraindicacoes:["Insuf. renal","Hipersensibilidade"], interacoes:["Aminoglicosídeos (toxicidade)","Cisplatina","Digoxina"], antidotos:["Suporte","Hemodiálise"], alerta:"⚠️ Nefrotoxicidade e ototoxicidade", popular:false, custo:"Baixo" },
+      { id:"clindamicina_inj", n:"Clindamicina 150 mg/mL solução injetável", g:"Antibióticos", l:"AMA", forma:"Solução injetável", via:"IV/IM", dose:"Adulto: 600-900mg IV/IM 8h", indicacoes:["Infecções anaeróbicas","Infecções de partes moles"], contraindicacoes:["Hipersensibilidade","Doença GI grave"], interacoes:["Bloqueadores neuromusculares","Eritromicina"], antidotos:["Suporte"], alerta:"⚠️ Risco de colite pseudomembranosa", popular:false, custo:"Médio" },
+      { id:"enoxaparina_40", n:"Enoxaparina sódica 40 mg seringa SC", g:"Cardiovascular", l:"AMA", forma:"Seringa preenchida", via:"SC", dose:"Adulto: 40mg SC 1x/dia (profilaxia)", indicacoes:["Profilaxia TVP","SCA"], contraindicacoes:["Hemorragia ativa","Trombocitopenia"], interacoes:["Anticoagulantes","AINEs"], antidotos:["Sulfato de protamina"], alerta:"⚠️ Monitorar plaquetas - risco de sangramento", popular:true, custo:"Alto" },
+      { id:"enoxaparina_60", n:"Enoxaparina sódica 60 mg seringa SC", g:"Cardiovascular", l:"AMA", forma:"Seringa preenchida", via:"SC", dose:"Adulto: 60mg SC 1x/dia (profilaxia alta)", indicacoes:["Profilaxia TVP em peso >60kg","SCA"], contraindicacoes:["Hemorragia ativa","Trombocitopenia"], interacoes:["Anticoagulantes","AINEs"], antidotos:["Sulfato de protamina"], alerta:"⚠️ Ajuste de dose por peso", popular:false, custo:"Alto" },
+      { id:"furosemida_inj", n:"Furosemida 10 mg/mL solução injetável", g:"Cardiovascular", l:"AMA", forma:"Solução injetável", via:"IV/IM", dose:"Adulto: 20-40mg IV/IM (máx 200mg/dia)", indicacoes:["Edema agudo pulmonar","Insuf. cardíaca"], contraindicacoes:["Anúria","Hipocalemia","Gestação"], interacoes:["Digoxina","AINEs","Lítio"], antidotos:["Eletrólitos"], alerta:"⚠️ Administrar lentamente (IV: 1-2 min)", popular:true, custo:"Baixo" },
+      { id:"metoclopramida_inj", n:"Metoclopramida 5 mg/mL solução injetável", g:"Antieméticos / Antivertiginosos", l:"AMA", forma:"Solução injetável", via:"IV/IM", dose:"Adulto: 10mg IV/IM 8h", indicacoes:["Náusea","Vômito","Gastroparesia"], contraindicacoes:["Hemorragia GI","Feocromocitoma","Parkinson"], interacoes:["Anticolinérgicos","Neurolépticos"], antidotos:["Suporte"], alerta:"⚠️ Efeitos extrapiramidais - principalmente em jovens", popular:true, custo:"Baixo" },
+      { id:"ondansetrona_inj", n:"Ondansetrona 2 mg/mL solução injetável", g:"Antieméticos / Antivertiginosos", l:"AMA", forma:"Solução injetável", via:"IV/IM", dose:"Adulto: 8mg IV/IM 8-12h", indicacoes:["Náusea pós-quimioterapia","Náusea pós-cirúrgica"], contraindicacoes:["Prolongamento QT","Hipersensibilidade"], interacoes:["Antifúngicos","Antiarrítmicos","Antidepressivos"], antidotos:["Suporte"], alerta:"⚠️ Monitorar ECG - risco de arritmia", popular:false, custo:"Médio" },
+      { id:"dexametasona_inj", n:"Dexametasona 4 mg/mL solução injetável", g:"Outros / Diversos", l:"AMA", forma:"Solução injetável", via:"IV/IM", dose:"Adulto: 4-8mg IV/IM 6-12h", indicacoes:["Edema cerebral","Reações alérgicas","Estado asmático"], contraindicacoes:["Infecção fúngica sistêmica"], interacoes:["AINEs","Anticoagulantes","Antidiabéticos"], antidotos:["Suporte"], alerta:"⚠️ Suspensão gradual - não interromper abruptamente", popular:true, custo:"Baixo" },
+      { id:"hidrocortisona_inj", n:"Hidrocortisona 100 mg pó para solução injetável", g:"Outros / Diversos", l:"AMA", forma:"Pó para solução injetável", via:"IV/IM", dose:"Adulto: 100mg IV/IM 8h (crise)", indicacoes:["Insuf. adrenal","Estado asmático","Choque"], contraindicacoes:["Infecção fúngica sistêmica"], interacoes:["AINEs","Anticoagulantes","Antidiabéticos"], antidotos:["Suporte"], alerta:"⚠️ Emergência adrenal - administrar imediatamente", popular:false, custo:"Médio" },
+
+      // ===== Oftálmicos (8 medicamentos) =====
+      { id:"tobramicina_col", n:"Tobramicina 3 mg/mL (0,3%) solução oftálmica", g:"Oftálmico", l:"UBS", forma:"Solução oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1-2 gotas 4/6h", indicacoes:["Infecções oculares","Conjuntivite bacteriana"], contraindicacoes:["Hipersensibilidade"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Não usar lentes de contato durante o tratamento", popular:true, custo:"Baixo" },
+      { id:"cloranfenicol_col", n:"Cloranfenicol + retinol + aminoácidos + metionina pomada oftálmica", g:"Oftálmico", l:"UBS", forma:"Pomada oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: aplicar 1-2x/dia", indicacoes:["Infecções oculares","Ceratite","Conjuntivite"], contraindicacoes:["Hipersensibilidade","Gestação"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Uso restrito - monitorar reações alérgicas", popular:true, custo:"Médio" },
+      { id:"dexametasona_col", n:"Dexametasona 1 mg/mL (0,1%) suspensão oftálmica", g:"Oftálmico", l:"UBS", forma:"Suspensão oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1-2 gotas 4/6h", indicacoes:["Inflamação ocular","Alergia ocular"], contraindicacoes:["Infecção viral/fúngica ocular","Glaucoma"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Agitar antes de usar - não usar em infecções não tratadas", popular:true, custo:"Médio" },
+      { id:"brimonidina_col", n:"Brimonidina 2 mg/mL (0,2%) solução oftálmica", g:"Oftálmico", l:"UBS", forma:"Solução oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1 gota 2x/dia", indicacoes:["Glaucoma","Hipertensão ocular"], contraindicacoes:["Hipersensibilidade","Crianças <2 anos"], interacoes:["Antidepressivos","Anti-hipertensivos"], antidotos:["Suporte"], alerta:"⚠️ Monitorar pressão intraocular", popular:false, custo:"Médio" },
+      { id:"timolol_col", n:"Timolol 5 mg/mL (0,5%) solução oftálmica", g:"Oftálmico", l:"UBS", forma:"Solução oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1 gota 2x/dia", indicacoes:["Glaucoma","Hipertensão ocular"], contraindicacoes:["Asma","Bradicardia","DPOC"], interacoes:["Beta-bloqueadores orais","Verapamil"], antidotos:["Atropina","Glucagon"], alerta:"⚠️ Pode ser absorvido sistemicamente - monitorar FC", popular:false, custo:"Médio" },
+      { id:"pilocarpina_col", n:"Pilocarpina 20 mg/mL (2%) solução oftálmica", g:"Oftálmico", l:"UBS", forma:"Solução oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1-2 gotas 3-4x/dia", indicacoes:["Glaucoma","Hipertensão ocular"], contraindicacoes:["Uveíte","Glaucoma de ângulo fechado"], interacoes:["Anticolinérgicos"], antidotos:["Atropina (antídoto)"], alerta:"⚠️ Pode causar miopia transitória", popular:false, custo:"Médio" },
+      { id:"aciclovir_oft", n:"Aciclovir 30 mg/g (3%) pomada oftálmica", g:"Oftálmico", l:"UBS", forma:"Pomada oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: aplicar 5x/dia", indicacoes:["Herpes ocular","Ceratite herpética"], contraindicacoes:["Hipersensibilidade"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Aplicar ao primeiro sinal", popular:true, custo:"Médio" },
+      { id:"dextrana_hipromelose", n:"Dextrana + Hipromelose (0,3%) solução oftálmica", g:"Oftálmico", l:"UBS", forma:"Solução oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1-2 gotas 3-4x/dia", indicacoes:["Olho seco","Lágrima artificial","Irritação ocular"], contraindicacoes:["Hipersensibilidade"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Lágrima artificial - usar quando necessário", popular:true, custo:"Baixo" }
     ];
 
-    // ============================================================
+    // ================================================================
     // COMPONENTE PRINCIPAL
-    // ============================================================
+    // ================================================================
     function App() {
       const [query, setQuery] = useState("");
       const [activeGroup, setActiveGroup] = useState(null);
@@ -107,72 +230,40 @@
         "Oftálmico":"#2E86AB"
       };
 
-      // ===== BUSCA MELHORADA: prioriza início do nome =====
+      // ===== Busca melhorada =====
       const results = useMemo(() => {
         const q = query.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        if (q.length === 0) {
-          // Sem busca, retorna todos (com filtros)
-          return MEDS.filter(m => {
-            const matchG = !activeGroup || m.g === activeGroup;
-            const matchL = filterLocal === 'all' || m.l === filterLocal || m.l.includes(filterLocal);
-            const matchV = filterVia === 'all' || m.via === filterVia ||
-              (filterVia === 'Injetável' && ['IV','IM','IV/IM','SC'].includes(m.via)) ||
-              (filterVia === 'Oral' && m.via === 'Oral') ||
-              (filterVia === 'Inalatória' && m.via === 'Inalatória');
-            const matchP = !showOnlyPopular || m.popular;
-            return matchG && matchL && matchV && matchP;
-          });
-        }
-
-        // Separa o termo em palavras (ex: "tobramicina colirio")
-        const palavras = q.split(/\s+/).filter(p => p.length > 0);
-
-        return MEDS
-          .filter(m => {
-            // Filtros de grupo, local, via, popular (já aplicados)
-            const matchG = !activeGroup || m.g === activeGroup;
-            const matchL = filterLocal === 'all' || m.l === filterLocal || m.l.includes(filterLocal);
-            const matchV = filterVia === 'all' || m.via === filterVia ||
-              (filterVia === 'Injetável' && ['IV','IM','IV/IM','SC'].includes(m.via)) ||
-              (filterVia === 'Oral' && m.via === 'Oral') ||
-              (filterVia === 'Inalatória' && m.via === 'Inalatória');
-            const matchP = !showOnlyPopular || m.popular;
-            if (!matchG || !matchL || !matchV || !matchP) return false;
-
-            // Busca textual
-            const nomeNorm = m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            const grupoNorm = m.g.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            const indNorm = (m.indicacoes || []).join(' ').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-            // Verifica se todas as palavras estão em algum lugar (AND)
-            return palavras.every(palavra =>
-              nomeNorm.includes(palavra) ||
-              grupoNorm.includes(palavra) ||
-              indNorm.includes(palavra)
-            );
-          })
-          .sort((a, b) => {
-            // Ordenação por relevância: primeiro os que começam com a primeira palavra
-            const primeiraPalavra = palavras[0];
+        return MEDS.filter(m => {
+          const nome = m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          const grupo = m.g.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          const ind = (m.indicacoes || []).join(' ').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          const matchQ = q.length === 0 || nome.includes(q) || grupo.includes(q) || ind.includes(q);
+          const matchG = !activeGroup || m.g === activeGroup;
+          const matchL = filterLocal === 'all' || m.l === filterLocal || m.l.includes(filterLocal);
+          const matchV = filterVia === 'all' || m.via === filterVia ||
+            (filterVia === 'Injetável' && ['IV','IM','IV/IM','SC'].includes(m.via)) ||
+            (filterVia === 'Oral' && m.via === 'Oral') ||
+            (filterVia === 'Inalatória' && m.via === 'Inalatória');
+          const matchP = !showOnlyPopular || m.popular;
+          return matchQ && matchG && matchL && matchV && matchP;
+        }).sort((a,b) => {
+          if (q.length > 0) {
             const aNome = a.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             const bNome = b.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            const aStarts = aNome.startsWith(primeiraPalavra);
-            const bStarts = bNome.startsWith(primeiraPalavra);
+            const aStarts = aNome.startsWith(q);
+            const bStarts = bNome.startsWith(q);
             if (aStarts && !bStarts) return -1;
             if (!aStarts && bStarts) return 1;
-            // Depois, ordem alfabética
-            return a.n.localeCompare(b.n);
-          });
+          }
+          return a.n.localeCompare(b.n);
+        });
       }, [query, activeGroup, filterLocal, filterVia, showOnlyPopular]);
 
       const toggleFav = (id) => {
         setFavorites(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
       };
 
-      // Lista alfabética (ordenada por nome)
-      const listaAlfabetica = useMemo(() => {
-        return [...MEDS].sort((a, b) => a.n.localeCompare(b.n));
-      }, []);
+      const listaAlfabetica = [...MEDS].sort((a,b) => a.n.localeCompare(b.n));
 
       return (
         <div className="app" style={{ background: darkMode ? '#0F1A15' : '#EEF2EF', minHeight: '100vh', color: darkMode ? '#DCE8E0' : '#14231D' }}>
@@ -279,6 +370,33 @@
             <p>REMUME - SMS-SP · Dados manuais atualizados jun/2026 · {MEDS.length} medicamentos</p>
             <p style={{ marginTop: 4 }}>Dica: digite o início do nome (ex: "Tobramicina") para busca mais rápida.</p>
           </footer>
+
+          {/* Modal da lista alfabética */}
+          {showLista && (
+            <div className="modal-overlay" onClick={() => setShowLista(false)}>
+              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <button className="modal-close" onClick={() => setShowLista(false)}>✕</button>
+                <h2 style={{ marginBottom: 16 }}>📋 Lista alfabética de medicamentos</h2>
+                <div className="lista-header" style={{ display: 'flex' }}>
+                  <span className="lista-nome">Nome</span>
+                  <span className="lista-grupo">Grupo</span>
+                  <span className="lista-local">Local</span>
+                  <span className="lista-via">Via</span>
+                </div>
+                {listaAlfabetica.map(m => (
+                  <div key={m.id} className="lista-item">
+                    <span className="lista-nome">{m.n}</span>
+                    <span className="lista-grupo">{m.g}</span>
+                    <span className="lista-local">{m.l}</span>
+                    <span className="lista-via">{m.via}</span>
+                  </div>
+                ))}
+                <div style={{ marginTop: 16, fontSize: 12, color: '#8AA098' }}>
+                  Total: {listaAlfabetica.length} medicamentos
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       );
     }
