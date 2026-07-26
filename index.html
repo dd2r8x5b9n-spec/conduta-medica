@@ -103,8 +103,9 @@
             if (dados) {
                 condutas = JSON.parse(dados);
             } else {
-                // ===== LISTA COMPLETA (38 CIDs) =====
+                // ===== LISTA COMPLETA (38 CIDs + 5 NOVAS = 43 CIDs) =====
                 condutas = [
+                    // INFECÇÕES
                     {
                         cid: 'A54',
                         diagnostico: 'Gonorreia',
@@ -177,6 +178,7 @@
                         observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Escabiose típica | Permetrina ou Ivermectina + tratar contatos |\n| Prurido persistente > 4 semanas | Reavaliar – pode ser falha ou reação alérgica pós-tratamento |\n| Escabiose crostosa | ⚠️ Encaminhar UPA/Dermatologia (altamente contagiosa) |\n| Infecção secundária (celulite) | ⚠️ Encaminhar UPA |\n\n⚠️ ATENÇÃO ESPECIAL:\n- Tratar todos os contatos SIMULTANEAMENTE.\n- O ácaro sobrevive até 72h fora do corpo – lavar roupas em água quente ou guardar em saco plástico por 3 dias.',
                         fonte: 'Protocolo SMS/SP - Dermatologia'
                     },
+                    // ENDOCRINOLOGIA
                     {
                         cid: 'E16',
                         diagnostico: 'Hipoglicemia',
@@ -186,6 +188,7 @@
                         observacoes: '📋 LEMBRETE RÁPIDO:\nE16 - Hipoglicemia: sempre reavaliar glicemia após 15 minutos. Se refratária, investigar causa (excesso de insulina, jejum prolongado).',
                         fonte: 'Protocolo SMS/SP - Endocrinologia'
                     },
+                    // NEUROLOGIA
                     {
                         cid: 'G40',
                         diagnostico: 'Crise Epiléptica (Convulsão)',
@@ -204,6 +207,7 @@
                         observacoes: '📋 LEMBRETE RÁPIDO:\nG43.0 - Enxaqueca sem aura: diferenciação com cefaleia tensional e cefaleia secundária (sinais de alarme: febre, rigidez nucal, déficit focal).',
                         fonte: 'Protocolo SMS/SP - Cefaleias'
                     },
+                    // OFTALMOLOGIA
                     {
                         cid: 'H00.0',
                         diagnostico: 'Hordéolo (Terçol)',
@@ -231,6 +235,7 @@
                         observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Crise aguda de vertigem + náuseas, sem sinais neurológicos | Sintomáticos + repouso + alta com orientação para otorrino |\n| Vertigem + perda auditiva + zumbido | Suspeita de Labirintite – tratar sintomas e encaminhar para otorrino |\n| Vertigem + sinais neurológicos | ⚠️ Suspeita de AVC – Encaminhar UPA/PSA URGENTE |\n| Idoso com vertigem e instabilidade postural | ⚠️ Risco de queda – orientar repouso |',
                         fonte: 'Protocolo SMS/SP - Vertigem'
                     },
+                    // CARDIOVASCULAR
                     {
                         cid: 'I10',
                         diagnostico: 'Hipertensão Arterial Sistêmica',
@@ -285,6 +290,7 @@
                         observacoes: '📋 CRITÉRIOS DE WELLS PARA TVP (PONTUAÇÃO):\n| Critério | Pontos |\n| Câncer ativo | +1 |\n| Paresia ou imobilização recente | +1 |\n| Imobilização ≥ 3 dias ou cirurgia | +1 |\n| Dor à palpação das veias profundas | +1 |\n| Edema de toda a perna | +1 |\n| Edema > 2 cm acima do tornozelo contralateral | +1 |\n| Veias colaterais superficiais | +1 |\n| Diagnóstico alternativo tão provável | -2 |\n\n📊 ESCORE:\n| ≥ 2 | Alta | Encaminhar com urgência |\n| 1 | Moderada | Encaminhar para investigação |\n| ≤ 0 | Baixa | Considerar diagnóstico alternativo |\n\n⚠️ SINAIS DE ALARME (EMBOLIA PULMONAR):\n- Dispneia súbita, dor torácica ventilatório-dependente, hemoptise, hipoxemia (SatO2 < 94%), hipotensão, rebaixamento da consciência.\nSe presente: O2, monitorização e encaminhamento imediato para UPA/PSA com suporte avançado.',
                         fonte: 'Protocolo SMS/SP - TVP'
                     },
+                    // RESPIRATÓRIO
                     {
                         cid: 'J11',
                         diagnostico: 'Síndrome Gripal / Dengue',
@@ -303,6 +309,7 @@
                         observacoes: '📋 LEMBRETE RÁPIDO:\nJ44 - DPOC/Asma: avaliar gravidade pela FR, uso de musculatura acessória e SatO2. Se melhora com broncodilatador, pode ser tratado na AMA. Se sem melhora, encaminhar.',
                         fonte: 'Protocolo SMS/SP - Pneumologia'
                     },
+                    // GASTROINTESTINAL
                     {
                         cid: 'K81.0',
                         diagnostico: 'Colecistite aguda',
@@ -312,6 +319,7 @@
                         observacoes: '📋 LEMBRETE RÁPIDO:\nK81.0 - Colecistite aguda: sinais de gravidade incluem febre alta, peritonite (abdome agudo) e icterícia – encaminhar com urgência para avaliação cirúrgica.',
                         fonte: 'Protocolo SMS/SP - Abdome Agudo'
                     },
+                    // NEFROLOGIA / UROLOGIA
                     {
                         cid: 'N23',
                         diagnostico: 'Cólica renal (Litíase urinária)',
@@ -330,6 +338,7 @@
                         observacoes: '📋 LEMBRETE RÁPIDO:\nN39 - ITU: na AMA, o tratamento é resolutivo para a maioria das mulheres jovens sem comorbidades. Se pielonefrite suspeita (febre alta, dor lombar), encaminhar.',
                         fonte: 'Protocolo SMS/SP - Infectologia'
                     },
+                    // OBSTETRÍCIA
                     {
                         cid: 'O14',
                         diagnostico: 'Pré-eclâmpsia',
@@ -348,6 +357,7 @@
                         observacoes: '📋 LEMBRETE RÁPIDO:\nO21 - Hiperêmese Gravídica: a maioria dos casos leves resolve na AMA com antieméticos e orientação alimentar. Se desidratação grave ou perda de peso > 5%, encaminhar para maternidade.',
                         fonte: 'Protocolo SMS/SP - Obstetrícia'
                     },
+                    // SINTOMAS E SINAIS
                     {
                         cid: 'R04.0',
                         diagnostico: 'Epistaxe (Sangramento nasal)',
@@ -402,6 +412,7 @@
                         observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Suspeita de sepse (infecção + 2 critérios de SIRS + disfunção orgânica) | ⚠️ Estabilizar (O2, acesso, volume) e encaminhar URGENTE |\n| Choque séptico (hipotensão refratária a volume) | ⚠️ Noradrenalina + encaminhamento com monitorização contínua |\n| Lactato elevado (> 2 mmol/L) | ⚠️ Marcador de gravidade |\n| Paciente com sepse e instabilidade hemodinâmica | ⚠️ Não tentar resolver na AMA – estabilizar e transferir |\n\n⚠️ PACOTE DE 1 HORA:\n1. Medir lactato\n2. Coletar hemoculturas\n3. Iniciar antibiótico de amplo espectro\n4. Reposição volêmica com cristaloides (20-30 mL/kg)\n5. Vasopressor se hipotensão (PAM ≥ 65 mmHg)',
                         fonte: 'Protocolo SMS/SP - Sepse'
                     },
+                    // ACIDENTES
                     {
                         cid: 'T63',
                         diagnostico: 'Acidente por animal peçonhento',
@@ -429,6 +440,7 @@
                         observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Síndrome Gripal + SatO2 ≥ 95% | Testar + sintomáticos + isolamento + alta com orientação |\n| ≥ 65 anos ou imunossuprimido + até 5 dias de sintomas | Avaliar elegibilidade para antiviral (NMV/r - Paxlovid) |\n| Dispneia, SatO2 ≤ 94% ou SRAG | ⚠️ Emergência! Estabilizar e encaminhar URGENTE para UPA |\n| Exames de risco elevados (PCR, DHL, ferritina) | Indicam maior risco de evolução grave – considerar encaminhamento precoce |',
                         fonte: 'Protocolo SMS/SP - COVID-19'
                     },
+                    // ACIDENTES (continuação)
                     {
                         cid: 'W54',
                         diagnostico: 'Mordedura de cão',
@@ -446,6 +458,52 @@
                         conduta: 'RESOLVE NA AMA (reações locais). ⚠️ ENCAMINHAR IMEDIATAMENTE se anafilaxia, infecção grave.',
                         observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Reação local (dor, edema, prurido) | Limpeza + compressa fria + analgésico/anti-histamínico + alta com orientação |\n| Reação alérgica grave (anafilaxia) | ⚠️ Emergência – Adrenalina 0,3-0,5mg IM + O2 + encaminhamento UPA/PSA |\n| Sinais de infecção (celulite, abscesso) | Antibiótico (se leve) ou encaminhamento UPA (se grave) |\n| Suspeita de doença transmitida por vetor | Investigar sintomas associados e encaminhar conforme protocolo |',
                         fonte: 'Protocolo SMS/SP - Acidentes com Animais'
+                    },
+                    // ===== NOVAS CONDUTAS (5) =====
+                    {
+                        cid: 'G03.9',
+                        diagnostico: 'Meningite (Suspeita)',
+                        exames: 'Sinais vitais completos, Glicemia capilar, Exame neurológico sumário (rigidez nucal, Kernig, Brudzinski). Hemograma, PCR, Coagulograma (se petéquias).',
+                        tratamento: 'O2 (se SatO2 < 94%), acesso venoso, reposição volêmica. Antibiótico empírico (na UPA): Ceftriaxona 2g EV + Vancomicina 1g EV + Ampicilina 2g EV (se > 50 anos). Dexametasona 10mg EV (antes do antibiótico, na UPA).',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA MÉDICA. ENCAMINHAR PARA UPA/PSA IMEDIATAMENTE após estabilização. Notificar a Vigilância Epidemiológica.',
+                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Suspeita de meningite (febre + cefaleia + rigidez nucal) | ⚠️ Emergência – Encaminhar URGENTE UPA/PSA |\n| Petéquias ou púrpura | ⚠️ Meningococcemia – Encaminhamento URGENTE |\n| Rebaixamento da consciência | ⚠️ Proteger vias aéreas – Encaminhar com suporte avançado |\n\n⚠️ SINAIS DE ALARME:\n- Febre alta (> 38,5°C)\n- Cefaleia intensa\n- Rigidez nucal\n- Rebaixamento da consciência\n- Vômitos em jato\n- Petéquias / púrpura\n- Kernig e Brudzinski positivos\n\n⚠️ NOTIFICAÇÃO COMPULSÓRIA: Meningite é de notificação compulsória.',
+                        fonte: 'Protocolo SMS/SP - Meningites'
+                    },
+                    {
+                        cid: 'R51',
+                        diagnostico: 'Cefaleia (Dor de cabeça)',
+                        exames: 'Sinais vitais, Glicemia capilar, Avaliação neurológica sumária (pupilas, pares cranianos, força, sensibilidade, coordenação, marcha). Fundoscopia (se disponível). ECG se > 50 anos.',
+                        tratamento: '• Tensional/Enxaqueca leve: Dipirona 1g VO/EV ou Ibuprofeno 600mg VO ou Paracetamol 750mg VO. • Com náuseas: Metoclopramida 10mg EV/IM ou Ondansetrona 4mg IV. • Refratária: Sumatriptano 50-100mg VO (se disponível). • Em salvas: Oxigênio 100% (12-15L/min) 15-20min + Sumatriptano.',
+                        conduta: 'RESOLVE NA AMA (cefaleia primária, sem sinais de alarme). Orientar repouso, hidratação, evitar gatilhos. ⚠️ ENCAMINHAR UPA/PSA IMEDIATAMENTE se: "pior dor de cabeça da vida", febre + rigidez nucal (meningite), déficit focal, rebaixamento, papiledema, imunossuprimido, esforço/atividade sexual.',
+                        observacoes: '📋 DIFERENCIAÇÃO RÁPIDA:\n| Tipo | Características | Conduta |\n| Tensional | Opressiva/bilateral, leve a moderada | ✅ Resolve na AMA |\n| Enxaqueca | Pulsátil/unilateral, náuseas, fotofobia | ✅ Resolve na AMA |\n| Em salvas | Unilateral/periorbitária, intensa, lacrimejamento | ⚠️ Oxigênio + encaminhar UPA |\n| Secundária (sinais de alarme) | Início súbito, febre, déficit focal | ⚠️ ENCAMINHAR URGENTE |\n\n⚠️ SINAIS DE ALARME:\n- "Pior dor de cabeça da vida" (início súbito)\n- Cefaleia + febre + rigidez nucal\n- Déficit neurológico focal\n- Rebaixamento da consciência\n- Papiledema',
+                        fonte: 'Protocolo SMS/SP - Cefaleias'
+                    },
+                    {
+                        cid: 'I71.0',
+                        diagnostico: 'Dissecção de Aorta (Suspeita)',
+                        exames: 'Sinais vitais (PA em ambos os braços), ECG, Raio-X de tórax (alargamento do mediastino). Troponina (descartar IAM). Exame físico: pulsos periféricos (assimetria), sopro aórtico, déficit neurológico.',
+                        tratamento: 'O2, acesso venoso (dois acessos). Controle da dor: Morfina 2-5mg EV. Controle da PA: Betabloqueador (Metoprolol 5mg EV lento ou Esmolol EV) – manter PA ≤ 110 mmHg e FC ≤ 60 bpm. NÃO usar anticoagulantes.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA MÉDICA GRAVE. ENCAMINHAR PARA UPA/PSA IMEDIATAMENTE após estabilização. Transporte com monitorização contínua.',
+                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta |\n| Dor súbita e lancinante + irradiação para dorso | ⚠️ Emergência – Encaminhar URGENTE |\n| Assimetria de PA (> 20 mmHg entre os braços) | ⚠️ Forte suspeita – encaminhar URGENTE |\n| Déficit neurológico focal | ⚠️ Encaminhar URGENTE |\n\n⚠️ SINAIS DE ALARME:\n- Dor súbita e lancinante (pior dor da vida)\n- Irradiação para dorso ou abdome\n- Assimetria de pulsos\n- Sopro aórtico\n- Déficit neurológico focal\n- Síncope\n\n⚠️ CONTRAINDICAÇÕES: NÃO usar AAS, heparina ou anticoagulantes.',
+                        fonte: 'Protocolo SMS/SP - Dissecção Aórtica'
+                    },
+                    {
+                        cid: 'I67.1',
+                        diagnostico: 'Aneurisma Cerebral (Suspeita – Hemorragia Subaracnoide)',
+                        exames: 'Sinais vitais, Glicemia capilar, Exame neurológico sumário (pupilas, pares cranianos, força, sensibilidade, nível de consciência, rigidez nucal).',
+                        tratamento: 'O2 (se SatO2 < 94%), acesso venoso, reposição volêmica (se hipotensão). Controle da PA: manter PA < 160x100 mmHg (evitar picos hipertensivos). Controle da dor: Dipirona 1g EV ou Morfina 2-5mg EV. NÃO usar anticoagulantes.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA MÉDICA GRAVE. ENCAMINHAR PARA UPA/PSA IMEDIATAMENTE após estabilização. Suspeita de hemorragia subaracnoide requer TC e neurocirurgia urgente.',
+                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta |\n| "Pior dor de cabeça da vida" (início súbito) | ⚠️ Suspeita de hemorragia subaracnoide – encaminhar URGENTE |\n| Cefaleia + náuseas/vômitos + rebaixamento | ⚠️ Encaminhar URGENTE – TC na UPA |\n| Cefaleia + rigidez nucal + fotofobia | ⚠️ Suspeita de hemorragia ou meningite – encaminhar URGENTE |\n\n⚠️ SINAIS DE ALARME:\n- "Pior dor de cabeça da vida" (início súbito)\n- Cefaleia + náuseas/vômitos\n- Rebaixamento da consciência\n- Rigidez nucal\n- Fotofobia\n- Déficit neurológico focal\n\n⚠️ ATENÇÃO: NÃO tratar hipertensão agressivamente – manter PA < 160x100 mmHg.',
+                        fonte: 'Protocolo SMS/SP - Aneurisma Cerebral'
+                    },
+                    {
+                        cid: 'N94.6',
+                        diagnostico: 'Dismenorreia (Cólica menstrual)',
+                        exames: 'Sinais vitais (PA, FC, FR, T°), Exame físico abdominal (descartar abdome agudo), B-HCG (sempre em mulheres em idade fértil – descartar gravidez).',
+                        tratamento: '• Analgesia/antiespasmódico: Dipirona 1g VO/EV + Escopolamina 20mg EV (cólica). • Anti-inflamatório: Ibuprofeno 600mg VO (ou Diclofenaco 50mg VO) – início precoce (até 48h do início da dor). • Náuseas/vômitos: Ondansetrona 4mg IV ou Metoclopramida 10mg EV. • Anticoncepcional oral (para recidivas – orientar e encaminhar para UBS).',
+                        conduta: 'RESOLVE NA AMA (em mulheres jovens, sem sinais de gravidade, sem suspeita de gravidez ou abdome agudo). Orientar repouso, compressa quente no abdome, hidratação, evitar cafeína. Prescrever analgésico/antiespasmódico para casa. ⚠️ ENCAMINHAR PARA UPA/PSA se: dor refratária a 2 ciclos de analgésicos, sinais de abdome agudo (febre, rigidez/defesa, Blumberg +), sangramento intenso, suspeita de gravidez (B-HCG +), ou suspeita de endometriose/doença pélvica (encaminhar para ginecologia).',
+                        observacoes: '📋 LEMBRETE RÁPIDO PARA O PLANTÃO:\n| Situação | Conduta na AMA |\n| Dismenorreia típica (cólica + dor em HCD/pelve, sem febre) | ✅ Resolve na AMA – Dipirona/Escopolamina + Ibuprofeno + orientação |\n| Dor refratária a 2 ciclos de analgésicos | ⚠️ Encaminhar UPA/PSA (investigação) |\n| Sangramento intenso + dor | ⚠️ Encaminhar UPA/PSA (descartar gravidez ectópica, mioma) |\n| Febre + dor + Blumberg + | ⚠️ Encaminhar URGENTE (suspeita de apendicite/abdome agudo) |\n| Suspeita de gravidez (B-HCG +) | ⚠️ Encaminhar UPA/MATERNIDADE (descartar gravidez ectópica) |\n\n⚠️ ATENÇÃO ESPECIAL:\n- B-HCG é obrigatório em mulheres em idade fértil (descartar gravidez antes de qualquer tratamento).\n- Dismenorreia secundária (endometriose, mioma, DIP) deve ser encaminhada para ginecologia.',
+                        fonte: 'Protocolo SMS/SP - Dismenorreia'
                     }
                 ];
                 salvarDados();
@@ -519,8 +577,8 @@
                 return;
             }
 
-            const encontrados = condutas.filter(c =>
-                c.diagnostico.toLowerCase().includes(termo) ||
+            const encontrados = condutas.filter(c => 
+                c.diagnostico.toLowerCase().includes(termo) || 
                 c.cid.toLowerCase().includes(termo)
             );
 
@@ -648,7 +706,9 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('busca').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') buscar();
+                if (e.key === 'Enter') {
+                    buscar();
+                }
             });
         });
 
