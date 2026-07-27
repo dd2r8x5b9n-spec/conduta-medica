@@ -59,7 +59,7 @@
     const { useState, useMemo, useEffect } = React;
 
     // ================================================================
-    // LISTA COMPLETA DE MEDICAMENTOS (INCLUI TODOS OS NOVOS INJETÁVEIS)
+    // LISTA COMPLETA DE MEDICAMENTOS
     // ================================================================
     const MEDS = [
       // ===== ANALGÉSICOS / ANTITÉRMICOS =====
@@ -84,9 +84,9 @@
       { id:"sulfametoxazol_tmp", n:"Sulfametoxazol 800mg + Trimetoprima 160mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 1 comp 12/12h", indicacoes:["ITU","Infecções respiratórias"], contraindicacoes:["Insuf. renal","G6PD","Gestação"], interacoes:["Varfarina","Anticonvulsivantes"], antidotos:["Ácido folínico"], alerta:"⚠️ Risco de Stevens-Johnson", popular:true, custo:"Baixo" },
       { id:"claritromicina_500", n:"Claritromicina 500 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg 12/12h", indicacoes:["Infecções respiratórias","H. pylori"], contraindicacoes:["Alergia a macrolídeos","Insuf. hepática"], interacoes:["Digoxina","Anticoagulantes","Estatinas"], antidotos:["Suporte"], alerta:"⚠️ Muitas interações", popular:true, custo:"Médio" },
       { id:"doxiciclina_100", n:"Doxiciclina 100 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 100mg 12/12h", indicacoes:["Acne","Infecções atípicas"], contraindicacoes:["Gestação","Crianças <8 anos"], interacoes:["Antiácidos","Ferro","Cálcio"], antidotos:["Suporte"], alerta:"⚠️ Fotosensibilidade", popular:true, custo:"Médio" },
-      { id:"norfloxacino_500", n:"Norfloxacino 500 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg 12/12h", indicacoes:["ITU","Infecções gastrointestinais","Prostatite"], contraindicacoes:["Gestação","Crianças <18 anos","Tendinopatia"], interacoes:["Teofilina","Anticoagulantes","Antiácidos"], antidotos:["Suporte"], alerta:"⚠️ Risco de tendinite - evitar exercícios intensos", popular:true, custo:"Médio" },
+      { id:"norfloxacino_400", n:"Norfloxacino 400 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 400mg 12/12h", indicacoes:["ITU","Infecções gastrointestinais","Prostatite"], contraindicacoes:["Gestação","Crianças <18 anos","Tendinopatia"], interacoes:["Teofilina","Anticoagulantes","Antiácidos"], antidotos:["Suporte"], alerta:"⚠️ Risco de tendinite - evitar exercícios intensos", popular:true, custo:"Médio" },
       { id:"ciprofloxacino_500", n:"Ciprofloxacino 500 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg 12/12h", indicacoes:["ITU","Infecções respiratórias","Infecções gastrointestinais"], contraindicacoes:["Gestação","Lactação","Crianças <18 anos","Tendinopatia"], interacoes:["Teofilina","Anticoagulantes","Antiácidos"], antidotos:["Suporte"], alerta:"⚠️ Risco de ruptura tendínea - evitar exercícios intensos", popular:true, custo:"Médio" },
-      { id:"levofloxacino_500", n:"Levofloxacino 500 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg 1x/dia", indicacoes:["Infecções respiratórias","ITU","Sinusite"], contraindicacoes:["Gestação","<18 anos","Tendinopatia"], interacoes:["Antiácidos","AINEs","Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ Risco de tendinite e fotossensibilidade", popular:true, custo:"Médio" },
+      { id:"levofloxacino_500", n:"Levofloxacino 500 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg 1x/dia", indicacoes:["Infecções respiratórias","ITU","Sinusite","Pneumonia"], contraindicacoes:["Gestação","<18 anos","Tendinopatia","Epilepsia"], interacoes:["Antiácidos","AINEs","Anticoagulantes","Teofilina"], antidotos:["Suporte"], alerta:"⚠️ Risco de tendinite e fotossensibilidade", popular:true, custo:"Médio" },
 
       // ===== CARDIOVASCULARES =====
       { id:"losartana_50", n:"Losartana 50 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 50-100mg/dia", indicacoes:["Hipertensão","Insuf. cardíaca"], contraindicacoes:["Gestação","Insuf. renal grave"], interacoes:["AINEs","Lítio"], antidotos:["Suporte"], alerta:"⚠️ Contraindicado na gestação", popular:true, custo:"Baixo" },
@@ -192,15 +192,34 @@
       { id:"prometazina_amp_ama", n:"Prometazina 25 mg/mL ampola - 1 ampola IM", g:"Anti-histamínicos", l:"AMA", forma:"Solução injetável (ampola)", via:"IM", dose:"Adulto: 25-50mg IM (1-2 ampolas) 4/6h", indicacoes:["Reações alérgicas graves","Náusea intensa","Prurido","Sedação pré-operatória"], contraindicacoes:["<2 anos","Glaucoma","Hiperplasia prostática","Asma"], interacoes:["Depressores SNC","Álcool","IMAO","Anticolinérgicos"], antidotos:["Suporte"], alerta:"⚠️ Administrar por via IM profunda - não usar IV (risco de necrose)", popular:true, custo:"Baixo", diluicao:"Uso direto IM profunda" },
       { id:"terbutalina_amp", n:"Terbutalina 0,5 mg/mL solução injetável", g:"Respiratório", l:"AMA", forma:"Solução injetável", via:"SC/IM/IV", dose:"Adulto: 0,25-0,5mg SC (máx 1mg/dia)", indicacoes:["Crise asmática","Broncoespasmo","DPOC"], contraindicacoes:["Taquiarritmia","Hipersensibilidade"], interacoes:["Beta-bloqueadores","Antidepressivos"], antidotos:["Suporte"], alerta:"⚠️ Administrar lentamente - monitorar FC e PA", popular:true, custo:"Baixo" },
 
-      // ===== OFTÁLMICOS =====
-      { id:"tobramicina_col", n:"Tobramicina 3 mg/mL (0,3%) solução oftálmica", g:"Oftálmico", l:"UBS", forma:"Solução oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1-2 gotas 4/6h", indicacoes:["Infecções oculares","Conjuntivite bacteriana"], contraindicacoes:["Hipersensibilidade"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Não usar lentes de contato durante o tratamento", popular:true, custo:"Baixo" },
-      { id:"cloranfenicol_col", n:"Cloranfenicol + retinol + aminoácidos + metionina pomada oftálmica", g:"Oftálmico", l:"UBS", forma:"Pomada oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: aplicar 1-2x/dia", indicacoes:["Infecções oculares","Ceratite","Conjuntivite"], contraindicacoes:["Hipersensibilidade","Gestação"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Uso restrito - monitorar reações alérgicas", popular:true, custo:"Médio" },
-      { id:"dexametasona_col", n:"Dexametasona 1 mg/mL (0,1%) suspensão oftálmica", g:"Oftálmico", l:"UBS", forma:"Suspensão oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1-2 gotas 4/6h", indicacoes:["Inflamação ocular","Alergia ocular"], contraindicacoes:["Infecção viral/fúngica ocular","Glaucoma"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Agitar antes de usar - não usar em infecções não tratadas", popular:true, custo:"Médio" },
-      { id:"brimonidina_col", n:"Brimonidina 2 mg/mL (0,2%) solução oftálmica", g:"Oftálmico", l:"UBS", forma:"Solução oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1 gota 2x/dia", indicacoes:["Glaucoma","Hipertensão ocular"], contraindicacoes:["Hipersensibilidade","Crianças <2 anos"], interacoes:["Antidepressivos","Anti-hipertensivos"], antidotos:["Suporte"], alerta:"⚠️ Monitorar pressão intraocular", popular:false, custo:"Médio" },
-      { id:"timolol_col", n:"Timolol 5 mg/mL (0,5%) solução oftálmica", g:"Oftálmico", l:"UBS", forma:"Solução oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1 gota 2x/dia", indicacoes:["Glaucoma","Hipertensão ocular"], contraindicacoes:["Asma","Bradicardia","DPOC"], interacoes:["Beta-bloqueadores orais","Verapamil"], antidotos:["Atropina","Glucagon"], alerta:"⚠️ Pode ser absorvido sistemicamente - monitorar FC", popular:false, custo:"Médio" },
-      { id:"pilocarpina_col", n:"Pilocarpina 20 mg/mL (2%) solução oftálmica", g:"Oftálmico", l:"UBS", forma:"Solução oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1-2 gotas 3-4x/dia", indicacoes:["Glaucoma","Hipertensão ocular"], contraindicacoes:["Uveíte","Glaucoma de ângulo fechado"], interacoes:["Anticolinérgicos"], antidotos:["Atropina (antídoto)"], alerta:"⚠️ Pode causar miopia transitória", popular:false, custo:"Médio" },
-      { id:"aciclovir_oft", n:"Aciclovir 30 mg/g (3%) pomada oftálmica", g:"Oftálmico", l:"UBS", forma:"Pomada oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: aplicar 5x/dia", indicacoes:["Herpes ocular","Ceratite herpética"], contraindicacoes:["Hipersensibilidade"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Aplicar ao primeiro sinal", popular:true, custo:"Médio" },
-      { id:"dextrana_hipromelose", n:"Dextrana + Hipromelose (0,3%) solução oftálmica", g:"Oftálmico", l:"UBS", forma:"Solução oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1-2 gotas 3-4x/dia", indicacoes:["Olho seco","Lágrima artificial","Irritação ocular"], contraindicacoes:["Hipersensibilidade"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Lágrima artificial - usar quando necessário", popular:true, custo:"Baixo" },
+      // ================================================================
+      // GOTAS OTOLÓGICAS, NASAIS E SOLUÇÕES PARA INALAÇÃO
+      // ================================================================
+      // ---- OTOLÓGICAS (OUVIDO) ----
+      { id:"otico_antibiotico", n:"Neomicina + Polimixina B + Hidrocortisona solução otológica (gotas)", g:"Oftálmico/Otológico", l:"UBS", forma:"Solução otológica", via:"Tópica (Otópica)", dose:"Adulto: 3-4 gotas 3-4x/dia", indicacoes:["Otite externa","Infecção de ouvido"], contraindicacoes:["Perfuração timpânica","Hipersensibilidade"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Agitar antes de usar - não usar se houver perfuração timpânica", popular:true, custo:"Baixo" },
+      { id:"otico_analgesico", n:"Antipirina + Benzocaína solução otológica (gotas)", g:"Oftálmico/Otológico", l:"UBS", forma:"Solução otológica", via:"Tópica (Otópica)", dose:"Adulto: 3-4 gotas 3-4x/dia", indicacoes:["Dor de ouvido","Otite média"], contraindicacoes:["Perfuração timpânica","Hipersensibilidade"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Não usar se houver perfuração timpânica", popular:true, custo:"Baixo" },
+
+      // ---- NASAIS (GOTAS) ----
+      { id:"soro_fisiologico_nasal", n:"Cloreto de sódio 0,9% solução nasal (gotas)", g:"Respiratório", l:"UBS", forma:"Solução nasal", via:"Nasal", dose:"Adulto/Criança: 2-3 gotas 3-4x/dia", indicacoes:["Higiene nasal","Rinite","Resfriado"], contraindicacoes:["Hipersensibilidade"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Uso seguro - pode ser usado em todas as idades", popular:true, custo:"Baixo" },
+      { id:"vasoconstrictor_nasal", n:"Cloridrato de Nafazolina 0,5 mg/mL solução nasal (gotas)", g:"Respiratório", l:"UBS", forma:"Solução nasal", via:"Nasal", dose:"Adulto: 2-3 gotas 3-4x/dia (máx 3 dias)", indicacoes:["Congestão nasal","Rinite"], contraindicacoes:["<2 anos","Glaucoma","Hipertensão"], interacoes:["Inibidores MAO","Antidepressivos"], antidotos:["Suporte"], alerta:"⚠️ USO MÁXIMO 3 DIAS - efeito rebote", popular:true, custo:"Baixo" },
+
+      // ---- NEBULIZAÇÃO (INALAÇÃO) ----
+      { id:"salbutamol_inalacao", n:"Salbutamol 5 mg/mL solução para inalação (nebulização)", g:"Respiratório", l:"UBS", forma:"Solução para nebulização", via:"Inalatória (nebulização)", dose:"Adulto: 2,5-5mg (0,5-1mL) 4/6h", indicacoes:["Crise asmática","Broncoespasmo","DPOC"], contraindicacoes:["Taquiarritmia","Hipersensibilidade"], interacoes:["Beta-bloqueadores","Antidepressivos"], antidotos:["Suporte"], alerta:"⚠️ Diluir em SF0,9% (2-3mL) - nebulizar com máscara", popular:true, custo:"Baixo", diluicao:"Diluir em 2-3mL SF0,9% - nebulizar em 5-10 minutos" },
+      { id:"ipratropio_inalacao", n:"Brometo de Ipratrópio 0,25 mg/mL solução para inalação (nebulização)", g:"Respiratório", l:"UBS", forma:"Solução para nebulização", via:"Inalatória (nebulização)", dose:"Adulto: 0,25-0,5mg (1-2mL) 4/6h", indicacoes:["DPOC","Asma","Broncoespasmo"], contraindicacoes:["Glaucoma de ângulo fechado","Hipersensibilidade"], interacoes:["Anticolinérgicos","Beta-agonistas"], antidotos:["Suporte"], alerta:"⚠️ Não misturar com outros medicamentos na mesma nebulização", popular:true, custo:"Baixo", diluicao:"Diluir em 2-3mL SF0,9% - nebulizar em 5-10 minutos" },
+      { id:"budesonida_inalacao", n:"Budesonida 0,5 mg/mL solução para inalação (nebulização)", g:"Respiratório", l:"UBS", forma:"Solução para nebulização", via:"Inalatória (nebulização)", dose:"Adulto: 0,5-1mg (1-2mL) 2x/dia", indicacoes:["Asma","DPOC","Crise asmática"], contraindicacoes:["Infecção respiratória ativa","Hipersensibilidade"], interacoes:["Corticosteroides sistêmicos","Antifúngicos"], antidotos:["Suporte"], alerta:"⚠️ Enxaguar a boca após a nebulização", popular:true, custo:"Médio", diluicao:"Diluir em 2-3mL SF0,9% - nebulizar em 5-10 minutos" },
+      { id:"fenoterol_inalacao", n:"Fenoterol 5 mg/mL solução para inalação (nebulização)", g:"Respiratório", l:"UBS", forma:"Solução para nebulização", via:"Inalatória (nebulização)", dose:"Adulto: 0,5-1mL 4/6h", indicacoes:["Crise asmática","Broncoespasmo"], contraindicacoes:["Taquiarritmia","Hipersensibilidade"], interacoes:["Beta-bloqueadores","Antidepressivos"], antidotos:["Suporte"], alerta:"⚠️ Diluir em SF0,9% - monitorar FC e PA", popular:true, custo:"Baixo", diluicao:"Diluir em 2-3mL SF0,9% - nebulizar em 5-10 minutos" },
+      { id:"beclometasona_inalacao", n:"Beclometasona 0,8 mg/mL solução para inalação (nebulização)", g:"Respiratório", l:"UBS", forma:"Solução para nebulização", via:"Inalatória (nebulização)", dose:"Adulto: 0,8-1,6mg 2x/dia", indicacoes:["Asma","DPOC"], contraindicacoes:["Infecção respiratória ativa","Hipersensibilidade"], interacoes:["Corticosteroides sistêmicos"], antidotos:["Suporte"], alerta:"⚠️ Enxaguar a boca após a nebulização", popular:true, custo:"Médio", diluicao:"Diluir em 2-3mL SF0,9% - nebulizar em 5-10 minutos" },
+      { id:"acetilcisteina_inalacao", n:"Acetilcisteína 200 mg/mL solução para inalação (nebulização)", g:"Respiratório", l:"UBS", forma:"Solução para nebulização", via:"Inalatória (nebulização)", dose:"Adulto: 2-4mL (400-800mg) 2x/dia", indicacoes:["Expectoração","Bronquite","DPOC","Pneumonia"], contraindicacoes:["Asma sem broncodilatador","Hipersensibilidade"], interacoes:["Antibióticos (evitar misturar)"], antidotos:["Suporte"], alerta:"⚠️ Diluir em SF0,9% - nebulização com broncodilatador associado", popular:true, custo:"Baixo", diluicao:"Diluir em 2-3mL SF0,9% - nebulizar em 10-15 minutos" },
+
+      // ===== OFTÁLMICOS (COLÍRIOS) =====
+      { id:"tobramicina_col", n:"Tobramicina 3 mg/mL (0,3%) solução oftálmica", g:"Oftálmico/Otológico", l:"UBS", forma:"Solução oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1-2 gotas 4/6h", indicacoes:["Infecções oculares","Conjuntivite bacteriana"], contraindicacoes:["Hipersensibilidade"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Não usar lentes de contato durante o tratamento", popular:true, custo:"Baixo" },
+      { id:"cloranfenicol_col", n:"Cloranfenicol + retinol + aminoácidos + metionina pomada oftálmica", g:"Oftálmico/Otológico", l:"UBS", forma:"Pomada oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: aplicar 1-2x/dia", indicacoes:["Infecções oculares","Ceratite","Conjuntivite"], contraindicacoes:["Hipersensibilidade","Gestação"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Uso restrito - monitorar reações alérgicas", popular:true, custo:"Médio" },
+      { id:"dexametasona_col", n:"Dexametasona 1 mg/mL (0,1%) suspensão oftálmica", g:"Oftálmico/Otológico", l:"UBS", forma:"Suspensão oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1-2 gotas 4/6h", indicacoes:["Inflamação ocular","Alergia ocular"], contraindicacoes:["Infecção viral/fúngica ocular","Glaucoma"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Agitar antes de usar - não usar em infecções não tratadas", popular:true, custo:"Médio" },
+      { id:"brimonidina_col", n:"Brimonidina 2 mg/mL (0,2%) solução oftálmica", g:"Oftálmico/Otológico", l:"UBS", forma:"Solução oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1 gota 2x/dia", indicacoes:["Glaucoma","Hipertensão ocular"], contraindicacoes:["Hipersensibilidade","Crianças <2 anos"], interacoes:["Antidepressivos","Anti-hipertensivos"], antidotos:["Suporte"], alerta:"⚠️ Monitorar pressão intraocular", popular:false, custo:"Médio" },
+      { id:"timolol_col", n:"Timolol 5 mg/mL (0,5%) solução oftálmica", g:"Oftálmico/Otológico", l:"UBS", forma:"Solução oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1 gota 2x/dia", indicacoes:["Glaucoma","Hipertensão ocular"], contraindicacoes:["Asma","Bradicardia","DPOC"], interacoes:["Beta-bloqueadores orais","Verapamil"], antidotos:["Atropina","Glucagon"], alerta:"⚠️ Pode ser absorvido sistemicamente - monitorar FC", popular:false, custo:"Médio" },
+      { id:"pilocarpina_col", n:"Pilocarpina 20 mg/mL (2%) solução oftálmica", g:"Oftálmico/Otológico", l:"UBS", forma:"Solução oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1-2 gotas 3-4x/dia", indicacoes:["Glaucoma","Hipertensão ocular"], contraindicacoes:["Uveíte","Glaucoma de ângulo fechado"], interacoes:["Anticolinérgicos"], antidotos:["Atropina (antídoto)"], alerta:"⚠️ Pode causar miopia transitória", popular:false, custo:"Médio" },
+      { id:"aciclovir_oft", n:"Aciclovir 30 mg/g (3%) pomada oftálmica", g:"Oftálmico/Otológico", l:"UBS", forma:"Pomada oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: aplicar 5x/dia", indicacoes:["Herpes ocular","Ceratite herpética"], contraindicacoes:["Hipersensibilidade"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Aplicar ao primeiro sinal", popular:true, custo:"Médio" },
+      { id:"dextrana_hipromelose", n:"Dextrana + Hipromelose (0,3%) solução oftálmica", g:"Oftálmico/Otológico", l:"UBS", forma:"Solução oftálmica", via:"Tópica (Oftálmica)", dose:"Adulto: 1-2 gotas 3-4x/dia", indicacoes:["Olho seco","Lágrima artificial","Irritação ocular"], contraindicacoes:["Hipersensibilidade"], interacoes:["Nenhuma significativa"], antidotos:["Suporte"], alerta:"⚠️ Lágrima artificial - usar quando necessário", popular:true, custo:"Baixo" },
 
       // ================================================================
       // XAROPES, POMADAS, CREMES E FITOTERÁPICOS
@@ -266,7 +285,7 @@
         "Anti-histamínicos":"#B23A5A",
         "Antieméticos / Antivertiginosos":"#9A6B1F",
         "Outros / Diversos":"#5A5A5A",
-        "Oftálmico":"#2E86AB",
+        "Oftálmico/Otológico":"#2E86AB",
         "Fitoterápicos":"#5E8A2E",
         "Dermatológico":"#B25E3A"
       };
@@ -284,8 +303,11 @@
             (filterVia === 'Injetável' && ['IV','IM','IV/IM','SC'].includes(m.via)) ||
             (filterVia === 'Oral' && m.via === 'Oral') ||
             (filterVia === 'Inalatória' && m.via === 'Inalatória') ||
+            (filterVia === 'Inalatória (nebulização)' && m.via === 'Inalatória (nebulização)') ||
             (filterVia === 'Tópica' && m.via === 'Tópica') ||
-            (filterVia === 'Tópica (Oftálmica)' && m.via === 'Tópica (Oftálmica)');
+            (filterVia === 'Tópica (Oftálmica)' && m.via === 'Tópica (Oftálmica)') ||
+            (filterVia === 'Nasal' && m.via === 'Nasal') ||
+            (filterVia === 'Tópica (Otópica)' && m.via === 'Tópica (Otópica)');
           const matchP = !showOnlyPopular || m.popular;
           return matchQ && matchG && matchL && matchV && matchP;
         }).sort((a,b) => {
@@ -318,7 +340,7 @@
                   <span style={{ fontSize: 12, background: '#DCEAE5', padding: '2px 8px', borderRadius: 4, color: '#51665D' }}>{MEDS.length} medicamentos</span>
                 </div>
                 <h1 style={{ fontSize: 26, fontWeight: 800, margin: '10px 0 4px' }}>Medicamentos da rede municipal</h1>
-                <p style={{ fontSize: 14, color: darkMode ? '#7A9A8A' : '#51665D' }}>UBS/AMA · Orais · Injetáveis · Inaláveis · Oftálmicos · Tópicos · Fitoterápicos</p>
+                <p style={{ fontSize: 14, color: darkMode ? '#7A9A8A' : '#51665D' }}>UBS/AMA · Orais · Injetáveis · Inaláveis · Oftálmicos · Otológicos · Nasais · Tópicos · Fitoterápicos</p>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
                 <button onClick={() => setShowLista(true)} className="btn-lista">📋 Lista alfabética</button>
@@ -347,7 +369,9 @@
               <option value="Oral">Oral</option>
               <option value="Injetável">Injetável</option>
               <option value="Inalatória">Inalatória</option>
+              <option value="Inalatória (nebulização)">💨 Nebulização</option>
               <option value="Tópica">🧴 Tópica</option>
+              <option value="Nasal">👃 Nasal</option>
             </select>
             <span style={{ fontSize: 12, marginLeft: 'auto', color: darkMode ? '#7A9A8A' : '#51665D' }}>{results.length} resultados</span>
           </div>
