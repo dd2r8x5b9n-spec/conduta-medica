@@ -12,6 +12,15 @@
 
 ---
 
+## 📱 Apps disponíveis
+
+| App | Descrição | Acesso |
+|-----|-----------|--------|
+| **Conduta Médica** | Protocolos e condutas para atendimento ambulatorial e de urgência | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/) |
+| **REMUME – Medicamentos SP** | Consulta rápida de medicamentos disponíveis na rede municipal de São Paulo | [Abrir](https://dd2r8x5b9n-spec.github.io/remume/) |
+
+---
+
 ## 🏥 Níveis de Atendimento (Filtros)
 
 O app permite filtrar as condutas por nível de atendimento, facilitando a decisão clínica conforme o local de atuação:
@@ -113,13 +122,23 @@ Pronto! O app vai aparecer como um ícone na sua tela inicial, funcionando em te
 
 ### Pelo próprio app (recomendado)
 - Role a tela até a seção **"Cadastrar nova conduta"**.
-- Preencha os campos (CID, diagnóstico, exames, tratamento, conduta geral, nível, observações, fonte).
+- Preencha os campos: CID, diagnóstico, exames, tratamento, conduta geral, nível (`AMA`, `UPA`, `PSA`, `Emergencia`), observações, fonte.
 - Clique em **Salvar**.
 
-### Editando o arquivo `index.html`
-- Abra o arquivo `index.html` no Bloco de Notas.
-- Localize a lista `condutas = [ ... ]` e adicione/edite os objetos.
-- Salve e faça upload no GitHub.
+### Editando o arquivo `index.html` (avançado)
+1. Abra o arquivo `index.html` no Bloco de Notas ou editor de código.
+2. Localize a lista `condutas = [ ... ]` (dentro da função `carregar()`).
+3. Cada conduta é um objeto com os campos:
+   - `cid` – Código CID-10.
+   - `diagnostico` – Nome do diagnóstico.
+   - `exames` – Exames a solicitar.
+   - `tratamento` – Tratamento recomendado.
+   - `conduta` – Conduta geral (ex: "RESOLVE NA AMA" ou "ENCAMINHAR").
+   - `nivel` – Nível de atendimento (`"AMA"`, `"UPA"`, `"PSA"`, `"Emergencia"`).
+   - `observacoes` – Lembretes rápidos e diferenciações.
+   - `fonte` – Fonte do protocolo.
+4. Adicione, edite ou remova objetos conforme necessário.
+5. Salve o arquivo e faça o upload para o GitHub.
 
 ---
 
@@ -132,3 +151,38 @@ Pronto! O app vai aparecer como um ícone na sua tela inicial, funcionando em te
 ---
 
 ## 📂 Estrutura do projeto
+```
+
+conduta-medica/
+├── index.html            # Página principal do app (todo o código)
+├── service-worker.js     # Habilita o modo offline
+├── README.md             # Este arquivo (documentação)
+└── (futuramente) icon/   # Ícones para o PWA
+
+```
+
+---
+
+## ⚠️ Aviso importante
+
+**Este app é uma ferramenta de apoio à decisão clínica.**  
+A conduta final e a responsabilidade pelo paciente são **sempre do médico responsável**.  
+O app não substitui o julgamento clínico nem a avaliação presencial do paciente.
+
+---
+
+## 🙏 Agradecimentos
+
+- Secretaria Municipal da Saúde de São Paulo (SMS/SP) – protocolos clínicos.
+- GitHub Pages – hospedagem gratuita.
+- Comunidade de desenvolvedores que compartilhou conhecimento.
+
+---
+
+## 📝 Licença
+
+Este projeto é de uso pessoal e educacional. Sinta-se livre para adaptá-lo às suas necessidades, respeitando os protocolos oficiais e as leis de privacidade.
+
+---
+
+Desenvolvido com 💙 por [K. Marjoub] – para uso próprio no atendimento na rede municipal de saúde.
