@@ -128,7 +128,7 @@
                 });
                 salvarDados();
             } else {
-                // ===== LISTA COMPLETA (43 CIDs + atualizações) =====
+                // ===== LISTA COMPLETA (43 CIDs + reclassificação) =====
                 condutas = [
                     // INFECÇÕES
                     {
@@ -218,7 +218,7 @@
                         exames: 'Glicemia capilar imediata. Se suspeita de insulinoma: glicemia + insulina + peptídeo C (em jejum).',
                         tratamento: '• Consciente: 15g de carboidrato rápido (suco, açúcar, glicose gel) – reavaliar em 15min. • Inconsciente: Glicose 50% IV 20-50mL ou Glucagon IM. • Insulinoma: encaminhar para endocrinologia/cirurgia após estabilização.',
                         conduta: 'RESOLVE NA AMA (hipoglicemia leve/moderada, consciente, sem recorrência). Após recuperação, orientar refeição com carboidrato de absorção lenta. ⚠️ ENCAMINHAR UPA/PSA se: refratária, recorrente, inconsciente, ou suspeita de insulinoma (hipoglicemia de repetição em jejum/pós-exercício, com sintomas neuroglicopênicos).',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n🔹 HIPOGLICEMIA LEVE/MODERADA (consciente):\n- 15g carboidrato rápido (suco, açúcar, glicose gel).\n- Reavaliar glicemia em 15 minutos.\n- Se mantiver < 70, repetir.\n\n🔹 HIPOGLICEMIA GRAVE (inconsciente):\n- Glicose 50% IV 20-50mL.\n- Glucagon IM (se acesso venoso difícil).\n\n🔹 SUSPEITA DE INSULINOMA:\n- Hipoglicemia de repetição, em jejum ou pós-exercício.\n- Investigar: glicemia + insulina + peptídeo C (em jejum).\n- Encaminhar para endocrinologia/cirurgia (ress ecção do tumor).',
+                        observacoes: '📋 LEMBRETE RÁPIDO:\n🔹 HIPOGLICEMIA LEVE/MODERADA (consciente):\n- 15g carboidrato rápido (suco, açúcar, glicose gel).\n- Reavaliar glicemia em 15 minutos.\n- Se mantiver < 70, repetir.\n\n🔹 HIPOGLICEMIA GRAVE (inconsciente):\n- Glicose 50% IV 20-50mL.\n- Glucagon IM (se acesso venoso difícil).\n\n🔹 SUSPEITA DE INSULINOMA:\n- Hipoglicemia de repetição, em jejum ou pós-exercício.\n- Investigar: glicemia + insulina + peptídeo C (em jejum).\n- Encaminhar para endocrinologia/cirurgia (ressecção do tumor).',
                         nivel: 'AMA',
                         fonte: 'Protocolo SMS/SP - Endocrinologia'
                     },
@@ -230,7 +230,7 @@
                         tratamento: 'Crise > 5min: Diazepam 10mg IV ou Midazolam IM. Proteger cabeça e vias aéreas.',
                         conduta: '⚠️ NÃO RESOLVE NA AMA (crise prolongada/1ª crise). Estabilizar e encaminhar UPA/PSA. Se crise breve em epiléptico conhecido, orientar e agendar retorno na UBS.',
                         observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Crise breve (< 5min) em epilético conhecido | ✅ Resolve na AMA – proteção, O2, alta com orientação |\n| Crise prolongada (> 5min) ou repetição | ⚠️ Encaminhar UPA/PSA – Diazepam IV/Midazolam IM |\n| Primeira crise (sem diagnóstico prévio) | ⚠️ Encaminhar UPA/PSA – investigação (TC, EEG) |\n| Trauma durante a crise (queda, TCE) | ⚠️ Encaminhar UPA/PSA – avaliação de trauma e neurológica |\n| Gestante com crise epiléptica | ⚠️ Encaminhar UPA/MATERNIDADE – risco para a gestação |',
-                        nivel: 'Emergencia',
+                        nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Neurologia'
                     },
                     {
@@ -292,7 +292,7 @@
                         tratamento: 'Sem lesão: Captopril 25mg VO ou Nifedipino 10mg VO. Com lesão: estabilizar e encaminhar UPA/PSA.',
                         conduta: 'Identificar emergência (com lesão). Se urgência (sem lesão), tratar e reavaliar na AMA. ⚠️ ENCAMINHAR se lesão de órgão-alvo.',
                         observacoes: '📋 LEMBRETE RÁPIDO:\nI16 - Crise Hipertensiva: diferenciação entre urgência (sem lesão de órgão-alvo) e emergência (com lesão). Na emergência, o encaminhamento deve ser imediato.',
-                        nivel: 'Emergencia',
+                        nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Hipertensão'
                     },
                     // ===== IAM ATUALIZADO =====
@@ -303,7 +303,7 @@
                         tratamento: 'AAS 200-300mg mastigado + Nitroglicerina SL (se PA > 90) + Morfina 2-5mg EV + O2 (se SatO2 < 94%).',
                         conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA COM URGÊNCIA.\n\n🔹 SE SUPRA ST (IAMCSST):\n- Trombólise (se < 12h) ou ICP primária (angioplastia).\n- AAS + Nitro + Morfina + O2.\n\n🔹 SE SEM SUPRA ST (IAMSST):\n- Estratificação de risco (TIMI / GRACE).\n- AAS + Betabloqueador (Metoprolol 25-50mg VO) + Estatina (Atorvastatina 80mg) + Heparina (na UPA).\n- Encaminhar para ICP se alto risco.\n\n🔹 SE BLOQUEIO DE RAMO NOVO (BRE ou BRD):\n- Tratar como IAMCSST – encaminhar para trombólise/ICP.',
                         observacoes: '📋 DECISÃO RÁPIDA NO PLANTÃO:\n| ECG | Tipo | Conduta |\n| Supra ST ≥ 1mm em 2 derivações | IAMCSST | Trombólise ou ICP |\n| Infradesnivelamento ST ou inversão T | IAMSST | AAS + Betabloqueador + Estatina + Heparina |\n| BRE/BRD novo | Equivale a supra | Tratar como IAMCSST |\n\n⚠️ TEMPO É MÚSCULO: ECG em até 10min da chegada. Acionar SAMU 192 e encaminhar para unidade com hemodinâmica.',
-                        nivel: 'Emergencia',
+                        nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Cardiologia'
                     },
                     {
@@ -324,7 +324,7 @@
                         tratamento: 'Manter vias aéreas, O2 (se SatO2 < 94%), cabeceira elevada 30°. Não tratar PA (exceto > 220x120). NÃO usar AAS antes da TC.',
                         conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA COM URGÊNCIA.\n\n🔹 SUSPEITA DE AVC ISQUÊMICO (início súbito, déficit focal, sem cefaleia intensa):\n- TC de crânio (urgente) – descartar hemorragia.\n- Se janela < 4,5h e elegível → trombólise (na UPA de referência).\n- Se fora da janela ou com contraindicação → AAS (após TC negativa) + controle de PA (não reduzir agressivamente, exceto se > 220x120).\n\n🔹 SUSPEITA DE AVC HEMORRÁGICO (cefaleia súbita, vômitos, rebaixamento, PA elevada):\n- TC de crânio (urgente) – confirmar.\n- Controle pressórico: manter PA < 140/90 mmHg (evitar picos).\n- Suspender anticoagulantes/antiagregantes.\n- Neurocirurgia (se indicado – hematoma com efeito de massa).',
                         observacoes: '📋 DECISÃO RÁPIDA NO PLANTÃO:\n| Tipo | Achados | Conduta |\n| Isquêmico | Déficit focal, início súbito, sem cefaleia intensa | TC urgente → se elegível, trombólise (até 4,5h) |\n| Hemorrágico | Cefaleia súbita, vômitos, rebaixamento, PA elevada | TC urgente → controle pressórico rigoroso, suspender anticoagulantes, neurocirurgia se indicado |\n\n⚠️ TEMPO É CÉREBRO: Registrar horário exato do início dos sintomas (ictus). Acionar SAMU 192 e encaminhar para unidade com suporte neurológico.',
-                        nivel: 'Emergencia',
+                        nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Neurologia'
                     },
                     {
@@ -355,7 +355,7 @@
                         tratamento: 'Salbutamol + Ipratrópio com espaçador (repetir 20/20min). Prednisona 40-60mg VO ou Hidrocortisona IV. O2 para SatO2 > 92%.',
                         conduta: 'Se melhora: observação e tratamento para casa com retorno 48h. Se sinais de gravidade: ENCAMINHAR UPA/PSA.',
                         observacoes: '📋 LEMBRETE RÁPIDO:\nJ44 - DPOC/Asma: avaliar gravidade pela FR, uso de musculatura acessória e SatO2. Se melhora com broncodilatador, pode ser tratado na AMA. Se sem melhora, encaminhar.',
-                        nivel: 'AMA',
+                        nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Pneumologia'
                     },
                     // GASTROINTESTINAL
@@ -398,7 +398,7 @@
                         tratamento: 'Sulfato de Magnésio IV. Hidralazina IV ou Nifedipino VO (se PA ≥ 160x110). Corticoides (se IG < 34 sem).',
                         conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA OBSTÉTRICA. Encaminhar UPA/MATERNIDADE imediatamente.',
                         observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Hipertensão + Proteinúria (sem sinais de gravidade) | ⚠️ Não resolve – Encaminhar para avaliação obstétrica |\n| PA ≥ 160x110 mmHg ou sinais de iminência de eclâmpsia | ⚠️ Emergência – Medicar e encaminhar URGENTE |\n| Convulsão (Eclâmpsia - O15) | ⚠️ Emergência máxima – Diazepam IV, Sulfato de Magnésio e encaminhar IMEDIATAMENTE |\n\n⚠️ DROGA DE ESCOLHA PARA ECLAMPSIA: MgSO4 (Sulfato de Magnésio).\n- Dose de Ataque (IV): 4g EV em 15-20min.\n- Dose de Manutenção (IM): 10g IM (5g em cada nádega).\n- Antídoto: Gluconato de Cálcio 10% (10-20mL EV lento).',
-                        nivel: 'Emergencia',
+                        nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Síndromes Hipertensivas'
                     },
                     {
@@ -469,7 +469,7 @@
                         tratamento: 'O2 (SatO2 ≥ 94%). Reposição volêmica 20-30 mL/kg EV. Antibiótico de amplo espectro (1ª hora). Vasopressor: Noradrenalina EV (PAM ≥ 65 mmHg).',
                         conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA. ENCAMINHAR PARA UPA/PSA IMEDIATAMENTE após estabilização. Pacote de 1 hora: lactato, hemoculturas, antibiótico, volume, vasopressor se necessário.',
                         observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Suspeita de sepse (infecção + 2 critérios de SIRS + disfunção orgânica) | ⚠️ Estabilizar (O2, acesso, volume) e encaminhar URGENTE |\n| Choque séptico (hipotensão refratária a volume) | ⚠️ Noradrenalina + encaminhamento com monitorização contínua |\n| Lactato elevado (> 2 mmol/L) | ⚠️ Marcador de gravidade |\n| Paciente com sepse e instabilidade hemodinâmica | ⚠️ Não tentar resolver na AMA – estabilizar e transferir |\n\n⚠️ PACOTE DE 1 HORA:\n1. Medir lactato\n2. Coletar hemoculturas\n3. Iniciar antibiótico de amplo espectro\n4. Reposição volêmica com cristaloides (20-30 mL/kg)\n5. Vasopressor se hipotensão (PAM ≥ 65 mmHg)',
-                        nivel: 'Emergencia',
+                        nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Sepse'
                     },
                     // ACIDENTES
@@ -490,7 +490,7 @@
                         tratamento: 'Adrenalina IM (1:1000) 0,3-0,5mg adultos. O2. Reposição volêmica. Hidrocortisona EV.',
                         conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA MÉDICA. ENCAMINHAR UPA/PSA IMEDIATAMENTE.',
                         observacoes: '📋 LEMBRETE RÁPIDO:\n✅ Primeira droga: ADRENALINA IM (1:1000) 0,3-0,5mg adultos.\n✅ Posicionamento: Decúbito dorsal com pernas elevadas (Trendelenburg).\n✅ O2 (máscara com reservatório) – manter SatO2 ≥ 94%.\n✅ Reposição volêmica agressiva: SF 0,9% 20-30 mL/kg EV.\n\n⚠️ CONTRAINDICAÇÕES ABSOLUTAS:\n❌ Adrenalina EV em bolus → arritmias fatais.\n❌ Anti-histamínicos orais como primeira linha.\n❌ Corticoide como primeira droga.\n❌ Posicionamento em pé ou sentado.',
-                        nivel: 'Emergencia',
+                        nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Anafilaxia'
                     },
                     {
@@ -532,7 +532,7 @@
                         tratamento: 'O2 (se SatO2 < 94%), acesso venoso, reposição volêmica. Antibiótico empírico (na UPA): Ceftriaxona 2g EV + Vancomicina 1g EV + Ampicilina 2g EV (se > 50 anos). Dexametasona 10mg EV (antes do antibiótico, na UPA).',
                         conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA MÉDICA. ENCAMINHAR PARA UPA/PSA IMEDIATAMENTE após estabilização. Notificar a Vigilância Epidemiológica.',
                         observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Suspeita de meningite (febre + cefaleia + rigidez nucal) | ⚠️ Emergência – Encaminhar URGENTE UPA/PSA |\n| Petéquias ou púrpura | ⚠️ Meningococcemia – Encaminhamento URGENTE |\n| Rebaixamento da consciência | ⚠️ Proteger vias aéreas – Encaminhar com suporte avançado |\n\n⚠️ SINAIS DE ALARME:\n- Febre alta (> 38,5°C)\n- Cefaleia intensa\n- Rigidez nucal\n- Rebaixamento da consciência\n- Vômitos em jato\n- Petéquias / púrpura\n- Kernig e Brudzinski positivos\n\n⚠️ NOTIFICAÇÃO COMPULSÓRIA: Meningite é de notificação compulsória.',
-                        nivel: 'Emergencia',
+                        nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Meningites'
                     },
                     {
@@ -552,7 +552,7 @@
                         tratamento: 'O2, acesso venoso (dois acessos). Controle da dor: Morfina 2-5mg EV. Controle da PA: Betabloqueador (Metoprolol 5mg EV lento ou Esmolol EV) – manter PA ≤ 110 mmHg e FC ≤ 60 bpm. NÃO usar anticoagulantes.',
                         conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA MÉDICA GRAVE. ENCAMINHAR PARA UPA/PSA IMEDIATAMENTE após estabilização. Transporte com monitorização contínua.',
                         observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta |\n| Dor súbita e lancinante + irradiação para dorso | ⚠️ Emergência – Encaminhar URGENTE |\n| Assimetria de PA (> 20 mmHg entre os braços) | ⚠️ Forte suspeita – encaminhar URGENTE |\n| Déficit neurológico focal | ⚠️ Encaminhar URGENTE |\n\n⚠️ SINAIS DE ALARME:\n- Dor súbita e lancinante (pior dor da vida)\n- Irradiação para dorso ou abdome\n- Assimetria de pulsos\n- Sopro aórtico\n- Déficit neurológico focal\n- Síncope\n\n⚠️ CONTRAINDICAÇÕES: NÃO usar AAS, heparina ou anticoagulantes.',
-                        nivel: 'Emergencia',
+                        nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Dissecção Aórtica'
                     },
                     {
@@ -562,7 +562,7 @@
                         tratamento: 'O2 (se SatO2 < 94%), acesso venoso, reposição volêmica (se hipotensão). Controle da PA: manter PA < 160x100 mmHg (evitar picos hipertensivos). Controle da dor: Dipirona 1g EV ou Morfina 2-5mg EV. NÃO usar anticoagulantes.',
                         conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA MÉDICA GRAVE. ENCAMINHAR PARA UPA/PSA IMEDIATAMENTE após estabilização. Suspeita de hemorragia subaracnoide requer TC e neurocirurgia urgente.',
                         observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta |\n| "Pior dor de cabeça da vida" (início súbito) | ⚠️ Suspeita de hemorragia subaracnoide – encaminhar URGENTE |\n| Cefaleia + náuseas/vômitos + rebaixamento | ⚠️ Encaminhar URGENTE – TC na UPA |\n| Cefaleia + rigidez nucal + fotofobia | ⚠️ Suspeita de hemorragia ou meningite – encaminhar URGENTE |\n\n⚠️ SINAIS DE ALARME:\n- "Pior dor de cabeça da vida" (início súbito)\n- Cefaleia + náuseas/vômitos\n- Rebaixamento da consciência\n- Rigidez nucal\n- Fotofobia\n- Déficit neurológico focal\n\n⚠️ ATENÇÃO: NÃO tratar hipertensão agressivamente – manter PA < 160x100 mmHg.',
-                        nivel: 'Emergencia',
+                        nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Aneurisma Cerebral'
                     },
                     {
