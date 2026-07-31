@@ -51,7 +51,6 @@
         <button class="filtro-btn" data-nivel="UPA">🚑 UPA</button>
         <button class="filtro-btn" data-nivel="PSA">🏨 PSA</button>
         <button class="filtro-btn" data-nivel="Emergencia">🚨 Emergência</button>
-        <button class="filtro-btn" data-nivel="UTI">🛌 UTI</button>
     </div>
 
     <!-- CADASTRO / EDIÇÃO -->
@@ -67,7 +66,6 @@
             <option value="UPA">🚑 UPA</option>
             <option value="PSA">🏨 PSA</option>
             <option value="Emergencia">🚨 Emergência</option>
-            <option value="UTI">🛌 UTI</option>
         </select>
         <textarea id="observacoes" placeholder="📌 Observações Importantes (lembretes rápidos, tabelas, diferenciações...)" style="border-left: 4px solid #007AFF;"></textarea>
         <input type="text" id="fonte" placeholder="Fonte (ex: Protocolo SMS/SP - 2024)">
@@ -130,7 +128,7 @@
                 });
                 salvarDados();
             } else {
-                // ===== LISTA COMPLETA (43 CIDs) =====
+                // ===== LISTA COMPLETA (43 CIDs + atualizações) =====
                 condutas = [
                     // INFECÇÕES
                     {
@@ -216,11 +214,11 @@
                     // ENDOCRINOLOGIA
                     {
                         cid: 'E16',
-                        diagnostico: 'Hipoglicemia',
-                        exames: 'Glicemia capilar imediata.',
-                        tratamento: 'Consciente: 15g de carboidrato rápido (suco, açúcar, glicose gel). Inconsciente: Glicose 50% IV 20-50mL ou Glucagon IM.',
-                        conduta: 'RESOLVE NA AMA. Após recuperação, orientar refeição com carboidrato de absorção lenta. Se refratária ou recorrente: ENCAMINHAR UPA/PSA.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\nE16 - Hipoglicemia: sempre reavaliar glicemia após 15 minutos. Se refratária, investigar causa (excesso de insulina, jejum prolongado).',
+                        diagnostico: 'Hipoglicemia (inclui suspeita de insulinoma)',
+                        exames: 'Glicemia capilar imediata. Se suspeita de insulinoma: glicemia + insulina + peptídeo C (em jejum).',
+                        tratamento: '• Consciente: 15g de carboidrato rápido (suco, açúcar, glicose gel) – reavaliar em 15min. • Inconsciente: Glicose 50% IV 20-50mL ou Glucagon IM. • Insulinoma: encaminhar para endocrinologia/cirurgia após estabilização.',
+                        conduta: 'RESOLVE NA AMA (hipoglicemia leve/moderada, consciente, sem recorrência). Após recuperação, orientar refeição com carboidrato de absorção lenta. ⚠️ ENCAMINHAR UPA/PSA se: refratária, recorrente, inconsciente, ou suspeita de insulinoma (hipoglicemia de repetição em jejum/pós-exercício, com sintomas neuroglicopênicos).',
+                        observacoes: '📋 LEMBRETE RÁPIDO:\n🔹 HIPOGLICEMIA LEVE/MODERADA (consciente):\n- 15g carboidrato rápido (suco, açúcar, glicose gel).\n- Reavaliar glicemia em 15 minutos.\n- Se mantiver < 70, repetir.\n\n🔹 HIPOGLICEMIA GRAVE (inconsciente):\n- Glicose 50% IV 20-50mL.\n- Glucagon IM (se acesso venoso difícil).\n\n🔹 SUSPEITA DE INSULINOMA:\n- Hipoglicemia de repetição, em jejum ou pós-exercício.\n- Investigar: glicemia + insulina + peptídeo C (em jejum).\n- Encaminhar para endocrinologia/cirurgia (ress ecção do tumor).',
                         nivel: 'AMA',
                         fonte: 'Protocolo SMS/SP - Endocrinologia'
                     },
@@ -297,13 +295,14 @@
                         nivel: 'Emergencia',
                         fonte: 'Protocolo SMS/SP - Hipertensão'
                     },
+                    // ===== IAM ATUALIZADO =====
                     {
                         cid: 'I21',
-                        diagnostico: 'Infarto Agudo do Miocárdio (IAM)',
-                        exames: 'ECG urgente, Troponina, CPK-MB, Hemograma, Creatinina, Potássio, Glicemia.',
-                        tratamento: 'AAS 200-300mg mastigado, Nitroglicerina SL (se PA > 90), Morfina, O2.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. Estabilizar, acionar SAMU 192 imediatamente.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\nI21 - IAM: tempo é músculo. ECG em até 10min da chegada. AAS mastigado imediatamente. Acionar SAMU 192.',
+                        diagnostico: 'Infarto Agudo do Miocárdio (IAM) – com diferenciação supra/infra',
+                        exames: 'ECG urgente (em até 10min), Troponina, CPK-MB, Hemograma, Creatinina, Potássio, Glicemia.',
+                        tratamento: 'AAS 200-300mg mastigado + Nitroglicerina SL (se PA > 90) + Morfina 2-5mg EV + O2 (se SatO2 < 94%).',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA COM URGÊNCIA.\n\n🔹 SE SUPRA ST (IAMCSST):\n- Trombólise (se < 12h) ou ICP primária (angioplastia).\n- AAS + Nitro + Morfina + O2.\n\n🔹 SE SEM SUPRA ST (IAMSST):\n- Estratificação de risco (TIMI / GRACE).\n- AAS + Betabloqueador (Metoprolol 25-50mg VO) + Estatina (Atorvastatina 80mg) + Heparina (na UPA).\n- Encaminhar para ICP se alto risco.\n\n🔹 SE BLOQUEIO DE RAMO NOVO (BRE ou BRD):\n- Tratar como IAMCSST – encaminhar para trombólise/ICP.',
+                        observacoes: '📋 DECISÃO RÁPIDA NO PLANTÃO:\n| ECG | Tipo | Conduta |\n| Supra ST ≥ 1mm em 2 derivações | IAMCSST | Trombólise ou ICP |\n| Infradesnivelamento ST ou inversão T | IAMSST | AAS + Betabloqueador + Estatina + Heparina |\n| BRE/BRD novo | Equivale a supra | Tratar como IAMCSST |\n\n⚠️ TEMPO É MÚSCULO: ECG em até 10min da chegada. Acionar SAMU 192 e encaminhar para unidade com hemodinâmica.',
                         nivel: 'Emergencia',
                         fonte: 'Protocolo SMS/SP - Cardiologia'
                     },
@@ -317,13 +316,14 @@
                         nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Cardiologia'
                     },
+                    // ===== AVC ATUALIZADO =====
                     {
                         cid: 'I64',
-                        diagnostico: 'Acidente Vascular Cerebral (AVC)',
-                        exames: 'Glicemia capilar, ECG, Hemograma, Coagulograma.',
-                        tratamento: 'Manter vias aéreas, O2, cabeceira elevada 30°. Não tratar PA (exceto > 220x120).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. Acionar SAMU 192. Registrar horário do início dos sintomas (ictus).',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\nI64 - AVC: tempo é cérebro. Registrar horário exato do início dos sintomas. Realizar Escala de Cincinnati (queda facial, elevação de braços, fala). Acionar SAMU 192 imediatamente.',
+                        diagnostico: 'Acidente Vascular Cerebral (AVC) – Isquêmico vs. Hemorrágico',
+                        exames: 'Glicemia capilar, ECG, Hemograma, Coagulograma. TC de crânio (urgente – na UPA).',
+                        tratamento: 'Manter vias aéreas, O2 (se SatO2 < 94%), cabeceira elevada 30°. Não tratar PA (exceto > 220x120). NÃO usar AAS antes da TC.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA COM URGÊNCIA.\n\n🔹 SUSPEITA DE AVC ISQUÊMICO (início súbito, déficit focal, sem cefaleia intensa):\n- TC de crânio (urgente) – descartar hemorragia.\n- Se janela < 4,5h e elegível → trombólise (na UPA de referência).\n- Se fora da janela ou com contraindicação → AAS (após TC negativa) + controle de PA (não reduzir agressivamente, exceto se > 220x120).\n\n🔹 SUSPEITA DE AVC HEMORRÁGICO (cefaleia súbita, vômitos, rebaixamento, PA elevada):\n- TC de crânio (urgente) – confirmar.\n- Controle pressórico: manter PA < 140/90 mmHg (evitar picos).\n- Suspender anticoagulantes/antiagregantes.\n- Neurocirurgia (se indicado – hematoma com efeito de massa).',
+                        observacoes: '📋 DECISÃO RÁPIDA NO PLANTÃO:\n| Tipo | Achados | Conduta |\n| Isquêmico | Déficit focal, início súbito, sem cefaleia intensa | TC urgente → se elegível, trombólise (até 4,5h) |\n| Hemorrágico | Cefaleia súbita, vômitos, rebaixamento, PA elevada | TC urgente → controle pressórico rigoroso, suspender anticoagulantes, neurocirurgia se indicado |\n\n⚠️ TEMPO É CÉREBRO: Registrar horário exato do início dos sintomas (ictus). Acionar SAMU 192 e encaminhar para unidade com suporte neurológico.',
                         nivel: 'Emergencia',
                         fonte: 'Protocolo SMS/SP - Neurologia'
                     },
