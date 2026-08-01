@@ -121,16 +121,17 @@
             const dados = localStorage.getItem('condutas');
             if (dados) {
                 condutas = JSON.parse(dados);
-                // Adiciona campo 'nivel' para condutas antigas (padrão: AMA)
                 condutas = condutas.map(c => {
                     if (!c.nivel) c.nivel = 'AMA';
                     return c;
                 });
                 salvarDados();
             } else {
-                // ===== LISTA COMPLETA (43 CIDs + reclassificação) =====
+                // ===== LISTA COMPLETA =====
                 condutas = [
-                    // INFECÇÕES
+                    // =====================================================
+                    // CONDUTAS DA AMA (mantidas)
+                    // =====================================================
                     {
                         cid: 'A54',
                         diagnostico: 'Gonorreia',
@@ -225,7 +226,7 @@
                     // NEUROLOGIA
                     {
                         cid: 'G40',
-                        diagnostico: 'Crise Epiléptica (Convulsão)',
+                        diagnostico: 'Crise Epiléptica (Convulsão) – Epilético conhecido',
                         exames: 'Glicemia capilar, Eletrólitos, avaliar infecção.',
                         tratamento: 'Crise > 5min: Diazepam 10mg IV ou Midazolam IM. Proteger cabeça e vias aéreas.',
                         conduta: '⚠️ NÃO RESOLVE NA AMA (crise prolongada/1ª crise). Estabilizar e encaminhar UPA/PSA. Se crise breve em epiléptico conhecido, orientar e agendar retorno na UBS.',
@@ -289,20 +290,30 @@
                         cid: 'I16',
                         diagnostico: 'Crise Hipertensiva',
                         exames: 'Aferir PA em ambos os braços, Glicemia, Creatinina, Potássio, Sumário de urina, Fundoscopia.',
-                        tratamento: 'Sem lesão: Captopril 25mg VO ou Nifedipino 10mg VO. Com lesão: estabilizar e encaminhar UPA/PSA.',
+                        tratamento: 'Sem lesão: Captopril 25mg VO ou Nifedipino 10mg VO. Com lesão: stabilizar e encaminhar UPA/PSA.',
                         conduta: 'Identificar emergência (com lesão). Se urgência (sem lesão), tratar e reavaliar na AMA. ⚠️ ENCAMINHAR se lesão de órgão-alvo.',
                         observacoes: '📋 LEMBRETE RÁPIDO:\nI16 - Crise Hipertensiva: diferenciação entre urgência (sem lesão de órgão-alvo) e emergência (com lesão). Na emergência, o encaminhamento deve ser imediato.',
                         nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Hipertensão'
                     },
-                    // ===== IAM ATUALIZADO =====
+                    // IAM - DIVIDIDO
                     {
-                        cid: 'I21',
-                        diagnostico: 'Infarto Agudo do Miocárdio (IAM) – com diferenciação supra/infra',
+                        cid: 'I21.0',
+                        diagnostico: 'IAM com Supra ST (IAMCSST)',
                         exames: 'ECG urgente (em até 10min), Troponina, CPK-MB, Hemograma, Creatinina, Potássio, Glicemia.',
                         tratamento: 'AAS 200-300mg mastigado + Nitroglicerina SL (se PA > 90) + Morfina 2-5mg EV + O2 (se SatO2 < 94%).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA COM URGÊNCIA.\n\n🔹 SE SUPRA ST (IAMCSST):\n- Trombólise (se < 12h) ou ICP primária (angioplastia).\n- AAS + Nitro + Morfina + O2.\n\n🔹 SE SEM SUPRA ST (IAMSST):\n- Estratificação de risco (TIMI / GRACE).\n- AAS + Betabloqueador (Metoprolol 25-50mg VO) + Estatina (Atorvastatina 80mg) + Heparina (na UPA).\n- Encaminhar para ICP se alto risco.\n\n🔹 SE BLOQUEIO DE RAMO NOVO (BRE ou BRD):\n- Tratar como IAMCSST – encaminhar para trombólise/ICP.',
-                        observacoes: '📋 DECISÃO RÁPIDA NO PLANTÃO:\n| ECG | Tipo | Conduta |\n| Supra ST ≥ 1mm em 2 derivações | IAMCSST | Trombólise ou ICP |\n| Infradesnivelamento ST ou inversão T | IAMSST | AAS + Betabloqueador + Estatina + Heparina |\n| BRE/BRD novo | Equivale a supra | Tratar como IAMCSST |\n\n⚠️ TEMPO É MÚSCULO: ECG em até 10min da chegada. Acionar SAMU 192 e encaminhar para unidade com hemodinâmica.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA COM URGÊNCIA.\n\n🔹 **No PSA (primeiro atendimento):**\n- ECG imediato, aspirina, nitrato, morfina, oxigênio.\n- Avaliar janela para trombólise (até 12h) ou ICP primária.\n- Contatar hemodinâmica e UTI Coronariana.\n\n🔹 **Emergencista (continuidade):**\n- Definir estratégia de reperfusão (trombólise vs. ICP).\n- Indicar internação em UTI Coronariana.\n- Monitorizar arritmias e complicações.',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – IAMCSST:\n🔹 Diagnóstico: IAM com supra ST – indicação de ICP primária.\n🔹 Conduta na internação: UTI Coronariana, monitorização contínua, ECG seriado.\n🔹 Medicações: AAS 200mg, Clopidogrel 300mg, Heparina, Nitroglicerina EV se PA > 110, Morfina EV se dor.\n🔹 Exames: Troponina seriada, Ecocardiograma, Coronariografia.\n🔹 Cuidados: Repouso absoluto, restrição hídrica, dieta zero.\n🔹 Fluxo: Contatar CTI, comunicar equipe de hemodinâmica.',
+                        nivel: 'Emergencia',
+                        fonte: 'Protocolo SMS/SP - Cardiologia'
+                    },
+                    {
+                        cid: 'I21.4',
+                        diagnostico: 'IAM sem Supra ST (IAMSST)',
+                        exames: 'ECG urgente (em até 10min), Troponina seriada, CPK-MB, Hemograma, Creatinina, Potássio, Glicemia.',
+                        tratamento: 'AAS 200-300mg mastigado + Betabloqueador (Metoprolol 25-50mg VO) + Estatina (Atorvastatina 80mg) + Heparina (na UPA).',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA COM URGÊNCIA.\n\n🔹 **No PSA (primeiro atendimento):**\n- ECG, troponina, estratificação de risco (TIMI/GRACE).\n- Iniciar AAS, betabloqueador, estatina, heparina.\n- Se alto risco, encaminhar para ICP (angioplastia).\n\n🔹 **Emergencista (continuidade):**\n- Definir necessidade de ICP.\n- Indicar internação em unidade coronariana.\n- Ajustar antiagregação e anticoagulação.',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – IAMSST:\n🔹 Diagnóstico: IAM sem supra ST – estratificação de risco.\n🔹 Conduta na internação: Unidade Coronariana, monitorização contínua.\n🔹 Medicações: AAS 200mg, Clopidogrel 300mg, Heparina, Metoprolol 25-50mg VO.\n🔹 Exames: Troponina seriada, Ecocardiograma, Teste ergométrico (após estabilização).\n🔹 Cuidados: Repouso relativo, controle glicêmico, dieta leve.\n🔹 Fluxo: Contatar CTI, agendar ICP se necessário.',
                         nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Cardiologia'
                     },
@@ -316,15 +327,25 @@
                         nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Cardiologia'
                     },
-                    // ===== AVC ATUALIZADO =====
+                    // AVC - DIVIDIDO
                     {
-                        cid: 'I64',
-                        diagnostico: 'Acidente Vascular Cerebral (AVC) – Isquêmico vs. Hemorrágico',
-                        exames: 'Glicemia capilar, ECG, Hemograma, Coagulograma. TC de crânio (urgente – na UPA).',
-                        tratamento: 'Manter vias aéreas, O2 (se SatO2 < 94%), cabeceira elevada 30°. Não tratar PA (exceto > 220x120). NÃO usar AAS antes da TC.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA COM URGÊNCIA.\n\n🔹 SUSPEITA DE AVC ISQUÊMICO (início súbito, déficit focal, sem cefaleia intensa):\n- TC de crânio (urgente) – descartar hemorragia.\n- Se janela < 4,5h e elegível → trombólise (na UPA de referência).\n- Se fora da janela ou com contraindicação → AAS (após TC negativa) + controle de PA (não reduzir agressivamente, exceto se > 220x120).\n\n🔹 SUSPEITA DE AVC HEMORRÁGICO (cefaleia súbita, vômitos, rebaixamento, PA elevada):\n- TC de crânio (urgente) – confirmar.\n- Controle pressórico: manter PA < 140/90 mmHg (evitar picos).\n- Suspender anticoagulantes/antiagregantes.\n- Neurocirurgia (se indicado – hematoma com efeito de massa).',
-                        observacoes: '📋 DECISÃO RÁPIDA NO PLANTÃO:\n| Tipo | Achados | Conduta |\n| Isquêmico | Déficit focal, início súbito, sem cefaleia intensa | TC urgente → se elegível, trombólise (até 4,5h) |\n| Hemorrágico | Cefaleia súbita, vômitos, rebaixamento, PA elevada | TC urgente → controle pressórico rigoroso, suspender anticoagulantes, neurocirurgia se indicado |\n\n⚠️ TEMPO É CÉREBRO: Registrar horário exato do início dos sintomas (ictus). Acionar SAMU 192 e encaminhar para unidade com suporte neurológico.',
-                        nivel: 'UPA',
+                        cid: 'I63.9',
+                        diagnostico: 'AVC Isquêmico (AVCI) – Janela de trombólise',
+                        exames: 'Glicemia capilar, ECG, Hemograma, Coagulograma. TC de crânio (urgente – descartar hemorragia).',
+                        tratamento: 'Manter vias aéreas, O2 (se SatO2 < 94%), cabeceira elevada 30°. NÃO usar AAS antes da TC. Se elegível: trombólise (até 4,5h).',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA COM URGÊNCIA.\n\n🔹 **No PSA (primeiro atendimento):**\n- TC de crânio urgente (descartar hemorragia).\n- Avaliar elegibilidade para trombólise (janela < 4,5h, NIHSS, idade, anticoagulantes).\n- Se elegível, encaminhar para centro de trombólise.\n\n🔹 **Emergencista (continuidade):**\n- Definir trombólise ou terapia endovascular.\n- Indicar internação em UTI Neurológica.\n- Monitorizar déficits e complicações.',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – AVCI:\n🔹 Diagnóstico: AVC isquêmico – janela de trombólise.\n🔹 Conduta na internação: UTI Neurológica, monitorização neurológica rigorosa.\n🔹 Medicações: Trombólise (se elegível) – Alteplase 0,9mg/kg EV. AAS (após TC negativa, se não trombolisado).\n🔹 Exames: TC de crânio (controle), Doppler transcraniano, Ecocardiograma (fonte embólica).\n🔹 Cuidados: Cabeceira elevada 30°, controle glicêmico, prevenir aspiração.\n🔹 Fluxo: Contatar neurointervenção, UTI Neurológica.',
+                        nivel: 'Emergencia',
+                        fonte: 'Protocolo SMS/SP - Neurologia'
+                    },
+                    {
+                        cid: 'I61.9',
+                        diagnostico: 'AVC Hemorrágico (AVCH) – Sangramento intracraniano',
+                        exames: 'Glicemia capilar, ECG, Hemograma, Coagulograma. TC de crânio (urgente – confirmar sangramento).',
+                        tratamento: 'Manter vias aéreas, O2 (se SatO2 < 94%), cabeceira elevada 30°. Controle pressórico rigoroso (PA < 140/90 mmHg). Suspender anticoagulantes/antiagregantes.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA COM URGÊNCIA.\n\n🔹 **No PSA (primeiro atendimento):**\n- TC de crânio urgente (confirmar sangramento).\n- Controle pressórico rigoroso (PA < 140/90 mmHg).\n- Suspender anticoagulantes/antiagregantes.\n- Avaliar necessidade de neurocirurgia (hematoma com efeito de massa).\n\n🔹 **Emergencista (continuidade):**\n- Indicar neurocirurgia se necessário.\n- Internar em UTI Neurológica.\n- Monitorizar PIC e complicações.',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – AVCH:\n🔹 Diagnóstico: AVC hemorrágico – hipertensão grave.\n🔹 Conduta na internação: UTI Neurológica, monitorização de PIC.\n🔹 Medicações: Controle pressórico (Nitroprussiato, Labetalol), anticonvulsivantes (se crise).\n🔹 Exames: TC de crânio (controle), angiografia (se suspeita de aneurisma).\n🔹 Cuidados: Cabeceira elevada 30°, repouso absoluto, evitar esforço.\n🔹 Fluxo: Contatar neurocirurgia, UTI Neurológica.',
+                        nivel: 'Emergencia',
                         fonte: 'Protocolo SMS/SP - Neurologia'
                     },
                     {
@@ -361,11 +382,11 @@
                     // GASTROINTESTINAL
                     {
                         cid: 'K81.0',
-                        diagnostico: 'Colecistite aguda',
-                        exames: 'Sinais vitais, Hemograma, PCR, Amilase, Bilirrubinas, USG.',
-                        tratamento: 'Jejum, Hidratação venosa, Dipirona 1g EV + Escopolamina 20mg EV. Morfina 2-5mg EV (dor intensa). Antibioticoterapia empírica.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. Estabilizar e encaminhar UPA/PSA com Cirurgia Geral.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\nK81.0 - Colecistite aguda: sinais de gravidade incluem febre alta, peritonite (abdome agudo) e icterícia – encaminhar com urgência para avaliação cirúrgica.',
+                        diagnostico: 'Colecistite Aguda',
+                        exames: 'Sinais vitais, Hemograma, PCR, Amilase, Bilirrubinas, USG (se disponível).',
+                        tratamento: 'Jejum zero, Hidratação venosa (SF 0,9% ou Ringer). Dipirona 1g EV + Escopolamina 20mg EV (cólica). Se dor intensa: Morfina 2-5mg EV lento. Antibioticoterapia empírica (Ampicilina + Gentamicina + Metronidazol).',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA (🟠 Laranja – Manchester).\n\n🔹 **PSA:** Jejum, hidratação, analgesia, antibioticoterapia.\n🔹 **Emergencista (cirurgião):** Avaliação para colecistectomia (urgente ou eletiva).',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – COLECISTITE:\n🔹 Diagnóstico: Colecistite aguda.\n🔹 Conduta: Internação para antibioticoterapia EV e avaliação cirúrgica.\n🔹 Medicações: Jejum, hidratação, analgesia (Dipirona + Escopolamina), antibiótico (Ampicilina + Gentamicina + Metronidazol).\n🔹 Exames: Hemograma, PCR, USG.\n🔹 Cuidados: Jejum zero, monitorização de sinais de peritonite.',
                         nivel: 'UPA',
                         fonte: 'Protocolo SMS/SP - Abdome Agudo'
                     },
@@ -463,6 +484,16 @@
                         fonte: 'Protocolo SMS/SP - Neurologia'
                     },
                     {
+                        cid: 'R51',
+                        diagnostico: 'Cefaleia (Dor de cabeça)',
+                        exames: 'Sinais vitais, Glicemia capilar, Avaliação neurológica sumária (pupilas, pares cranianos, força, sensibilidade, coordenação, marcha). Fundoscopia (se disponível). ECG se > 50 anos.',
+                        tratamento: '• Tensional/Enxaqueca leve: Dipirona 1g VO/EV ou Ibuprofeno 600mg VO ou Paracetamol 750mg VO. • Com náuseas: Metoclopramida 10mg EV/IM ou Ondansetrona 4mg IV. • Refratária: Sumatriptano 50-100mg VO (se disponível). • Em salvas: Oxigênio 100% (12-15L/min) 15-20min + Sumatriptano.',
+                        conduta: 'RESOLVE NA AMA (cefaleia primária, sem sinais de alarme). Orientar repouso, hidratação, evitar gatilhos. ⚠️ ENCAMINHAR UPA/PSA IMEDIATAMENTE se: "pior dor de cabeça da vida", febre + rigidez nucal (meningite), déficit focal, rebaixamento, papiledema, imunossuprimido, esforço/atividade sexual.',
+                        observacoes: '📋 DIFERENCIAÇÃO RÁPIDA:\n| Tipo | Características | Conduta |\n| Tensional | Opressiva/bilateral, leve a moderada | ✅ Resolve na AMA |\n| Enxaqueca | Pulsátil/unilateral, náuseas, fotofobia | ✅ Resolve na AMA |\n| Em salvas | Unilateral/periorbitária, intensa, lacrimejamento | ⚠️ Oxigênio + encaminhar UPA |\n| Secundária (sinais de alarme) | Início súbito, febre, déficit focal | ⚠️ ENCAMINHAR URGENTE |\n\n⚠️ SINAIS DE ALARME:\n- "Pior dor de cabeça da vida" (início súbito)\n- Cefaleia + febre + rigidez nucal\n- Déficit neurológico focal\n- Rebaixamento da consciência\n- Papiledema',
+                        nivel: 'AMA',
+                        fonte: 'Protocolo SMS/SP - Cefaleias'
+                    },
+                    {
                         cid: 'R65.2',
                         diagnostico: 'Sepse / Choque Séptico',
                         exames: 'Sinais vitais, Lactato sérico, Gasometria, Hemograma, Creatinina, Bilirrubinas, Coagulograma, PCR, Hemoculturas, Urocultura, RX tórax.',
@@ -503,7 +534,6 @@
                         nivel: 'AMA',
                         fonte: 'Protocolo SMS/SP - COVID-19'
                     },
-                    // ACIDENTES (continuação)
                     {
                         cid: 'W54',
                         diagnostico: 'Mordedura de cão',
@@ -524,56 +554,196 @@
                         nivel: 'AMA',
                         fonte: 'Protocolo SMS/SP - Acidentes com Animais'
                     },
-                    // ===== NOVAS CONDUTAS (5) =====
+                    // =====================================================
+                    // EMERGÊNCIAS CLÍNICAS (NOVAS)
+                    // =====================================================
                     {
-                        cid: 'G03.9',
-                        diagnostico: 'Meningite (Suspeita)',
-                        exames: 'Sinais vitais completos, Glicemia capilar, Exame neurológico sumário (rigidez nucal, Kernig, Brudzinski). Hemograma, PCR, Coagulograma (se petéquias).',
-                        tratamento: 'O2 (se SatO2 < 94%), acesso venoso, reposição volêmica. Antibiótico empírico (na UPA): Ceftriaxona 2g EV + Vancomicina 1g EV + Ampicilina 2g EV (se > 50 anos). Dexametasona 10mg EV (antes do antibiótico, na UPA).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA MÉDICA. ENCAMINHAR PARA UPA/PSA IMEDIATAMENTE após estabilização. Notificar a Vigilância Epidemiológica.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Suspeita de meningite (febre + cefaleia + rigidez nucal) | ⚠️ Emergência – Encaminhar URGENTE UPA/PSA |\n| Petéquias ou púrpura | ⚠️ Meningococcemia – Encaminhamento URGENTE |\n| Rebaixamento da consciência | ⚠️ Proteger vias aéreas – Encaminhar com suporte avançado |\n\n⚠️ SINAIS DE ALARME:\n- Febre alta (> 38,5°C)\n- Cefaleia intensa\n- Rigidez nucal\n- Rebaixamento da consciência\n- Vômitos em jato\n- Petéquias / púrpura\n- Kernig e Brudzinski positivos\n\n⚠️ NOTIFICAÇÃO COMPULSÓRIA: Meningite é de notificação compulsória.',
+                        cid: 'E86',
+                        diagnostico: 'Gastroenterite Aguda com Desidratação',
+                        exames: 'Sinais vitais, Glicemia capilar, Eletrólitos, Creatinina, Ureia, Hemograma, PCR, Sumário de urina (cetose).',
+                        tratamento: 'Hidratação venosa (SF 0,9% ou Ringer Lactato) 20-30 mL/kg EV + reposição de eletrólitos (K, Na). Antiemético: Ondansetrona 4mg IV ou Metoclopramida 10mg EV. Sintomáticos: Dipirona 1g VO/EV.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Hidratação venosa, monitorização de diurese, reposição eletrolítica.\n🔹 **Emergencista:** Avaliar necessidade de internação (choque hipovolêmico, desidratação grave, desequilíbrio eletrolítico).',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO:\n🔹 Diagnóstico: Gastroenterite aguda com desidratação grave.\n🔹 Conduta: Internação para hidratação venosa, reposição eletrolítica e monitorização.\n🔹 Exames: Eletrólitos seriados, creatinina, ureia, hemograma, PCR.\n🔹 Cuidados: Controle hídrico rigoroso, dieta zero (primeiras 24h).',
+                        nivel: 'PSA',
+                        fonte: 'Protocolo SMS/SP - Gastroenterites'
+                    },
+                    // =====================================================
+                    // EMERGÊNCIAS ENDOCRINOLÓGICAS
+                    // =====================================================
+                    {
+                        cid: 'E10.1',
+                        diagnostico: 'Cetoacidose Diabética (CAD)',
+                        exames: 'Glicemia capilar, Gasometria arterial, Eletrólitos (K, Na), Creatinina, Ureia, Hemograma, PCR, Sumário de urina (corpos cetônicos). ECG (se > 40 anos).',
+                        tratamento: 'Reposição volêmica: SF 0,9% 20 mL/kg EV em 1h (até 2-3L em 4h). Insulina regular EV (0,1 U/kg/h). Reposição de potássio (se K < 5,5 mEq/L). Bicarbonato (se pH < 7,0 – uso limitado). Monitorização glicêmica horária.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Hidratação venosa, insulina EV, monitorização de potássio e glicemia.\n🔹 **Emergencista:** Internação em UTI (se pH < 7,1, K < 3,5, coma, hipotensão). Ajuste de insulina e eletrólitos.',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – CAD:\n🔹 Diagnóstico: Cetoacidose Diabética.\n🔹 Conduta: Internar em UTI Clínica (se grave) ou enfermaria.\n🔹 Medicações: Insulina regular EV + SF 0,9% + KCl (se indicado).\n🔹 Exames: Gasometria seriada, glicemia capilar a cada 1h, eletrólitos.\n🔹 Cuidados: Controle hídrico, balanço hídrico rigoroso, prevenir hipoglicemia.',
+                        nivel: 'Emergencia',
+                        fonte: 'Protocolo SMS/SP - Diabetes'
+                    },
+                    {
+                        cid: 'E11.0',
+                        diagnostico: 'Estado Hiperosmolar Hiperglicêmico (EHH)',
+                        exames: 'Glicemia capilar, Gasometria, Eletrólitos (K, Na), Creatinina, Ureia, Hemograma, PCR, Osmolaridade sérica.',
+                        tratamento: 'Reposição volêmica agressiva: SF 0,9% 20-30 mL/kg EV (até 5-10L em 24h). Insulina regular EV (0,05-0,1 U/kg/h). Reposição de potássio (se K < 4,5 mEq/L). Monitorização glicêmica horária.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Hidratação venosa agressiva, insulina EV, monitorização de eletrólitos.\n🔹 **Emergencista:** Internação em UTI (se osmolaridade > 320, rebaixamento, desidratação grave).',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – EHH:\n🔹 Diagnóstico: Estado Hiperosmolar Hiperglicêmico.\n🔹 Conduta: Internar em UTI (se grave) ou enfermaria.\n🔹 Medicações: SF 0,9% EV + Insulina regular EV + KCl.\n🔹 Exames: Eletrólitos seriados, glicemia capilar a cada 1h, osmolaridade.\n🔹 Cuidados: Controle hídrico, balanço hídrico rigoroso, prevenir trombose.',
+                        nivel: 'Emergencia',
+                        fonte: 'Protocolo SMS/SP - Diabetes'
+                    },
+                    {
+                        cid: 'E05.9',
+                        diagnostico: 'Crise Tireotóxica (Tempestade Tireoidiana)',
+                        exames: 'TSH, T4 livre, T3 total, Eletrólitos, Glicemia, ECG, Hemograma, PCR.',
+                        tratamento: 'Tionamida (Propiltiouracil 600-1000mg VO ou Metimazol 60-80mg VO). Betabloqueador (Propranolol 40-80mg VO 4/4h ou Esmolol EV). Corticoide (Hidrocortisona 100mg EV 6/6h). Iodo (solução de Lugol – após bloqueio da tireoide). Suporte: O2, hidratação, controle da febre (paracetamol).',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Tionamida + betabloqueador + corticoide + suporte.\n🔹 **Emergencista:** Internação em UTI, monitorização cardíaca contínua, controle da temperatura.',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – CRISE TIREOTÓXICA:\n🔹 Diagnóstico: Crise tireotóxica.\n🔹 Conduta: Internar em UTI (se instável).\n🔹 Medicações: Propiltiouracil, Propranolol, Hidrocortisona, Iodo.\n🔹 Exames: TSH, T4, T3 seriados, eletrólitos, ECG.\n🔹 Cuidados: Controle da febre, monitorização cardíaca, evitar estímulos.',
+                        nivel: 'Emergencia',
+                        fonte: 'Protocolo SMS/SP - Endocrinologia'
+                    },
+                    // =====================================================
+                    // EMERGÊNCIAS CIRÚRGICAS
+                    // =====================================================
+                    {
+                        cid: 'K35',
+                        diagnostico: 'Apendicite Aguda',
+                        exames: 'Sinais vitais, Exame abdominal (Blumberg, Rovsing, dor em FID), Hemograma, PCR, USG (se disponível). B-HCG (mulheres em idade fértil).',
+                        tratamento: 'Jejum zero, Hidratação venosa (SF 0,9% ou Ringer). Analgesia: Dipirona 1g EV + Escopolamina 20mg EV. Morfina 2-5mg EV (dor intensa). Antibioticoterapia (se perfuração suspeita). Encaminhamento cirúrgico.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Jejum, hidratação, analgesia, antibioticoterapia (se indicado).\n🔹 **Emergencista (cirurgião):** Avaliação para apendicectomia de urgência.',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – APENDICITE:\n🔹 Diagnóstico: Apendicite aguda.\n🔹 Conduta: Internação para apendicectomia de urgência.\n🔹 Medicações: Jejum, hidratação EV, analgesia (Dipirona + Escopolamina).\n🔹 Exames: Hemograma, PCR, USG (se disponível).\n🔹 Cuidados: Jejum zero, monitorização de sinais de peritonite.',
+                        nivel: 'PSA',
+                        fonte: 'Protocolo SMS/SP - Abdome Agudo'
+                    },
+                    {
+                        cid: 'K56',
+                        diagnostico: 'Obstrução Intestinal',
+                        exames: 'Sinais vitais, Exame abdominal (distensão, peristalse ausente, timpanismo), Hemograma, Amilase, PCR, Raio-X de abdome (níveis hidroaéreos), USG ou TC (se disponível).',
+                        tratamento: 'Jejum zero (NPO), Hidratação venosa (SF 0,9% ou Ringer). Sonda nasogástrica (descompressão). Analgesia: Dipirona 1g EV + Escopolamina 20mg EV. Morfina 2-5mg EV (dor intensa). Avaliação cirúrgica urgente.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Jejum, hidratação, sonda nasogástrica, analgesia.\n🔹 **Emergencista (cirurgião):** Avaliação para laparotomia (se perfuração/estrangulamento).',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – OBSTRUÇÃO INTESTINAL:\n🔹 Diagnóstico: Obstrução intestinal (suspeita de brida/hérnia).\n🔹 Conduta: Internação para descompressão e avaliação cirúrgica.\n🔹 Medicações: Jejum, hidratação EV, sonda nasogástrica.\n🔹 Exames: RX de abdome, TC (se disponível), hemograma, amilase.\n🔹 Cuidados: Jejum zero, monitorização de sinais de perfuração/peritonite.',
+                        nivel: 'Emergencia',
+                        fonte: 'Protocolo SMS/SP - Abdome Agudo'
+                    },
+                    {
+                        cid: 'S27/S36',
+                        diagnostico: 'Trauma Torácico/Abdominal Grave',
+                        exames: 'Sinais vitais, FAST (USG), Raio-X tórax/abdome, Hemograma, Amilase, PCR, Coagulograma, Gasometria.',
+                        tratamento: 'Estabilização: O2 (se SatO2 < 94%), acesso venoso calibroso (dois acessos). Reposição volêmica (cristaloide 20-30 mL/kg EV). Drenagem de tórax (se pneumotórax/hemotórax – na UPA). Analgesia: Morfina 2-5mg EV. Encaminhamento cirúrgico urgente.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Estabilização, O2, acesso venoso, reposição volêmica, avaliação com FAST.\n🔹 **Emergencista (cirurgião):** Internação em UTI ou centro cirúrgico (se sangramento ativo/perfuração).',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – TRAUMA TORÁCICO/ABDOMINAL:\n🔹 Diagnóstico: Trauma torácico/abdominal grave.\n🔹 Conduta: Internação em UTI ou CTI para estabilização e cirurgia.\n🔹 Medicações: O2, reposição volêmica, analgesia (Morfina EV).\n🔹 Exames: TC de tórax/abdome, FAST, hemograma, coagulograma.\n🔹 Cuidados: Monitorização contínua, drenagem de tórax (se indicado).',
+                        nivel: 'Emergencia',
+                        fonte: 'Protocolo SMS/SP - Trauma'
+                    },
+                    // =====================================================
+                    // EMERGÊNCIAS CARDIOVASCULARES
+                    // =====================================================
+                    {
+                        cid: 'I48',
+                        diagnostico: 'Arritmias Cardíacas (FA / TV)',
+                        exames: 'ECG (imediato), Troponina, Eletrólitos (K, Mg), Hemograma, TSH (se suspeita de tireoide).',
+                        tratamento: '• **Fibrilação Atrial (FA):** Se instável → cardioversão elétrica (na UPA). Se estável → controle de FC (Metoprolol 25-50mg VO ou Diltiazem 120mg VO). Anticoagulação (avaliação – na UPA). • **Taquicardia Ventricular (TV):** Se instável → cardioversão elétrica. Se estável → Amiodarona IV 150mg (na UPA) + encaminhamento para UTI.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** ECG, estabilização, controle de FC, anticoagulação se FA.\n🔹 **Emergencista:** Internação em UTI (se TV, FA instável, ou comorbidades).',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – ARRITMIA:\n🔹 Diagnóstico: Arritmia cardíaca (FA/TV).\n🔹 Conduta: Internação em UTI (se TV ou FA instável) ou unidade coronariana.\n🔹 Medicações: Controle de FC (Metoprolol, Diltiazem), anticoagulação (FA).\n🔹 Exames: ECG seriado, troponina, eletrólitos.\n🔹 Cuidados: Monitorização cardíaca contínua, evitar esforço.',
+                        nivel: 'Emergencia',
+                        fonte: 'Protocolo SMS/SP - Cardiologia'
+                    },
+                    // =====================================================
+                    // EMERGÊNCIAS NEUROLÓGICAS
+                    // =====================================================
+                    {
+                        cid: 'G41',
+                        diagnostico: 'Estado de Mal Epiléptico',
+                        exames: 'Glicemia capilar, Eletrólitos, Hemograma, Coagulograma, TC de crânio (urgente).',
+                        tratamento: 'Diazepam 10mg IV (repetir 10min se necessário) ou Midazolam IM (10mg). Fenitoína 20mg/kg EV (dose de ataque). Se refratário: Propofol ou Tiopental (na UPA). Proteger vias aéreas (intubação se necessário).',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Diazepam IV, fenitoína, proteção de vias aéreas.\n🔹 **Emergencista:** Internação em UTI, monitorização contínua, EEG.',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – ESTADO DE MAL EPILÉPTICO:\n🔹 Diagnóstico: Estado de mal epiléptico.\n🔹 Conduta: Internação em UTI (se refratário) ou enfermaria.\n🔹 Medicações: Diazepam, Fenitoína, Midazolam, Propofol (se refratário).\n🔹 Exames: TC de crânio, EEG, eletrólitos.\n🔹 Cuidados: Proteger vias aéreas, monitorização neurológica.',
+                        nivel: 'Emergencia',
+                        fonte: 'Protocolo SMS/SP - Neurologia'
+                    },
+                    {
+                        cid: 'S06',
+                        diagnostico: 'Traumatismo Cranioencefálico (TCE)',
+                        exames: 'Sinais vitais, Exame neurológico (Glasgow, pupilas, força, sensibilidade), TC de crânio (urgente). Coagulograma, Hemograma.',
+                        tratamento: 'Estabilização: O2 (se SatO2 < 94%), cabeceira elevada 30°. Controle da PA (não reduzir agressivamente – manter PAM > 90 mmHg). Controle da dor: Dipirona 1g EV. NÃO usar anticoagulantes. Encaminhamento para neurocirurgia (se hematoma ou efeito de massa).',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Estabilização, TC de crânio, controle da PA.\n🔹 **Emergencista (neurocirurgião):** Internação em UTI, monitorização de PIC, neurocirurgia (se indicado).',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – TCE:\n🔹 Diagnóstico: TCE grave (hematoma/contusão).\n🔹 Conduta: Internação em UTI Neurológica.\n🔹 Medicações: Controle da PA, analgesia (Dipirona). NÃO usar anticoagulantes.\n🔹 Exames: TC de crânio (controle), avaliação neurocirúrgica.\n🔹 Cuidados: Cabeceira elevada 30°, monitorização neurológica rigorosa.',
+                        nivel: 'Emergencia',
+                        fonte: 'Protocolo SMS/SP - Neurologia'
+                    },
+                    {
+                        cid: 'I60',
+                        diagnostico: 'Hemorragia Subaracnoide (HSA)',
+                        exames: 'TC de crânio (urgente), Glicemia capilar, ECG, Hemograma, Coagulograma.',
+                        tratamento: 'Estabilização: O2 (se SatO2 < 94%), acesso venoso. Controle da PA (manter PA < 160x100 mmHg). Controle da dor: Morfina 2-5mg EV. NÃO usar anticoagulantes. Encaminhamento para neurocirurgia (angiografia, tratamento do aneurisma).',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** TC de crânio, controle da PA, analgesia.\n🔹 **Emergencista (neurocirurgião):** Internação em UTI, angiografia, tratamento do aneurisma.',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – HSA:\n🔹 Diagnóstico: Hemorragia subaracnoide (suspeita de aneurisma).\n🔹 Conduta: Internação em UTI Neurológica.\n🔹 Medicações: Controle da PA, analgesia (Morfina EV). NÃO usar anticoagulantes.\n🔹 Exames: TC de crânio, angiografia (se necessário).\n🔹 Cuidados: Repouso absoluto, evitar esforço, monitorização neurológica.',
+                        nivel: 'Emergencia',
+                        fonte: 'Protocolo SMS/SP - Neurologia'
+                    },
+                    // =====================================================
+                    // EMERGÊNCIAS UROLÓGICAS
+                    // =====================================================
+                    {
+                        cid: 'R33',
+                        diagnostico: 'Retenção Urinária Aguda',
+                        exames: 'Palpação de bexiga (distensão), Ultrassom (se disponível), Eletrólitos, Creatinina, Ureia, Sumário de urina.',
+                        tratamento: 'Sondagem vesical imediata (alívio). Se obstrução (HPB): alfa-bloqueador (Tansulosina 0,4mg VO). Analgesia: Dipirona 1g VO/EV. Avaliação urológica (encaminhamento).',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Sondagem vesical, analgesia, alfa-bloqueador.\n🔹 **Emergencista (urologista):** Avaliação para internação (se infecção, insuficiência renal).',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – RETENÇÃO URINÁRIA:\n🔹 Diagnóstico: Retenção urinária aguda.\n🔹 Conduta: Sondagem vesical de alívio + internação (se complicações).\n🔹 Medicações: Tansulosina 0,4mg VO (se HPB).\n🔹 Exames: Ultrassom, eletrólitos, creatinina.\n🔹 Cuidados: Monitorizar diurese, evitar infecção urinária.',
                         nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Meningites'
+                        fonte: 'Protocolo SMS/SP - Urologia'
                     },
                     {
-                        cid: 'R51',
-                        diagnostico: 'Cefaleia (Dor de cabeça)',
-                        exames: 'Sinais vitais, Glicemia capilar, Avaliação neurológica sumária (pupilas, pares cranianos, força, sensibilidade, coordenação, marcha). Fundoscopia (se disponível). ECG se > 50 anos.',
-                        tratamento: '• Tensional/Enxaqueca leve: Dipirona 1g VO/EV ou Ibuprofeno 600mg VO ou Paracetamol 750mg VO. • Com náuseas: Metoclopramida 10mg EV/IM ou Ondansetrona 4mg IV. • Refratária: Sumatriptano 50-100mg VO (se disponível). • Em salvas: Oxigênio 100% (12-15L/min) 15-20min + Sumatriptano.',
-                        conduta: 'RESOLVE NA AMA (cefaleia primária, sem sinais de alarme). Orientar repouso, hidratação, evitar gatilhos. ⚠️ ENCAMINHAR UPA/PSA IMEDIATAMENTE se: "pior dor de cabeça da vida", febre + rigidez nucal (meningite), déficit focal, rebaixamento, papiledema, imunossuprimido, esforço/atividade sexual.',
-                        observacoes: '📋 DIFERENCIAÇÃO RÁPIDA:\n| Tipo | Características | Conduta |\n| Tensional | Opressiva/bilateral, leve a moderada | ✅ Resolve na AMA |\n| Enxaqueca | Pulsátil/unilateral, náuseas, fotofobia | ✅ Resolve na AMA |\n| Em salvas | Unilateral/periorbitária, intensa, lacrimejamento | ⚠️ Oxigênio + encaminhar UPA |\n| Secundária (sinais de alarme) | Início súbito, febre, déficit focal | ⚠️ ENCAMINHAR URGENTE |\n\n⚠️ SINAIS DE ALARME:\n- "Pior dor de cabeça da vida" (início súbito)\n- Cefaleia + febre + rigidez nucal\n- Déficit neurológico focal\n- Rebaixamento da consciência\n- Papiledema',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Cefaleias'
-                    },
-                    {
-                        cid: 'I71.0',
-                        diagnostico: 'Dissecção de Aorta (Suspeita)',
-                        exames: 'Sinais vitais (PA em ambos os braços), ECG, Raio-X de tórax (alargamento do mediastino). Troponina (descartar IAM). Exame físico: pulsos periféricos (assimetria), sopro aórtico, déficit neurológico.',
-                        tratamento: 'O2, acesso venoso (dois acessos). Controle da dor: Morfina 2-5mg EV. Controle da PA: Betabloqueador (Metoprolol 5mg EV lento ou Esmolol EV) – manter PA ≤ 110 mmHg e FC ≤ 60 bpm. NÃO usar anticoagulantes.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA MÉDICA GRAVE. ENCAMINHAR PARA UPA/PSA IMEDIATAMENTE após estabilização. Transporte com monitorização contínua.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta |\n| Dor súbita e lancinante + irradiação para dorso | ⚠️ Emergência – Encaminhar URGENTE |\n| Assimetria de PA (> 20 mmHg entre os braços) | ⚠️ Forte suspeita – encaminhar URGENTE |\n| Déficit neurológico focal | ⚠️ Encaminhar URGENTE |\n\n⚠️ SINAIS DE ALARME:\n- Dor súbita e lancinante (pior dor da vida)\n- Irradiação para dorso ou abdome\n- Assimetria de pulsos\n- Sopro aórtico\n- Déficit neurológico focal\n- Síncope\n\n⚠️ CONTRAINDICAÇÕES: NÃO usar AAS, heparina ou anticoagulantes.',
+                        cid: 'N10',
+                        diagnostico: 'Pielonefrite Aguda (ITU Complicada)',
+                        exames: 'Sumário de urina, Urocultura, Hemograma, PCR, Creatinina, USG (se disponível).',
+                        tratamento: 'Antibioticoterapia EV (Ceftriaxona 2g EV + Gentamicina 5mg/kg EV, ou Ciprofloxacino 400mg EV 12/12h). Hidratação venosa (SF 0,9%). Analgesia: Dipirona 1g VO/EV. Antiemético: Ondansetrona 4mg IV.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Antibioticoterapia EV, hidratação, analgesia.\n🔹 **Emergencista:** Internação (se gravidade, febre alta, sepse, insuficiência renal).',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – PIELONEFRITE:\n🔹 Diagnóstico: Pielonefrite aguda.\n🔹 Conduta: Internação (se gravidade) ou acompanhamento ambulatorial.\n🔹 Medicações: Antibiótico EV (Ceftriaxona/Gentamicina).\n🔹 Exames: Urocultura, hemograma, PCR, creatinina.\n🔹 Cuidados: Hidratação, monitorização de febre e função renal.',
                         nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Dissecção Aórtica'
+                        fonte: 'Protocolo SMS/SP - Infectologia'
                     },
                     {
-                        cid: 'I67.1',
-                        diagnostico: 'Aneurisma Cerebral (Suspeita – Hemorragia Subaracnoide)',
-                        exames: 'Sinais vitais, Glicemia capilar, Exame neurológico sumário (pupilas, pares cranianos, força, sensibilidade, nível de consciência, rigidez nucal).',
-                        tratamento: 'O2 (se SatO2 < 94%), acesso venoso, reposição volêmica (se hipotensão). Controle da PA: manter PA < 160x100 mmHg (evitar picos hipertensivos). Controle da dor: Dipirona 1g EV ou Morfina 2-5mg EV. NÃO usar anticoagulantes.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA MÉDICA GRAVE. ENCAMINHAR PARA UPA/PSA IMEDIATAMENTE após estabilização. Suspeita de hemorragia subaracnoide requer TC e neurocirurgia urgente.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta |\n| "Pior dor de cabeça da vida" (início súbito) | ⚠️ Suspeita de hemorragia subaracnoide – encaminhar URGENTE |\n| Cefaleia + náuseas/vômitos + rebaixamento | ⚠️ Encaminhar URGENTE – TC na UPA |\n| Cefaleia + rigidez nucal + fotofobia | ⚠️ Suspeita de hemorragia ou meningite – encaminhar URGENTE |\n\n⚠️ SINAIS DE ALARME:\n- "Pior dor de cabeça da vida" (início súbito)\n- Cefaleia + náuseas/vômitos\n- Rebaixamento da consciência\n- Rigidez nucal\n- Fotofobia\n- Déficit neurológico focal\n\n⚠️ ATENÇÃO: NÃO tratar hipertensão agressivamente – manter PA < 160x100 mmHg.',
+                        cid: 'N44',
+                        diagnostico: 'Torção Testicular',
+                        exames: 'Exame físico (testículo aumentado, doloroso, elevado), Ultrassom Doppler (urgente – avaliar fluxo). Sumário de urina (descartar ITU).',
+                        tratamento: 'Analgesia: Dipirona 1g VO/EV + Morfina 2-5mg EV (se dor intensa). NÃO tentar redução manual (risco de complicação). Encaminhamento cirúrgico URGENTE (urologia) – janela de 4-6 horas para salvar o testículo.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** US Doppler, analgesia, encaminhamento cirúrgico imediato.\n🔹 **Emergencista (urologista):** Internação para cirurgia de urgência (orquidopexia/orquiectomia).',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – TORÇÃO TESTICULAR:\n🔹 Diagnóstico: Torção testicular.\n🔹 Conduta: Internação para cirurgia de urgência.\n🔹 Medicações: Analgesia (Morfina EV).\n🔹 Exames: US Doppler (urgente).\n🔹 Cuidados: Repouso, monitorização, orientação sobre risco de perda do testículo.',
+                        nivel: 'Emergencia',
+                        fonte: 'Protocolo SMS/SP - Urologia'
+                    },
+                    // =====================================================
+                    // NOVAS: PANCREATITE, LITÍASE BILIAR, LITÍASE URINÁRIA
+                    // =====================================================
+                    {
+                        cid: 'K85',
+                        diagnostico: 'Pancreatite Aguda',
+                        exames: 'Sinais vitais, Amilase e Lipase séricas, Hemograma, PCR, Glicemia, Creatinina, Eletrólitos, Gasometria, USG ou TC de abdome (se disponível).',
+                        tratamento: 'Jejum zero (NPO), Hidratação venosa agressiva (SF 0,9% ou Ringer Lactato) 20-30 mL/kg EV. Analgesia: Dipirona 1g EV + Morfina 2-5mg EV (se dor intensa). Antiemético: Ondansetrona 4mg IV. Antibiótico (se sinais de infecção – na UPA).',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Hidratação, analgesia, monitorização de sinais de gravidade (Ranson, APACHE).\n🔹 **Emergencista:** Internação (se grave) – UTI se disfunção orgânica. Avaliar necessidade de CPRE (se coledocolitíase).',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – PANCREATITE AGUDA:\n🔹 Diagnóstico: Pancreatite aguda.\n🔹 Conduta: Internação (enfermaria ou UTI, se grave).\n🔹 Medicações: Hidratação EV, analgesia (Morfina), jejum zero.\n🔹 Exames: Amilase/lipase seriadas, TC de abdome, USG.\n🔹 Cuidados: Controle glicêmico, balanço hídrico, evitar nutrição enteral precoce (se grave).',
+                        nivel: 'Emergencia',
+                        fonte: 'Protocolo SMS/SP - Gastroenterologia'
+                    },
+                    {
+                        cid: 'K80.3',
+                        diagnostico: 'Litíase Biliar Obstrutiva (Coledocolitíase)',
+                        exames: 'Sinais vitais, Bilirrubinas (total e frações), Fosfatase alcalina, Gama-GT, Amilase, Hemograma, PCR, USG de abdome (dilatação de vias biliares), Colangio-RM (se disponível).',
+                        tratamento: 'Jejum zero, Hidratação venosa (SF 0,9%). Analgesia: Dipirona 1g EV + Escopolamina 20mg EV. Antibioticoterapia (se colangite – Ceftriaxona 2g EV + Metronidazol). Encaminhamento para CPRE (colangiopancreatografia endoscópica retrógrada) – na UPA/PSA com suporte.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** USG, antibioticoterapia, hidratação, analgesia.\n🔹 **Emergencista (gastroenterologista/cirurgião):** CPRE de urgência (se colangite, icterícia progressiva).',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – COLECOLITÍASE:\n🔹 Diagnóstico: Litíase biliar obstrutiva.\n🔹 Conduta: Internação para CPRE e possível colecistectomia.\n🔹 Medicações: Antibiótico EV, analgesia, hidratação.\n🔹 Exames: Bilirrubinas, USG, Colangio-RM.\n🔹 Cuidados: Monitorizar sinais de colangite (febre, dor, icterícia).',
+                        nivel: 'Emergencia',
+                        fonte: 'Protocolo SMS/SP - Gastroenterologia'
+                    },
+                    {
+                        cid: 'N20.0',
+                        diagnostico: 'Litíase Urinária Obstrutiva (Cálculo Renal com Hidronefrose)',
+                        exames: 'Sumário de urina, USG de vias urinárias (hidronefrose), Creatinina, Ureia, Eletrólitos, Hemograma, PCR.',
+                        tratamento: 'Analgesia: Dipirona 1g EV + Escopolamina 20mg EV. Se dor refratária: Morfina 2-5mg EV lento. Hidratação venosa (SF 0,9% 20-30 mL/kg). Se febre (pielonefrite obstrutiva): antibioticoterapia EV (Ceftriaxona 2g EV + Gentamicina) + encaminhamento urgente.',
+                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Analgesia, hidratação, USG, avaliação de função renal.\n🔹 **Emergencista (urologista):** Internação (se hidronefrose grave, pielonefrite obstrutiva, insuficiência renal). Avaliar necessidade de drenagem (sonda duplo-J ou nefrostomia).',
+                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – LITÍASE OBSTRUTIVA:\n🔹 Diagnóstico: Litíase urinária obstrutiva com hidronefrose.\n🔹 Conduta: Internação para drenagem (se urgente) ou observação.\n🔹 Medicações: Analgesia, hidratação, antibiótico (se infecção).\n🔹 Exames: USG, creatinina, eletrólitos, sumário de urina.\n🔹 Cuidados: Monitorizar diurese, função renal, sinais de infecção.',
                         nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Aneurisma Cerebral'
-                    },
-                    {
-                        cid: 'N94.6',
-                        diagnostico: 'Dismenorreia (Cólica menstrual)',
-                        exames: 'Sinais vitais (PA, FC, FR, T°), Exame físico abdominal (descartar abdome agudo), B-HCG (sempre em mulheres em idade fértil – descartar gravidez).',
-                        tratamento: '• Analgesia/antiespasmódico: Dipirona 1g VO/EV + Escopolamina 20mg EV (cólica). • Anti-inflamatório: Ibuprofeno 600mg VO (ou Diclofenaco 50mg VO) – início precoce (até 48h do início da dor). • Náuseas/vômitos: Ondansetrona 4mg IV ou Metoclopramida 10mg EV. • Anticoncepcional oral (para recidivas – orientar e encaminhar para UBS).',
-                        conduta: 'RESOLVE NA AMA (em mulheres jovens, sem sinais de gravidade, sem suspeita de gravidez ou abdome agudo). Orientar repouso, compressa quente no abdome, hidratação, evitar cafeína. Prescrever analgésico/antiespasmódico para casa. ⚠️ ENCAMINHAR PARA UPA/PSA se: dor refratária a 2 ciclos de analgésicos, sinais de abdome agudo (febre, rigidez/defesa, Blumberg +), sangramento intenso, suspeita de gravidez (B-HCG +), ou suspeita de endometriose/doença pélvica (encaminhar para ginecologia).',
-                        observacoes: '📋 LEMBRETE RÁPIDO PARA O PLANTÃO:\n| Situação | Conduta na AMA |\n| Dismenorreia típica (cólica + dor em HCD/pelve, sem febre) | ✅ Resolve na AMA – Dipirona/Escopolamina + Ibuprofeno + orientação |\n| Dor refratária a 2 ciclos de analgésicos | ⚠️ Encaminhar UPA/PSA (investigação) |\n| Sangramento intenso + dor | ⚠️ Encaminhar UPA/PSA (descartar gravidez ectópica, mioma) |\n| Febre + dor + Blumberg + | ⚠️ Encaminhar URGENTE (suspeita de apendicite/abdome agudo) |\n| Suspeita de gravidez (B-HCG +) | ⚠️ Encaminhar UPA/MATERNIDADE (descartar gravidez ectópica) |\n\n⚠️ ATENÇÃO ESPECIAL:\n- B-HCG é obrigatório em mulheres em idade fértil (descartar gravidez antes de qualquer tratamento).\n- Dismenorreia secundária (endometriose, mioma, DIP) deve ser encaminhada para ginecologia.',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Dismenorreia'
+                        fonte: 'Protocolo SMS/SP - Urologia'
                     }
                 ];
                 salvarDados();
@@ -795,7 +965,6 @@
                 });
             }
 
-            // Evento para os botões de filtro
             document.querySelectorAll('.filtro-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const nivel = this.dataset.nivel;
@@ -803,7 +972,6 @@
                 });
             });
 
-            // Busca com Enter
             document.getElementById('busca').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     buscar();
