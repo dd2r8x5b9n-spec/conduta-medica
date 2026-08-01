@@ -17,7 +17,7 @@
 | App | Descrição | Acesso |
 |-----|-----------|--------|
 | **Conduta Médica** | Protocolos e condutas para atendimento ambulatorial e de urgência | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/) |
-| **REMUME – Medicamentos SP** | Consulta rápida de medicamentos disponíveis na rede municipal de São Paulo | [Abrir](https://dd2r8x5b9n-spec.github.io/remume/) |
+| **REMUME – Medicamentos SP** | Consulta rápida de medicamentos disponíveis na rede municipal de São Paulo | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume.html/) |
 
 ---
 
