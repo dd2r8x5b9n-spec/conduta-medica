@@ -17,7 +17,7 @@
 | App | Descrição | Acesso |
 |-----|-----------|--------|
 | **Conduta Médica** | Protocolos e condutas para atendimento ambulatorial e de urgência | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/) |
-| **REMUME – Medicamentos SP** | Consulta rápida de medicamentos disponíveis na rede municipal de São Paulo | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume.html/) |
+| **REMUME – Medicamentos SP** | Consulta rápida de medicamentos disponíveis na rede municipal de São Paulo | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume.html) |
 
 ---
 
@@ -150,14 +150,14 @@ Pronto! O app vai aparecer como um ícone na sua tela inicial, funcionando em te
 
 ---
 
-## 📂 Estrutura do projeto
+## 📁 Estrutura do projeto
 ```
 
 conduta-medica/
-├── index.html            # Página principal do app (todo o código)
+├── index.html            # Página principal do app (condutas)
 ├── service-worker.js     # Habilita o modo offline
-├── README.md             # Este arquivo (documentação)
-└── (futuramente) icon/   # Ícones para o PWA
+├── remume.html           # App REMUME (medicamentos da rede municipal)
+└── README.md             # Este arquivo (documentação)
 
 ```
 
@@ -185,4 +185,4 @@ Este projeto é de uso pessoal e educacional. Sinta-se livre para adaptá-lo às
 
 ---
 
-Desenvolvido com 💙 por [K. Marjoub] – para uso próprio no atendimento na rede municipal de saúde..
+Desenvolvido com 💙 por [K. Marjoub] – para uso próprio no atendimento na rede municipal de saúde.
