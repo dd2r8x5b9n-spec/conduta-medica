@@ -185,4 +185,4 @@ Este projeto é de uso pessoal e educacional. Sinta-se livre para adaptá-lo às
 
 ---
 
-Desenvolvido com 💙 por [K. Marjoub] – para uso próprio no atendimento na rede municipal de saúde.
+Desenvolvido com 💙 por [K. Marjoub] – para uso próprio no atendimento na rede municipal de saúde..
