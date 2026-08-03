@@ -210,11 +210,13 @@ Pronto! O app vai aparecer como um ícone na sua tela inicial, funcionando em te
 ---
 
 ## 📁 Estrutura do projeto
+
+```text
 conduta-medica/
-├── index.html            # App Conduta Médica (condutas e protocolos)
-├── service-worker.js     # Habilita o modo offline (PWA)
-├── remume.html           # App REMUME (medicamentos da rede municipal)
-└── README.md             # Este arquivo (documentação)
+├── index.html            (App Conduta Médica)
+├── service-worker.js     (Modo offline PWA)
+├── remume.html           (App REMUME - medicamentos)
+└── README.md             (Documentação)
 
 ---
 
