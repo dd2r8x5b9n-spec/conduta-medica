@@ -8,7 +8,7 @@
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
-    /* --- ESTILOS COMPLETOS --- */
+    /* --- ESTILOS COMPLETOS (mantidos) --- */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, system-ui, sans-serif; background: #EEF2EF; }
     .app { max-width: 820px; margin: 0 auto; padding: 28px 18px 60px; }
@@ -62,16 +62,17 @@
   <script type="text/babel">
     const { useState, useMemo, useEffect } = React;
 
-    // ================================================================
-    // LISTA COMPLETA DE MEDICAMENTOS (INCLUI GESTAÇÃO)
-    // ================================================================
     const MEDS = [
+      // ================================================================
+      // TODOS OS MEDICAMENTOS (INCLUINDO GESTAÇÃO)
+      // ================================================================
+
       // ================================================================
       // MEDICAMENTOS ANTERIORES (UBS/AMA/UPA/PSA/EMERGÊNCIA)
       // ================================================================
-      // (Aqui você deve manter todos os medicamentos que já tinha,
+      // (Aqui você mantém todos os medicamentos que já tinha,
       // incluindo os da UBS/AMA, AMA, UPA, PSA, Emergência e Clexane.
-      // Para não repetir o código gigante, estou mantendo a estrutura compacta,
+      // Para não repetir o código, estou mantendo a estrutura compacta,
       // mas você deve usar o código completo que já tem.)
       // ================================================================
 
@@ -105,7 +106,7 @@
     ];
 
     // ================================================================
-    // COMPONENTE PRINCIPAL
+    // COMPONENTE PRINCIPAL (COM FILTRO E BUSCA PARA GESTAÇÃO)
     // ================================================================
     function App() {
       const [query, setQuery] = useState("");
@@ -115,6 +116,7 @@
       const [showOnlyPopular, setShowOnlyPopular] = useState(false);
       const [filterLocal, setFilterLocal] = useState('all');
       const [filterVia, setFilterVia] = useState('all');
+      const [filterGestacao, setFilterGestacao] = useState(false); // NOVO FILTRO
       const [favorites, setFavorites] = useState(() => {
         try { return JSON.parse(localStorage.getItem('remume_fav') || '[]'); } catch { return []; }
       });
@@ -148,10 +150,14 @@
       const results = useMemo(() => {
         const q = query.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         return MEDS.filter(m => {
+          // Nome, grupo e indicações já normalizados
           const nome = m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
           const grupo = m.g.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
           const ind = (m.indicacoes || []).join(' ').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-          const matchQ = q.length === 0 || nome.includes(q) || grupo.includes(q) || ind.includes(q);
+          // Inclui o campo 'gestacao' na busca
+          const gest = (m.gestacao || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+          const matchQ = q.length === 0 || nome.includes(q) || grupo.includes(q) || ind.includes(q) || gest.includes(q);
           const matchG = !activeGroup || m.g === activeGroup;
           const matchL = filterLocal === 'all' || m.l === filterLocal || m.l.includes(filterLocal);
           const matchV = filterVia === 'all' || m.via === filterVia || 
@@ -165,7 +171,10 @@
             (filterVia === 'Tópica (Otópica)' && m.via === 'Tópica (Otópica)') ||
             (filterVia === 'Sublingual' && m.via === 'Sublingual');
           const matchP = !showOnlyPopular || m.popular;
-          return matchQ && matchG && matchL && matchV && matchP;
+          // NOVO: filtro por gestação (verifica se o campo 'gestacao' existe)
+          const matchGest = !filterGestacao || (m.gestacao && m.gestacao.length > 0);
+
+          return matchQ && matchG && matchL && matchV && matchP && matchGest;
         }).sort((a,b) => {
           if (q.length > 0) {
             const aNome = a.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -177,7 +186,7 @@
           }
           return a.n.localeCompare(b.n);
         });
-      }, [query, activeGroup, filterLocal, filterVia, showOnlyPopular]);
+      }, [query, activeGroup, filterLocal, filterVia, filterGestacao, showOnlyPopular]);
 
       const toggleFav = (id) => {
         setFavorites(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
@@ -209,12 +218,15 @@
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: darkMode ? '#1A2E28' : '#fff', border: `1.5px solid ${darkMode ? '#2A4A3E' : '#C7D6CF'}`, borderRadius: 12, padding: '10px 12px', marginBottom: 10 }}>
             <span>🔍</span>
-            <input className="input-search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Digite o início do nome, ex: Paracetamol, Metildopa, Enoxaparina..." style={{ color: darkMode ? '#DCE8E0' : '#14231D' }} />
+            <input className="input-search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Digite o início do nome, ex: Paracetamol, Metildopa, Enoxaparina ou digite 'gestação'..." style={{ color: darkMode ? '#DCE8E0' : '#14231D' }} />
             {query && <button onClick={() => setQuery('')} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>✕</button>}
           </div>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
             <button className={`btn-filter ${showOnlyPopular ? 'active' : ''}`} onClick={() => setShowOnlyPopular(!showOnlyPopular)}>⭐ Mais usados</button>
+            <button className={`btn-filter ${filterGestacao ? 'active' : ''}`} onClick={() => setFilterGestacao(!filterGestacao)} style={filterGestacao ? { background: '#E91E63', color: '#fff', borderColor: '#E91E63' } : {}}>
+              🤰 Gestação
+            </button>
             <select className="btn-filter" value={filterLocal} onChange={e => setFilterLocal(e.target.value)} style={{ background: darkMode ? '#1A2E28' : '#fff', color: 'inherit' }}>
               <option value="all">📍 Todos locais</option>
               <option value="UBS">🏥 UBS</option>
@@ -245,7 +257,7 @@
             })}
           </div>
 
-          {results.length === 0 && <div style={{ padding: 32, textAlign: 'center', color: darkMode ? '#7A9A8A' : '#51665D', background: darkMode ? '#1A2E28' : '#fff', borderRadius: 12 }}>🔍 Nenhum medicamento encontrado. Tente "Paracetamol", "Metildopa" ou "Enoxaparina".</div>}
+          {results.length === 0 && <div style={{ padding: 32, textAlign: 'center', color: darkMode ? '#7A9A8A' : '#51665D', background: darkMode ? '#1A2E28' : '#fff', borderRadius: 12 }}>🔍 Nenhum medicamento encontrado. Tente "Paracetamol", "Metildopa" ou "gestação".</div>}
 
           {results.map((m, i) => {
             const isOpen = openIdx === i;
@@ -253,7 +265,6 @@
             const isInj = ['IV','IM','IV/IM','SC'].includes(m.via);
             const color = groupColors[m.g] || '#51665D';
 
-            // Verifica se o medicamento é de gestação (tem o campo 'gestacao')
             const isGestacao = m.gestacao && m.gestacao.length > 0;
 
             return (
@@ -316,7 +327,7 @@
 
           <footer style={{ marginTop: 28, fontSize: 11.5, color: darkMode ? '#3A5A4E' : '#8AA098', borderTop: `1px solid ${darkMode ? '#1A2E28' : '#DCE5E0'}`, paddingTop: 16 }}>
             <p>REMUME - SMS-SP · Dados manuais atualizados ago/2026 · {MEDS.length} medicamentos</p>
-            <p style={{ marginTop: 4 }}>Dica: digite o início do nome (ex: "Paracetamol", "Metildopa", "Enoxaparina") para busca mais rápida.</p>
+            <p style={{ marginTop: 4 }}>Dica: digite o início do nome (ex: "Paracetamol", "Metildopa", "Enoxaparina") ou ative o filtro "🤰 Gestação".</p>
           </footer>
 
           {showLista && (
