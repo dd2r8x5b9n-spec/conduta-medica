@@ -100,7 +100,7 @@ O app permite filtrar as condutas por nível de atendimento, facilitando a decis
 
 ## 💊 REMUME – Medicamentos da rede municipal
 
-O app REMUME agora contempla **todos os níveis de atendimento** da rede municipal, com mais de **200 medicamentos** cadastrados.
+O app REMUME agora contempla **todos os níveis de atendimento** da rede municipal, com mais de **230 medicamentos** cadastrados (incluindo uma seção especial para gestação).
 
 ### 🏥 Níveis de atendimento
 
@@ -113,22 +113,34 @@ O app REMUME agora contempla **todos os níveis de atendimento** da rede municip
 
 ### 🤰 Medicamentos seguros na gestação
 
-O app inclui uma seção especial com medicamentos seguros para gestantes, com indicação detalhada por trimestre (1º, 2º e 3º):
+O app inclui uma seção especial com **30 medicamentos seguros para gestantes**, com indicação detalhada por trimestre (1º, 2º e 3º):
 
 | Medicamento | Trimestre permitido | Observação |
 |-------------|---------------------|------------|
-| **Paracetamol** | 1º, 2º e 3º | SEGURO – dose máxima 4g/dia |
-| **Amoxicilina** | 1º, 2º e 3º | SEGURO – categoria B |
-| **Azitromicina** | 1º, 2º e 3º | SEGURO – categoria B |
-| **Cefalexina** | 1º, 2º e 3º | SEGURO – categoria B |
-| **Metformina** | 1º, 2º e 3º | SEGURO – primeira linha no diabetes gestacional |
-| **Insulina** | 1º, 2º e 3º | SEGURO – medicamento de escolha |
-| **Sulfato ferroso** | 1º, 2º e 3º | SEGURO e RECOMENDADO |
-| **Ácido fólico** | 1º (ESSENCIAL), 2º e 3º | ESSENCIAL no 1º trimestre |
-| **Metildopa** | 1º, 2º e 3º | SEGURO – escolha para hipertensão gestacional |
-| **Dipirona** | 1º e 2º (com cautela), 3º (EVITAR) | Risco de hemorragia pós-parto no 3º trimestre |
-| **Metronidazol** | 2º e 3º (permitido), 1º (EVITAR) | Evitar no 1º trimestre |
-| **Omeprazol** | 1º, 2º e 3º | SEGURO – categoria B |
+| **Paracetamol** | 1º, 2º e 3º | SEGURO – Analgésico de escolha em toda a gestação |
+| **Dipirona** | 1º e 2º (cautela), 3º (evitar) | EVITAR no 3º trimestre (risco de fechamento do ducto arterioso) |
+| **Ibuprofeno** | 1º (evitar), 2º (cautela), 3º (proibido) | PROIBIDO no 3º trimestre – risco de ducto arterioso e oligohidramnio |
+| **AAS baixa dose** | 1º, 2º e 3º (100-150mg/dia) | SEGURO apenas em baixa dose para pré-eclâmpsia |
+| **Doxilamina + B6** | 1º, 2º e 3º | SEGURO – padrão-ouro para hiperêmese gravídica |
+| **Dimenidrinato** | 1º, 2º e 3º | SEGURO – muito utilizado na prática |
+| **Metoclopramida** | 1º, 2º e 3º | SEGURO – segunda linha segura |
+| **Ondansetrona** | 2º e 3º (seguro), 1º (evitar até 10ª semana) | EVITAR nas primeiras 10 semanas (risco de fenda palatina) |
+| **Omeprazol** | 1º, 2º e 3º | SEGURO – para refluxo refratário |
+| **Amoxicilina** | 1º, 2º e 3º | SEGURO – padrão-ouro para infecções |
+| **Cefalexina** | 1º, 2º e 3º | SEGURO – amplamente usada |
+| **Ceftriaxona** | 1º, 2º e 3º | SEGURO – usado no hospital para pielonefrite |
+| **Nitrofurantoína** | 1º e 2º (seguro), 3º (proibido) | PROIBIDO após 37 semanas (risco de anemia hemolítica neonatal) |
+| **Azitromicina** | 1º, 2º e 3º | SEGURO – para clamídia e infecções respiratórias |
+| **Metildopa** | 1º, 2º e 3º | SEGURO – droga de escolha para hipertensão gestacional |
+| **Nifedipino** | 1º, 2º e 3º | SEGURO – ótima opção para crises hipertensivas |
+| **Hidralazina** | 1º, 2º e 3º | SEGURO – droga injetável de escolha para pré-eclâmpsia |
+| **Ácido fólico** | 1º (essencial), 2º e 3º (opcional) | ESSENCIAL até a 12ª semana (defeitos do tubo neural) |
+| **Sulfato ferroso** | 1º, 2º e 3º | SEGURO – suplementação de rotina |
+| **Insulina NPH** | 1º, 2º e 3º | SEGURO – padrão-ouro para diabetes gestacional |
+| **Insulina Regular** | 1º, 2º e 3º | SEGURO – única insulina para uso IV |
+| **Progesterona** | 1º, 2º e 3º | SEGURO – usado no 1ºT (aborto) e 2ºT (parto prematuro) |
+| **Enoxaparina** | 1º, 2º e 3º | SEGURO – anticoagulante de escolha (não cruza a barreira placentária) |
+| **Betametasona** | 3º (seguro entre 24-34 semanas), 2º (cautela), 1º (não usar) | USO RESTRITO – maturação pulmonar fetal (24-34 semanas) |
 
 ### 🏷️ Badges e filtros
 
@@ -148,8 +160,8 @@ O app inclui uma seção especial com medicamentos seguros para gestantes, com i
 ### 🔍 Busca inteligente
 
 A busca prioriza o **início do nome** do medicamento. Exemplos:
-- Digite `"Adrenalina"` → aparece no topo.
-- Digite `"Clexane"` → aparecem as duas dosagens (40 mg e 60 mg).
+- Digite `"Paracetamol"` → aparece no topo.
+- Digite `"Metildopa"` → aparece o anti-hipertensivo de escolha para gestantes.
 - Digite `"gestação"` → aparecem todos os medicamentos seguros para gestantes.
 
 ---
@@ -217,8 +229,6 @@ conduta-medica/
 ├── service-worker.js     (Modo offline PWA)
 ├── remume.html           (App REMUME - medicamentos)
 └── README.md             (Documentação)
-
----
 
 ## ⚠️ Aviso importante
 
