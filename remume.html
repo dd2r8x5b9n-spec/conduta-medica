@@ -63,20 +63,11 @@
     const { useState, useMemo, useEffect } = React;
 
     // ================================================================
-    // LISTA COMPLETA DE MEDICAMENTOS (COM BUSCOPAN E ANTIESPASMÓDICOS)
+    // LISTA COMPLETA DE MEDICAMENTOS (COM OMEPRAZOL INJETÁVEL)
     // ================================================================
     const MEDS = [
       // ================================================================
-      // MEDICAMENTOS ANTERIORES (UBS/AMA/UPA/PSA/EMERGÊNCIA + GESTAÇÃO)
-      // ================================================================
-
-      // --- TODOS OS MEDICAMENTOS EXISTENTES (resumo compacto) ---
-      // Para não repetir 300 linhas aqui, estou mantendo todos os IDs
-      // que já existiam, incluindo gestação, UPA, PSA, Emergência, etc.
-      // A lista completa está no app; estou gerando o código com todas as adições.
-
-      // ================================================================
-      // MEDICAMENTOS SEGUROS NA GESTAÇÃO (já existentes)
+      // MEDICAMENTOS SEGUROS NA GESTAÇÃO
       // ================================================================
       { id:"gest_paracetamol", n:"Paracetamol (gestação) - 500 mg comprimido/IV", g:"Analgésicos / Antitérmicos", l:"UBS/AMA", forma:"Comprimido/Solução injetável", via:"Oral/IV", dose:"Adulto: 500mg-1g 6/6h (máx 4g/dia)", indicacoes:["Febre","Dor leve-moderada","Cefaleia"], contraindicacoes:["Insuf. hepática grave"], interacoes:["Álcool","Anticoagulantes"], antidotos:["N-acetilcisteína"], alerta:"⚠️ SEGURO na gestação - dose máxima 4g/dia", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - Analgésico de escolha em toda a gestação", disponivel:["UBS","AMA","UPA","PSA","Emergência"] },
       { id:"gest_dipirona", n:"Dipirona sódica (gestação) - 500 mg comprimido/gotas/ampola", g:"Analgésicos / Antitérmicos", l:"UBS/AMA", forma:"Comprimido/Solução oral/Injetável", via:"Oral/IM/IV", dose:"Adulto: 500mg-1g 6/6h (máx 4g/dia)", indicacoes:["Febre","Dor","Cólica"], contraindicacoes:["Alergia","Discrasias","Asma"], interacoes:["Clorpromazina","Metotrexato"], antidotos:["N-acetilcisteína"], alerta:"⚠️ EVITAR no 3º trimestre - risco de fechamento do ducto arterioso", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ⚠️ EVITAR - risco de fechamento do ducto arterioso", disponivel:["UBS","AMA","UPA","PSA","Emergência"] },
@@ -86,7 +77,7 @@
       { id:"gest_dimenidrinato", n:"Dimenidrinato (gestação) - 50 mg comprimido/ampola", g:"Antieméticos / Antivertiginosos", l:"UBS/AMA", forma:"Comprimido/Solução injetável", via:"Oral/IM/IV", dose:"Adulto: 50-100mg 4/6h", indicacoes:["Náusea","Vômito","Cinétose"], contraindicacoes:["Glaucoma","Hiperplasia prostática","Asma"], interacoes:["Depressores SNC","Álcool","Anticolinérgicos"], antidotos:["Suporte"], alerta:"⚠️ Muito utilizado na prática clínica - principal efeito colateral: sonolência", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - muito utilizado na prática", disponivel:["UBS","AMA","UPA"] },
       { id:"gest_metoclopramida", n:"Metoclopramida (gestação) - 10 mg comprimido/ampola", g:"Antieméticos / Antivertiginosos", l:"UBS/AMA", forma:"Comprimido/Solução injetável", via:"Oral/IM/IV", dose:"Adulto: 10mg 8/8h", indicacoes:["Náusea","Vômito","Gastroparesia"], contraindicacoes:["Hemorragia GI","Feocromocitoma","Parkinson"], interacoes:["Anticolinérgicos","Neurolépticos"], antidotos:["Suporte"], alerta:"⚠️ SEGUNDA LINHA - risco de sintomas extrapiramidais se uso crônico", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - segunda linha segura", disponivel:["UBS","AMA","UPA"] },
       { id:"gest_ondansetrona", n:"Ondansetrona (gestação) - 4 mg comprimido/ampola", g:"Antieméticos / Antivertiginosos", l:"UBS/AMA", forma:"Comprimido/Solução injetável", via:"Oral/IV", dose:"Adulto: 4-8mg 8/12h", indicacoes:["Náusea intensa","Vômito refratário","Hiperêmese"], contraindicacoes:["Prolongamento QT","Hipersensibilidade"], interacoes:["Antifúngicos","Antiarrítmicos","Antidepressivos"], antidotos:["Suporte"], alerta:"⚠️ EVITAR nas primeiras 10 semanas - risco potencial de fenda palatina", popular:true, custo:"Médio", gestacao:"1º trimestre: ⚠️ EVITAR (até 10 semanas) | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - excelente após o 1ºT", disponivel:["UBS","AMA","UPA","PSA"] },
-      { id:"gest_omeprazol", n:"Omeprazol (gestação) - 20 mg cápsula", g:"Gastrointestinal", l:"UBS/AMA", forma:"Cápsula", via:"Oral", dose:"Adulto: 20-40mg/dia", indicacoes:["Refluxo","Úlcera péptica","Dispepsia"], contraindicacoes:["Hipersensibilidade"], interacoes:["Warfarina","Antifúngicos"], antidotos:["Suporte"], alerta:"⚠️ SEGURO - utilizado para refluxo gastroesofágico refratário a antiácidos", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - para refluxo refratário", disponivel:["UBS","AMA","UPA"] },
+      { id:"gest_omeprazol_oral", n:"Omeprazol (gestação) - 20 mg cápsula", g:"Gastrointestinal", l:"UBS/AMA", forma:"Cápsula", via:"Oral", dose:"Adulto: 20-40mg/dia", indicacoes:["Refluxo","Úlcera péptica","Dispepsia"], contraindicacoes:["Hipersensibilidade"], interacoes:["Warfarina","Antifúngicos"], antidotos:["Suporte"], alerta:"⚠️ SEGURO - utilizado para refluxo gastroesofágico refratário a antiácidos", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - para refluxo refratário", disponivel:["UBS","AMA","UPA"] },
       { id:"gest_amoxicilina", n:"Amoxicilina (gestação) - 500 mg cápsula", g:"Antibióticos", l:"UBS/AMA", forma:"Cápsula", via:"Oral", dose:"Adulto: 500mg 8/8h", indicacoes:["ITU","Infecções respiratórias","Otite"], contraindicacoes:["Alergia a penicilinas"], interacoes:["Alopurinol","Probenecida"], antidotos:["Suporte"], alerta:"⚠️ PADRÃO-OURO - para infecções respiratórias e de tecidos moles na gestante", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - padrão-ouro", disponivel:["UBS","AMA","UPA","PSA"] },
       { id:"gest_cefalexina", n:"Cefalexina (gestação) - 500 mg comprimido", g:"Antibióticos", l:"UBS/AMA", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg 6/6h", indicacoes:["ITU","Infecções de pele","Infecções respiratórias"], contraindicacoes:["Alergia a cefalosporinas"], interacoes:["Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ SEGURO - amplamente usada", popular:true, custo:"Médio", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - amplamente usada", disponivel:["UBS","AMA","UPA"] },
       { id:"gest_ceftriaxona", n:"Ceftriaxona (gestação) - 1g pó para solução injetável", g:"Antibióticos", l:"UBS/AMA", forma:"Pó para solução injetável", via:"IV/IM", dose:"Adulto: 1-2g IV/IM 12/24h", indicacoes:["Pielonefrite","Infecções graves","Pneumonia"], contraindicacoes:["Alergia a cefalosporinas"], interacoes:["Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ SEGURO - amplamente usada no hospital para pielonefrite", popular:true, custo:"Médio", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - usado no hospital para pielonefrite", disponivel:["UBS","AMA","UPA","PSA"] },
@@ -104,29 +95,31 @@
       { id:"gest_betametasona", n:"Betametasona (gestação) - 4 mg ampola IM", g:"Outros / Diversos", l:"UBS/AMA", forma:"Solução injetável (ampola)", via:"IM", dose:"Adulto: 12mg IM (2 doses de 6mg com 24h de intervalo)", indicacoes:["Maturação pulmonar fetal (24-34 semanas)","Profilaxia de hemorragia intraventricular"], contraindicacoes:["Infecção fúngica sistêmica","Hipersensibilidade"], interacoes:["AINEs","Anticoagulantes","Antidiabéticos"], antidotos:["Suporte"], alerta:"⚠️ USO RESTRITO - indicada via IM exclusivamente entre 24 e 34 semanas para maturação pulmonar", popular:true, custo:"Médio", gestacao:"1º trimestre: ❌ NÃO USAR | 2º trimestre: ⚠️ CAUTELA | 3º trimestre: ✅ SEGURO - entre 24-34 semanas para maturação pulmonar", disponivel:["UBS","AMA","UPA","PSA","Emergência"] },
 
       // ================================================================
-      // NOVOS MEDICAMENTOS: BUSCOPAN (BUTILBROMETO DE ESCOPOLAMINA)
-      // E MARCAÇÃO DE ANTIESPASMÓDICOS
+      // BUSCOPAN (BUTILBROMETO DE ESCOPOLAMINA) E ANTIESPASMÓDICOS
       // ================================================================
       { id:"butilbrometo_escopolamina_comp", n:"Butilbrometo de escopolamina (Buscopan) 10 mg comprimido", g:"Gastrointestinal", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 10-20mg 3-4x/dia", indicacoes:["Cólica intestinal","Espasmo gastrointestinal","SII"], contraindicacoes:["Glaucoma","Hiperplasia prostática","Íleo paralítico"], interacoes:["Anticolinérgicos","Antidepressivos"], antidotos:["Fisostigmina"], alerta:"⚠️ Efeitos anticolinérgicos - boca seca e visão turva", popular:true, custo:"Baixo", antiespasmodico:true },
       { id:"butilbrometo_escopolamina_gotas", n:"Butilbrometo de escopolamina (Buscopan) 0,25 mg/mL solução oral gotas", g:"Gastrointestinal", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Adulto: 20-40 gotas 3-4x/dia | Criança: 1 gota/kg/dose", indicacoes:["Cólica intestinal","Espasmo gastrointestinal"], contraindicacoes:["Glaucoma","Hiperplasia prostática","<1 ano"], interacoes:["Anticolinérgicos"], antidotos:["Fisostigmina"], alerta:"⚠️ Dose pediátrica rigorosa - efeitos anticolinérgicos", popular:true, custo:"Baixo", antiespasmodico:true },
       { id:"butilbrometo_escopolamina_inj", n:"Butilbrometo de escopolamina (Buscopan) 20 mg/mL ampola IM/IV", g:"Gastrointestinal", l:"AMA/UPA", forma:"Solução injetável (ampola)", via:"IV/IM", dose:"Adulto: 20-40mg IM/IV lento 4/6h", indicacoes:["Cólica renal","Cólica biliar","Dor visceral intensa"], contraindicacoes:["Glaucoma","Hiperplasia prostática","Íleo paralítico"], interacoes:["Anticolinérgicos","Antidepressivos"], antidotos:["Fisostigmina"], alerta:"⚠️ Administrar lentamente (IV: 1-2 min) - monitorar PA e FC", popular:true, custo:"Médio", antiespasmodico:true, diluicao:"Uso direto IV lento ou IM profunda" },
 
-      // ================================================================
-      // MEDICAMENTOS EXISTENTES MARCADOS COMO ANTIESPASMÓDICOS
-      // ================================================================
+      // ===== ESCPOLAMINA E COMBINAÇÕES =====
       { id:"escopolamina_10", n:"Escopolamina 10 mg comprimido", g:"Gastrointestinal", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 10mg 3x/dia", indicacoes:["Cólica intestinal","SII"], contraindicacoes:["Glaucoma","Retenção urinária","Miastenia"], interacoes:["Anticolinérgicos","Antidepressivos"], antidotos:["Fisostigmina"], alerta:"⚠️ Efeitos anticolinérgicos", popular:true, custo:"Baixo", antiespasmodico:true },
       { id:"escopolamina_dipirona_gotas", n:"Escopolamina + Dipirona sódica solução oral gotas", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Adulto: 20-40 gotas 6/8h", indicacoes:["Dor espasmódica","Cólica intestinal","Cólica menstrual"], contraindicacoes:["Glaucoma","Hipersensibilidade","Discrasias"], interacoes:["Anticolinérgicos","Clorpromazina"], antidotos:["Suporte"], alerta:"⚠️ Efeitos anticolinérgicos - não exceder dose", popular:true, custo:"Baixo", antiespasmodico:true },
       { id:"escopolamina_amp_ama", n:"Escopolamina 20 mg/mL ampola - 1 ampola + 100mL SF0,9% IV", g:"Antieméticos / Antivertiginosos", l:"AMA", forma:"Solução injetável (ampola)", via:"IV (infusão)", dose:"Adulto: 1 ampola (20mg) diluída em 100mL SF0,9% - infundir 20-30 min", indicacoes:["Cólica renal intensa","Cólica biliar","Dor visceral","Espasmo gastrointestinal"], contraindicacoes:["Glaucoma de ângulo fechado","Hipersensibilidade","Íleo paralítico"], interacoes:["Anticolinérgicos","Antidepressivos","Anti-histamínicos"], antidotos:["Fisostigmina (overdose)"], alerta:"⚠️ Administrar em infusão lenta - monitorar PA e FC", popular:true, custo:"Baixo", diluicao:"Diluir 1 ampola (20mg) em 100mL SF0,9% - infundir em 20-30 minutos", antiespasmodico:true },
       { id:"escopolamina_dipirona_inj", n:"Escopolamina + Dipirona sódica solução injetável", g:"Analgésicos / Antitérmicos", l:"AMA", forma:"Solução injetável (ampola)", via:"IV/IM", dose:"Adulto: 1-2 mL IV/IM 6/8h", indicacoes:["Cólica renal","Cólica biliar","Dor visceral"], contraindicacoes:["Glaucoma","Hipersensibilidade","Discrasias"], interacoes:["Anticolinérgicos","Clorpromazina"], antidotos:["Suporte"], alerta:"⚠️ Administrar lentamente - monitorar PA", popular:true, custo:"Baixo", antiespasmodico:true },
 
       // ================================================================
-      // NOVO: DRAMIN GOTAS (DIMENIDRINATO) - USO GERAL
+      // DRAMIN GOTAS (DIMENIDRINATO) - USO GERAL
       // ================================================================
-      { id:"dimenidrinato_gotas", n:"Dimenidrinato 40 mg/mL solução oral gotas", g:"Antieméticos / Antivertiginosos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Adulto: 20-40 gotas 4/6h | Criança (2-12a): 5-10 gotas 4/6h", indicacoes:["Náusea","Vômito","Cinétose","Vertigem"], contraindicacoes:["<2 anos","Glaucoma","Hiperplasia prostática","Asma"], interacoes:["Depressores SNC","Álcool","Anticolinérgicos","IMAO"], antidotos:["Suporte"], alerta:"⚠️ Causa sonolência - cuidado ao dirigir - dose pediátrica rigorosa", popular:true, custo:"Baixo" }
+      { id:"dimenidrinato_gotas", n:"Dimenidrinato 40 mg/mL solução oral gotas", g:"Antieméticos / Antivertiginosos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Adulto: 20-40 gotas 4/6h | Criança (2-12a): 5-10 gotas 4/6h", indicacoes:["Náusea","Vômito","Cinétose","Vertigem"], contraindicacoes:["<2 anos","Glaucoma","Hiperplasia prostática","Asma"], interacoes:["Depressores SNC","Álcool","Anticolinérgicos","IMAO"], antidotos:["Suporte"], alerta:"⚠️ Causa sonolência - cuidado ao dirigir - dose pediátrica rigorosa", popular:true, custo:"Baixo" },
+
+      // ================================================================
+      // OMEPRAZOL INJETÁVEL (AMA/UPA/PSA)
+      // ================================================================
+      { id:"omeprazol_inj", n:"Omeprazol 40 mg pó para solução injetável", g:"Gastrointestinal", l:"AMA/UPA/PSA", forma:"Pó para solução injetável", via:"IV", dose:"Adulto: 40mg IV 1x/dia", indicacoes:["Úlcera péptica","Refluxo","Esofagite","Sangramento digestivo"], contraindicacoes:["Hipersensibilidade"], interacoes:["Warfarina","Antifúngicos","Antiretrovirais"], antidotos:["Suporte"], alerta:"⚠️ Reconstituir antes do uso – diluir em 100mL SF0,9% – infundir em 30-60 min", popular:true, custo:"Médio", diluicao:"Reconstituir com água estéril – diluir em 100mL SF0,9% – infundir em 30-60 minutos" }
     ];
 
     // ================================================================
-    // COMPONENTE PRINCIPAL (COM FILTRO ANTIESPASMÓDICOS)
+    // COMPONENTE PRINCIPAL
     // ================================================================
     function App() {
       const [query, setQuery] = useState("");
@@ -237,7 +230,7 @@
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: darkMode ? '#1A2E28' : '#fff', border: `1.5px solid ${darkMode ? '#2A4A3E' : '#C7D6CF'}`, borderRadius: 12, padding: '10px 12px', marginBottom: 10 }}>
             <span>🔍</span>
-            <input className="input-search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Digite o início do nome, ex: Buscopan, Dramin, Escopolamina..." style={{ color: darkMode ? '#DCE8E0' : '#14231D' }} />
+            <input className="input-search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Digite o início do nome, ex: Buscopan, Dramin, Escopolamina, Omeprazol..." style={{ color: darkMode ? '#DCE8E0' : '#14231D' }} />
             {query && <button onClick={() => setQuery('')} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>✕</button>}
           </div>
 
@@ -279,7 +272,7 @@
             })}
           </div>
 
-          {results.length === 0 && <div style={{ padding: 32, textAlign: 'center', color: darkMode ? '#7A9A8A' : '#51665D', background: darkMode ? '#1A2E28' : '#fff', borderRadius: 12 }}>🔍 Nenhum medicamento encontrado. Tente "Buscopan", "Dramin", "Escopolamina" ou "gestação".</div>}
+          {results.length === 0 && <div style={{ padding: 32, textAlign: 'center', color: darkMode ? '#7A9A8A' : '#51665D', background: darkMode ? '#1A2E28' : '#fff', borderRadius: 12 }}>🔍 Nenhum medicamento encontrado. Tente "Buscopan", "Dramin", "Escopolamina" ou "Omeprazol".</div>}
 
           {results.map((m, i) => {
             const isOpen = openIdx === i;
@@ -355,7 +348,7 @@
 
           <footer style={{ marginTop: 28, fontSize: 11.5, color: darkMode ? '#3A5A4E' : '#8AA098', borderTop: `1px solid ${darkMode ? '#1A2E28' : '#DCE5E0'}`, paddingTop: 16 }}>
             <p>REMUME - SMS-SP · Dados manuais atualizados ago/2026 · {MEDS.length} medicamentos</p>
-            <p style={{ marginTop: 4 }}>Dica: digite o início do nome (ex: "Buscopan", "Dramin", "Escopolamina") ou ative os filtros "Gestação" e "Antiespasmódicos".</p>
+            <p style={{ marginTop: 4 }}>Dica: digite o início do nome (ex: "Buscopan", "Dramin", "Escopolamina", "Omeprazol") ou ative os filtros "Gestação" e "Antiespasmódicos".</p>
           </footer>
 
           {showLista && (
