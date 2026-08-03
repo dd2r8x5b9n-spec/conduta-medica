@@ -63,7 +63,7 @@
     const { useState, useMemo, useEffect } = React;
 
     // ================================================================
-    // LISTA COMPLETA DE MEDICAMENTOS (COM OMEPRAZOL INJETÁVEL)
+    // LISTA COMPLETA DE MEDICAMENTOS (SEM BUSCOPAN COMPRIMIDO)
     // ================================================================
     const MEDS = [
       // ================================================================
@@ -95,9 +95,8 @@
       { id:"gest_betametasona", n:"Betametasona (gestação) - 4 mg ampola IM", g:"Outros / Diversos", l:"UBS/AMA", forma:"Solução injetável (ampola)", via:"IM", dose:"Adulto: 12mg IM (2 doses de 6mg com 24h de intervalo)", indicacoes:["Maturação pulmonar fetal (24-34 semanas)","Profilaxia de hemorragia intraventricular"], contraindicacoes:["Infecção fúngica sistêmica","Hipersensibilidade"], interacoes:["AINEs","Anticoagulantes","Antidiabéticos"], antidotos:["Suporte"], alerta:"⚠️ USO RESTRITO - indicada via IM exclusivamente entre 24 e 34 semanas para maturação pulmonar", popular:true, custo:"Médio", gestacao:"1º trimestre: ❌ NÃO USAR | 2º trimestre: ⚠️ CAUTELA | 3º trimestre: ✅ SEGURO - entre 24-34 semanas para maturação pulmonar", disponivel:["UBS","AMA","UPA","PSA","Emergência"] },
 
       // ================================================================
-      // BUSCOPAN (BUTILBROMETO DE ESCOPOLAMINA) E ANTIESPASMÓDICOS
+      // BUSCOPAN (BUTILBROMETO DE ESCOPOLAMINA) - APENAS GOTAS E INJETÁVEL
       // ================================================================
-      { id:"butilbrometo_escopolamina_comp", n:"Butilbrometo de escopolamina (Buscopan) 10 mg comprimido", g:"Gastrointestinal", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 10-20mg 3-4x/dia", indicacoes:["Cólica intestinal","Espasmo gastrointestinal","SII"], contraindicacoes:["Glaucoma","Hiperplasia prostática","Íleo paralítico"], interacoes:["Anticolinérgicos","Antidepressivos"], antidotos:["Fisostigmina"], alerta:"⚠️ Efeitos anticolinérgicos - boca seca e visão turva", popular:true, custo:"Baixo", antiespasmodico:true },
       { id:"butilbrometo_escopolamina_gotas", n:"Butilbrometo de escopolamina (Buscopan) 0,25 mg/mL solução oral gotas", g:"Gastrointestinal", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Adulto: 20-40 gotas 3-4x/dia | Criança: 1 gota/kg/dose", indicacoes:["Cólica intestinal","Espasmo gastrointestinal"], contraindicacoes:["Glaucoma","Hiperplasia prostática","<1 ano"], interacoes:["Anticolinérgicos"], antidotos:["Fisostigmina"], alerta:"⚠️ Dose pediátrica rigorosa - efeitos anticolinérgicos", popular:true, custo:"Baixo", antiespasmodico:true },
       { id:"butilbrometo_escopolamina_inj", n:"Butilbrometo de escopolamina (Buscopan) 20 mg/mL ampola IM/IV", g:"Gastrointestinal", l:"AMA/UPA", forma:"Solução injetável (ampola)", via:"IV/IM", dose:"Adulto: 20-40mg IM/IV lento 4/6h", indicacoes:["Cólica renal","Cólica biliar","Dor visceral intensa"], contraindicacoes:["Glaucoma","Hiperplasia prostática","Íleo paralítico"], interacoes:["Anticolinérgicos","Antidepressivos"], antidotos:["Fisostigmina"], alerta:"⚠️ Administrar lentamente (IV: 1-2 min) - monitorar PA e FC", popular:true, custo:"Médio", antiespasmodico:true, diluicao:"Uso direto IV lento ou IM profunda" },
 
@@ -140,7 +139,21 @@
         localStorage.setItem('remume_fav', JSON.stringify(favorites));
       }, [favorites]);
 
-      const groups = [...new Set(MEDS.map(m => m.g))].sort();
+      // Lista de grupos com "Antiespasmódicos" posicionado após "Antieméticos / Antivertiginosos"
+      const allGroups = [...new Set(MEDS.map(m => m.g))].sort();
+      // Encontrar índice de Antieméticos e inserir Antiespasmódicos depois
+      const antiemeticIndex = allGroups.indexOf("Antieméticos / Antivertiginosos");
+      const groups = [...allGroups];
+      if (antiemeticIndex !== -1) {
+        // Remove se já existir (por segurança) e insere na posição correta
+        const existingIndex = groups.indexOf("🔄 Antiespasmódicos");
+        if (existingIndex !== -1) groups.splice(existingIndex, 1);
+        groups.splice(antiemeticIndex + 1, 0, "🔄 Antiespasmódicos");
+      } else {
+        // Se não encontrar, coloca no final
+        groups.push("🔄 Antiespasmódicos");
+      }
+
       const groupColors = {
         "Analgésicos / Antitérmicos":"#B5651D",
         "Anti-inflamatórios (AINEs)":"#8A5A2B",
@@ -155,6 +168,7 @@
         "Antifúngicos":"#6B4E9E",
         "Anti-histamínicos":"#B23A5A",
         "Antieméticos / Antivertiginosos":"#9A6B1F",
+        "🔄 Antiespasmódicos":"#9B59B6",
         "Outros / Diversos":"#5A5A5A",
         "Oftálmico/Otológico":"#2E86AB",
         "Fitoterápicos":"#5E8A2E",
@@ -170,7 +184,13 @@
           const gest = (m.gestacao || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
           const matchQ = q.length === 0 || nome.includes(q) || grupo.includes(q) || ind.includes(q) || gest.includes(q);
-          const matchG = !activeGroup || m.g === activeGroup;
+          // Filtro por grupo: se o chip for "🔄 Antiespasmódicos", filtra pela propriedade antiespasmodico
+          let matchG = true;
+          if (activeGroup === "🔄 Antiespasmódicos") {
+            matchG = m.antiespasmodico === true;
+          } else {
+            matchG = !activeGroup || m.g === activeGroup;
+          }
           const matchL = filterLocal === 'all' || m.l === filterLocal || m.l.includes(filterLocal);
           const matchV = filterVia === 'all' || m.via === filterVia || 
             (filterVia === 'Injetável' && ['IV','IM','IV/IM','SC'].includes(m.via)) ||
@@ -184,9 +204,10 @@
             (filterVia === 'Sublingual' && m.via === 'Sublingual');
           const matchP = !showOnlyPopular || m.popular;
           const matchGest = !filterGestacao || (m.gestacao && m.gestacao.length > 0);
-          const matchAntispasmodic = !filterAntispasmodic || m.antiespasmodico === true;
+          // Filtro Antiespasmódico foi movido para o chip, então removido daqui
+          // const matchAntispasmodic = !filterAntispasmodic || m.antiespasmodico === true;
 
-          return matchQ && matchG && matchL && matchV && matchP && matchGest && matchAntispasmodic;
+          return matchQ && matchG && matchL && matchV && matchP && matchGest;
         }).sort((a,b) => {
           if (q.length > 0) {
             const aNome = a.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -198,7 +219,7 @@
           }
           return a.n.localeCompare(b.n);
         });
-      }, [query, activeGroup, filterLocal, filterVia, filterGestacao, filterAntispasmodic, showOnlyPopular]);
+      }, [query, activeGroup, filterLocal, filterVia, filterGestacao, showOnlyPopular]);
 
       const toggleFav = (id) => {
         setFavorites(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
@@ -238,9 +259,6 @@
             <button className={`btn-filter ${showOnlyPopular ? 'active' : ''}`} onClick={() => setShowOnlyPopular(!showOnlyPopular)}>⭐ Mais usados</button>
             <button className={`btn-filter ${filterGestacao ? 'active' : ''}`} onClick={() => setFilterGestacao(!filterGestacao)} style={filterGestacao ? { background: '#E91E63', color: '#fff', borderColor: '#E91E63' } : {}}>
               🤰 Gestação
-            </button>
-            <button className={`btn-filter ${filterAntispasmodic ? 'active' : ''}`} onClick={() => setFilterAntispasmodic(!filterAntispasmodic)} style={filterAntispasmodic ? { background: '#9B59B6', color: '#fff', borderColor: '#9B59B6' } : {}}>
-              🔄 Antiespasmódicos
             </button>
             <select className="btn-filter" value={filterLocal} onChange={e => setFilterLocal(e.target.value)} style={{ background: darkMode ? '#1A2E28' : '#fff', color: 'inherit' }}>
               <option value="all">📍 Todos locais</option>
