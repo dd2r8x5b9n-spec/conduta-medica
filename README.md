@@ -21,7 +21,7 @@
 | App | Descrição | Acesso |
 |-----|-----------|--------|
 | **Conduta Médica** | Protocolos e condutas para atendimento ambulatorial e de urgência | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/) |
-| **REMUME v2 – Medicamentos SP** | Consulta rápida de medicamentos disponíveis na rede municipal (UBS, AMA, UPA, PSA e Emergência) – versão atualizada com correções para iPhone e mais de 70 medicamentos | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume-v2.html) |
+| **REMUME v2 – Medicamentos SP** | Consulta rápida de medicamentos disponíveis na rede municipal (UBS, AMA, UPA, PSA e Emergência) – versão atualizada com correções para iPhone e mais de 200 medicamentos | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume-v2.html) |
 
 ---
 
@@ -101,16 +101,16 @@ O app permite filtrar as condutas por nível de atendimento, facilitando a decis
 
 ## 💊 REMUME – Medicamentos da rede municipal
 
-O app REMUME (versão v2) contempla **todos os níveis de atendimento** da rede municipal, com mais de **70 medicamentos** cadastrados para UBS, AMA, UPA, PSA e Emergência, incluindo uma seção especial para gestação e antiespasmódicos.
+O app REMUME (versão v2) agora contempla **todos os níveis de atendimento** da rede municipal, com **mais de 200 medicamentos** cadastrados para UBS, AMA, UPA, PSA e Emergência, incluindo seções especiais para gestação, antiespasmódicos, tuberculose, HIV/hepatites e antivirais.
 
 ### 🏥 Níveis de atendimento
 
 | Nível | Descrição | Exemplos de medicamentos |
 |-------|-----------|--------------------------|
 | **UBS/AMA** | Medicamentos da atenção básica e ambulatórios especializados. | Dipirona, Paracetamol, Amoxicilina, Losartana, Metformina, Omeprazol |
-| **UPA** | Medicamentos para estabilização e encaminhamento. | Heparina, Metilprednisolona, Midazolam, Captopril SL, Nifedipino SL, Buscopan ampola |
-| **PSA** | Medicamentos para internação breve e UTI. | Meropenem, Vancomicina, Amicacina, Sulfato de magnésio, Nitroprussiato, Nitroglicerina IV, Amiodarona IV |
-| **Emergência** | Medicamentos para situações críticas. | Adrenalina, Amiodarona, Noradrenalina, Naloxona, Flumazenil, Epinefrina, Atropina, Dobutamina, Dopamina, Glicose 50% |
+| **UPA** | Medicamentos para estabilização e encaminhamento. | Tramadol, Diclofenaco, Tenoxicam, Furosemida, Captopril SL, Nifedipino SL, Prometazina, Midazolam |
+| **PSA** | Medicamentos para internação breve e UTI. | Morfina, Furosemida, Amiodarona IV, Metoprolol IV, Nitroprussiato, Nitroglicerina IV, Adenosina |
+| **Emergência** | Medicamentos para situações críticas. | Adrenalina, Amiodarona, Noradrenalina, Naloxona, Flumazenil, Atropina, Dobutamina, Dopamina, Glicose 50% |
 
 ### 🤰 Medicamentos seguros na gestação
 
@@ -128,16 +128,16 @@ O app inclui uma seção especial com medicamentos seguros para gestantes, com i
 
 - **Filtros disponíveis:**
   - **Local:** UBS, AMA, UPA, PSA, Emergência (ou todos)
-  - **Via:** Oral, Injetável, Inalatória, Nebulização, Tópica, Nasal, Sublingual
-  - **Grupo terapêutico:** Analgésicos, Antibióticos, Cardiovasculares, Antiespasmódicos, etc.
+  - **Via:** Oral, Injetável, Inalatória, Nebulização, Tópica, Nasal, Sublingual, Vaginal
+  - **Grupo terapêutico:** Analgésicos, Antibióticos, Antivirais, Cardiovasculares, Antiespasmódicos, Tuberculose, HIV/Hepatites, etc.
   - **Popularidade:** medicamentos mais usados
   - **Gestação:** medicamentos seguros para gestantes
 
 ### 🔍 Busca inteligente
 
 A busca prioriza o **início do nome** do medicamento. Exemplos:
-- Digite `"Dexametasona"` → aparece no topo.
-- Digite `"Fenergan"` ou `"Prometazina"` → aparece o injetável.
+- Digite `"Paracetamol"` → aparece no topo.
+- Digite `"Amoxicilina"` → aparece o antibiótico.
 - Digite `"gestação"` → aparecem todos os medicamentos seguros para gestantes.
 
 ---
@@ -198,13 +198,12 @@ Pronto! O app vai aparecer como um ícone na sua tela inicial, funcionando em te
 ---
 
 ## 📁 Estrutura do projeto
-
 conduta-medica/
-- index.html            # App Conduta Médica (condutas e protocolos)
-- service-worker.js     # Habilita o modo offline (PWA)
-- remume-v2.html        # App REMUME (medicamentos) – versão atualizada
-- remume.html           # App REMUME (versão antiga – backup)
-- README.md             # Este arquivo (documentação)
+├── index.html # App Conduta Médica (condutas e protocolos)
+├── service-worker.js # Habilita o modo offline (PWA)
+├── remume-v2.html # App REMUME (medicamentos) – versão atualizada
+├── remume.html # App REMUME (versão antiga – backup)
+└── README.md # Este arquivo (documentação)
 
 ---
 
