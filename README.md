@@ -11,7 +11,8 @@
 | App | Link |
 |-----|------|
 | **Conduta Médica** | [https://dd2r8x5b9n-spec.github.io/conduta-medica/](https://dd2r8x5b9n-spec.github.io/conduta-medica/) |
-| **REMUME – Medicamentos SP** | [https://dd2r8x5b9n-spec.github.io/conduta-medica/remume.html](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume.html) |
+| **REMUME v2 (atualizada)** | [https://dd2r8x5b9n-spec.github.io/conduta-medica/remume-v2.html](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume-v2.html) |
+| **REMUME v1 (backup)** | [https://dd2r8x5b9n-spec.github.io/conduta-medica/remume.html](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume.html) |
 
 ---
 
@@ -20,7 +21,7 @@
 | App | Descrição | Acesso |
 |-----|-----------|--------|
 | **Conduta Médica** | Protocolos e condutas para atendimento ambulatorial e de urgência | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/) |
-| **REMUME – Medicamentos SP** | Consulta rápida de medicamentos disponíveis na rede municipal de São Paulo (UBS, AMA, UPA, PSA e Emergência) | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume.html) |
+| **REMUME v2 – Medicamentos SP** | Consulta rápida de medicamentos disponíveis na rede municipal (UBS, AMA, UPA, PSA e Emergência) – versão atualizada com correções para iPhone | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume-v2.html) |
 
 ---
 
@@ -100,7 +101,7 @@ O app permite filtrar as condutas por nível de atendimento, facilitando a decis
 
 ## 💊 REMUME – Medicamentos da rede municipal
 
-O app REMUME agora contempla **todos os níveis de atendimento** da rede municipal, com mais de **230 medicamentos** cadastrados (incluindo uma seção especial para gestação).
+O app REMUME (versão v2) contempla **todos os níveis de atendimento** da rede municipal, com medicamentos cadastrados para UBS, AMA, UPA, PSA e Emergência, incluindo uma seção especial para gestação e antiespasmódicos.
 
 ### 🏥 Níveis de atendimento
 
@@ -113,34 +114,7 @@ O app REMUME agora contempla **todos os níveis de atendimento** da rede municip
 
 ### 🤰 Medicamentos seguros na gestação
 
-O app inclui uma seção especial com **30 medicamentos seguros para gestantes**, com indicação detalhada por trimestre (1º, 2º e 3º):
-
-| Medicamento | Trimestre permitido | Observação |
-|-------------|---------------------|------------|
-| **Paracetamol** | 1º, 2º e 3º | SEGURO – Analgésico de escolha em toda a gestação |
-| **Dipirona** | 1º e 2º (cautela), 3º (evitar) | EVITAR no 3º trimestre (risco de fechamento do ducto arterioso) |
-| **Ibuprofeno** | 1º (evitar), 2º (cautela), 3º (proibido) | PROIBIDO no 3º trimestre – risco de ducto arterioso e oligohidramnio |
-| **AAS baixa dose** | 1º, 2º e 3º (100-150mg/dia) | SEGURO apenas em baixa dose para pré-eclâmpsia |
-| **Doxilamina + B6** | 1º, 2º e 3º | SEGURO – padrão-ouro para hiperêmese gravídica |
-| **Dimenidrinato** | 1º, 2º e 3º | SEGURO – muito utilizado na prática |
-| **Metoclopramida** | 1º, 2º e 3º | SEGURO – segunda linha segura |
-| **Ondansetrona** | 2º e 3º (seguro), 1º (evitar até 10ª semana) | EVITAR nas primeiras 10 semanas (risco de fenda palatina) |
-| **Omeprazol** | 1º, 2º e 3º | SEGURO – para refluxo refratário |
-| **Amoxicilina** | 1º, 2º e 3º | SEGURO – padrão-ouro para infecções |
-| **Cefalexina** | 1º, 2º e 3º | SEGURO – amplamente usada |
-| **Ceftriaxona** | 1º, 2º e 3º | SEGURO – usado no hospital para pielonefrite |
-| **Nitrofurantoína** | 1º e 2º (seguro), 3º (proibido) | PROIBIDO após 37 semanas (risco de anemia hemolítica neonatal) |
-| **Azitromicina** | 1º, 2º e 3º | SEGURO – para clamídia e infecções respiratórias |
-| **Metildopa** | 1º, 2º e 3º | SEGURO – droga de escolha para hipertensão gestacional |
-| **Nifedipino** | 1º, 2º e 3º | SEGURO – ótima opção para crises hipertensivas |
-| **Hidralazina** | 1º, 2º e 3º | SEGURO – droga injetável de escolha para pré-eclâmpsia |
-| **Ácido fólico** | 1º (essencial), 2º e 3º (opcional) | ESSENCIAL até a 12ª semana (defeitos do tubo neural) |
-| **Sulfato ferroso** | 1º, 2º e 3º | SEGURO – suplementação de rotina |
-| **Insulina NPH** | 1º, 2º e 3º | SEGURO – padrão-ouro para diabetes gestacional |
-| **Insulina Regular** | 1º, 2º e 3º | SEGURO – única insulina para uso IV |
-| **Progesterona** | 1º, 2º e 3º | SEGURO – usado no 1ºT (aborto) e 2ºT (parto prematuro) |
-| **Enoxaparina** | 1º, 2º e 3º | SEGURO – anticoagulante de escolha (não cruza a barreira placentária) |
-| **Betametasona** | 3º (seguro entre 24-34 semanas), 2º (cautela), 1º (não usar) | USO RESTRITO – maturação pulmonar fetal (24-34 semanas) |
+O app inclui uma seção especial com medicamentos seguros para gestantes, com indicação detalhada por trimestre (1º, 2º e 3º), incluindo: Paracetamol, Dipirona (com cautela no 3ºT), Ibuprofeno (proibido no 3ºT), Amoxicilina, Ceftriaxona, Metildopa, Nifedipino, Ácido fólico, Sulfato ferroso, Insulina NPH e Regular, Progesterona, Enoxaparina e Betametasona.
 
 ### 🏷️ Badges e filtros
 
@@ -150,18 +124,20 @@ O app inclui uma seção especial com **30 medicamentos seguros para gestantes**
   - 🟣 **PSA** – internação
   - 🔴 **Emergência** – situações críticas
   - 🩷 **Gestação** – medicamentos seguros para gestantes
+  - 🟣 **Antiespasmódicos** – medicamentos para cólicas e espasmos
 
 - **Filtros disponíveis:**
   - **Local:** UBS, AMA, UPA, PSA, Emergência (ou todos)
   - **Via:** Oral, Injetável, Inalatória, Nebulização, Tópica, Nasal, Sublingual
-  - **Grupo terapêutico:** Analgésicos, Antibióticos, Cardiovasculares, etc.
+  - **Grupo terapêutico:** Analgésicos, Antibióticos, Cardiovasculares, Antiespasmódicos, etc.
   - **Popularidade:** medicamentos mais usados
+  - **Gestação:** medicamentos seguros para gestantes
 
 ### 🔍 Busca inteligente
 
 A busca prioriza o **início do nome** do medicamento. Exemplos:
-- Digite `"Paracetamol"` → aparece no topo.
-- Digite `"Metildopa"` → aparece o anti-hipertensivo de escolha para gestantes.
+- Digite `"Dexametasona"` → aparece no topo.
+- Digite `"Fenergan"` ou `"Prometazina"` → aparece o injetável.
 - Digite `"gestação"` → aparecem todos os medicamentos seguros para gestantes.
 
 ---
@@ -215,7 +191,7 @@ Pronto! O app vai aparecer como um ícone na sua tela inicial, funcionando em te
 
 ## 🔄 Como atualizar os apps
 
-1. Edite os arquivos (`index.html` ou `remume.html`) no computador.
+1. Edite os arquivos (`index.html` ou `remume-v2.html`) no computador.
 2. Faça **upload** no GitHub (substituindo os arquivos antigos).
 3. No iPhone, abra o app (com internet) e feche – ele vai carregar a versão nova.
 
@@ -223,12 +199,14 @@ Pronto! O app vai aparecer como um ícone na sua tela inicial, funcionando em te
 
 ## 📁 Estrutura do projeto
 
-```text
 conduta-medica/
-├── index.html            (App Conduta Médica)
-├── service-worker.js     (Modo offline PWA)
-├── remume.html           (App REMUME - medicamentos)
-└── README.md             (Documentação)
+├── index.html            # App Conduta Médica (condutas e protocolos)
+├── service-worker.js     # Habilita o modo offline (PWA)
+├── remume-v2.html        # App REMUME (medicamentos) – versão atualizada
+├── remume.html           # App REMUME (versão antiga – backup)
+└── README.md             # Este arquivo (documentação)
+
+---
 
 ## ⚠️ Aviso importante
 
