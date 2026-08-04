@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REMUME v2 - Medicamentos SP</title>
+  <!-- Forçar recarregamento no iPhone com cache busting -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, system-ui, sans-serif; background: #EEF2EF; }
+    .app { max-width: 820px; margin: 0 auto; padding: 28px 18px 60px; }
+    .card { background: #fff; border-radius: 12px; border: 1px solid #DCE5E0; padding: 12px 14px; margin-bottom: 8px; cursor: pointer; transition: border 0.2s; }
+    .card:hover { border-color: #1F6F5C; }
+    .badge-popular { background: #F5A623; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-injetavel { background: #2E86AB; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-ama { background: #1F6F5C; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-upa { background: #F39C12; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-psa { background: #8E44AD; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-emergencia { background: #E74C3C; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-gestacao { background: #E91E63; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-antiespasmodico { background: #9B59B6; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .tag { background: #F0F4F2; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-right: 4px; }
+    .dark .tag { background: #1F332C; color: #DCE8E0; }
+    .dark .card { background: #1A2E28; border-color: #2A4A3E; color: #DCE8E0; }
+    .dark .card:hover { border-color: #5CB89B; }
+    .dark body { background: #0F1A15; }
+    .input-search { flex: 1; border: none; outline: none; font-size: 15px; background: transparent; color: inherit; }
+    .btn-filter { font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1.5px solid #C7D6CF; background: #fff; cursor: pointer; }
+    .btn-filter.active { background: #14231D; color: #fff; border-color: #14231D; }
+    .dark .btn-filter { background: #1A2E28; border-color: #2A4A3E; color: #DCE8E0; }
+    .dark .btn-filter.active { background: #14231D; color: #fff; border-color: #14231D; }
+    .chip-group { font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1.5px solid #C7D6CF; background: #fff; cursor: pointer; white-space: nowrap; }
+    .chip-group.active { color: #fff; }
+    .dark .chip-group { background: #1A2E28; border-color: #2A4A3E; color: #DCE8E0; }
+    .dark .chip-group.active { color: #fff; }
+    .btn-lista { background: #1F6F5C; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-lista:hover { background: #155a4a; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; justify-content: center; align-items: center; }
+    .modal-content { background: #fff; max-width: 90%; max-height: 90%; width: 800px; border-radius: 12px; padding: 24px; overflow-y: auto; position: relative; }
+    .dark .modal-content { background: #1A2E28; color: #DCE8E0; }
+    .modal-close { position: sticky; top: 0; float: right; background: #E74C3C; color: #fff; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .modal-close:hover { background: #c0392b; }
+    .lista-item { display: flex; border-bottom: 1px solid #DCE5E0; padding: 6px 0; font-size: 13px; }
+    .dark .lista-item { border-color: #2A4A3E; }
+    .lista-nome { flex: 3; font-weight: 500; }
+    .lista-grupo { flex: 2; color: #51665D; }
+    .dark .lista-grupo { color: #7A9A8A; }
+    .lista-local { flex: 1; color: #8AA098; }
+    .dark .lista-local { color: #5A7A6E; }
+    .lista-via { flex: 1; color: #8AA098; }
+    .dark .lista-via { color: #5A7A6E; }
+    .lista-header { font-weight: 700; border-bottom: 2px solid #1F6F5C; padding-bottom: 8px; margin-bottom: 8px; }
+    .dark .lista-header { border-color: #5CB89B; }
+    @media (max-width: 600px) { .lista-nome { flex: 2; } .lista-grupo { flex: 1; } .lista-local, .lista-via { display: none; } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo, useEffect } = React;
+
+    // ================================================================
+    // LISTA COMPLETA DE MEDICAMENTOS (VERSÃO V2 - ATUALIZADA)
+    // ================================================================
+    const MEDS = [
+      // ================================================================
+      // MEDICAMENTOS SEGUROS NA GESTAÇÃO
+      // ================================================================
+      { id:"gest_paracetamol", n:"Paracetamol (gestação) - 500 mg comprimido/IV", g:"Analgésicos / Antitérmicos", l:"UBS/AMA", forma:"Comprimido/Solução injetável", via:"Oral/IV", dose:"Adulto: 500mg-1g 6/6h (máx 4g/dia)", indicacoes:["Febre","Dor leve-moderada","Cefaleia"], contraindicacoes:["Insuf. hepática grave"], interacoes:["Álcool","Anticoagulantes"], antidotos:["N-acetilcisteína"], alerta:"⚠️ SEGURO na gestação - dose máxima 4g/dia", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - Analgésico de escolha em toda a gestação", disponivel:["UBS","AMA","UPA","PSA","Emergência"] },
+      { id:"gest_dipirona", n:"Dipirona sódica (gestação) - 500 mg comprimido/gotas/ampola", g:"Analgésicos / Antitérmicos", l:"UBS/AMA", forma:"Comprimido/Solução oral/Injetável", via:"Oral/IM/IV", dose:"Adulto: 500mg-1g 6/6h (máx 4g/dia)", indicacoes:["Febre","Dor","Cólica"], contraindicacoes:["Alergia","Discrasias","Asma"], interacoes:["Clorpromazina","Metotrexato"], antidotos:["N-acetilcisteína"], alerta:"⚠️ EVITAR no 3º trimestre - risco de fechamento do ducto arterioso", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ⚠️ EVITAR - risco de fechamento do ducto arterioso", disponivel:["UBS","AMA","UPA","PSA","Emergência"] },
+      { id:"gest_ibuprofeno", n:"Ibuprofeno (gestação) - 300 mg comprimido", g:"Anti-inflamatórios (AINEs)", l:"UBS/AMA", forma:"Comprimido", via:"Oral", dose:"Adulto: 300-600mg 6/8h", indicacoes:["Dor musculoesquelética","Artrite","Febre"], contraindicacoes:["Úlcera péptica","Insuf. renal","Asma"], interacoes:["Anticoagulantes","Lítio"], antidotos:["Suporte"], alerta:"⚠️ CONTRAINDICADO no 3º trimestre - risco de fechamento do ducto arterioso e oligohidramnio", popular:true, custo:"Médio", gestacao:"1º trimestre: ⚠️ EVITAR | 2º trimestre: ⚠️ CAUTELA | 3º trimestre: ❌ PROIBIDO - risco de fechamento do ducto arterioso e oligohidramnio", disponivel:["UBS","AMA"] },
+      { id:"gest_aas_baixa", n:"AAS (gestação) - 100 mg comprimido (baixa dose)", g:"Anti-inflamatórios (AINEs)", l:"UBS/AMA", forma:"Comprimido", via:"Oral", dose:"Adulto: 100-150mg/dia (profilaxia pré-eclâmpsia)", indicacoes:["Profilaxia pré-eclâmpsia","Prevenção cardiovascular"], contraindicacoes:["Úlcera","Hemorragia","Asma"], interacoes:["Anticoagulantes","AINEs"], antidotos:["Bicarbonato"], alerta:"⚠️ SEGURO APENAS em baixas doses (100-150mg/dia)", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ❌ PROIBIDO (dose analgésica) - apenas baixa dose para pré-eclâmpsia", disponivel:["UBS","AMA","UPA","PSA"] },
+      { id:"gest_doxilamina_b6", n:"Doxilamina + Piridoxina (vit B6) - 10 mg/10 mg comprimido", g:"Antieméticos / Antivertiginosos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 1 comp 4x/dia (máx 4 comp/dia)", indicacoes:["Náusea","Vômito","Hiperêmese gravídica"], contraindicacoes:["Hipersensibilidade","Asma"], interacoes:["Depressores SNC","Álcool"], antidotos:["Suporte"], alerta:"⚠️ PRIMEIRA LINHA - padrão-ouro para hiperêmese gravídica no 1º trimestre", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - primeira linha padrão-ouro", disponivel:["UBS","AMA"] },
+      { id:"gest_dimenidrinato", n:"Dimenidrinato (gestação) - 50 mg comprimido/ampola", g:"Antieméticos / Antivertiginosos", l:"UBS/AMA", forma:"Comprimido/Solução injetável", via:"Oral/IM/IV", dose:"Adulto: 50-100mg 4/6h", indicacoes:["Náusea","Vômito","Cinétose"], contraindicacoes:["Glaucoma","Hiperplasia prostática","Asma"], interacoes:["Depressores SNC","Álcool","Anticolinérgicos"], antidotos:["Suporte"], alerta:"⚠️ Muito utilizado na prática clínica - principal efeito colateral: sonolência", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - muito utilizado na prática", disponivel:["UBS","AMA","UPA"] },
+      { id:"gest_metoclopramida", n:"Metoclopramida (gestação) - 10 mg comprimido/ampola", g:"Antieméticos / Antivertiginosos", l:"UBS/AMA", forma:"Comprimido/Solução injetável", via:"Oral/IM/IV", dose:"Adulto: 10mg 8/8h", indicacoes:["Náusea","Vômito","Gastroparesia"], contraindicacoes:["Hemorragia GI","Feocromocitoma","Parkinson"], interacoes:["Anticolinérgicos","Neurolépticos"], antidotos:["Suporte"], alerta:"⚠️ SEGUNDA LINHA - risco de sintomas extrapiramidais se uso crônico", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - segunda linha segura", disponivel:["UBS","AMA","UPA"] },
+      { id:"gest_ondansetrona", n:"Ondansetrona (gestação) - 4 mg comprimido/ampola", g:"Antieméticos / Antivertiginosos", l:"UBS/AMA", forma:"Comprimido/Solução injetável", via:"Oral/IV", dose:"Adulto: 4-8mg 8/12h", indicacoes:["Náusea intensa","Vômito refratário","Hiperêmese"], contraindicacoes:["Prolongamento QT","Hipersensibilidade"], interacoes:["Antifúngicos","Antiarrítmicos","Antidepressivos"], antidotos:["Suporte"], alerta:"⚠️ EVITAR nas primeiras 10 semanas - risco potencial de fenda palatina", popular:true, custo:"Médio", gestacao:"1º trimestre: ⚠️ EVITAR (até 10 semanas) | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - excelente após o 1ºT", disponivel:["UBS","AMA","UPA","PSA"] },
+      { id:"gest_omeprazol_oral", n:"Omeprazol (gestação) - 20 mg cápsula", g:"Gastrointestinal", l:"UBS/AMA", forma:"Cápsula", via:"Oral", dose:"Adulto: 20-40mg/dia", indicacoes:["Refluxo","Úlcera péptica","Dispepsia"], contraindicacoes:["Hipersensibilidade"], interacoes:["Warfarina","Antifúngicos"], antidotos:["Suporte"], alerta:"⚠️ SEGURO - utilizado para refluxo gastroesofágico refratário a antiácidos", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - para refluxo refratário", disponivel:["UBS","AMA","UPA"] },
+      { id:"gest_amoxicilina", n:"Amoxicilina (gestação) - 500 mg cápsula", g:"Antibióticos", l:"UBS/AMA", forma:"Cápsula", via:"Oral", dose:"Adulto: 500mg 8/8h", indicacoes:["ITU","Infecções respiratórias","Otite"], contraindicacoes:["Alergia a penicilinas"], interacoes:["Alopurinol","Probenecida"], antidotos:["Suporte"], alerta:"⚠️ PADRÃO-OURO - para infecções respiratórias e de tecidos moles na gestante", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - padrão-ouro", disponivel:["UBS","AMA","UPA","PSA"] },
+      { id:"gest_cefalexina", n:"Cefalexina (gestação) - 500 mg comprimido", g:"Antibióticos", l:"UBS/AMA", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg 6/6h", indicacoes:["ITU","Infecções de pele","Infecções respiratórias"], contraindicacoes:["Alergia a cefalosporinas"], interacoes:["Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ SEGURO - amplamente usada", popular:true, custo:"Médio", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - amplamente usada", disponivel:["UBS","AMA","UPA"] },
+      { id:"gest_ceftriaxona", n:"Ceftriaxona (gestação) - 1g pó para solução injetável", g:"Antibióticos", l:"UBS/AMA", forma:"Pó para solução injetável", via:"IV/IM", dose:"Adulto: 1-2g IV/IM 12/24h", indicacoes:["Pielonefrite","Infecções graves","Pneumonia"], contraindicacoes:["Alergia a cefalosporinas"], interacoes:["Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ SEGURO - amplamente usada no hospital para pielonefrite", popular:true, custo:"Médio", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - usado no hospital para pielonefrite", disponivel:["UBS","AMA","UPA","PSA"] },
+      { id:"gest_nitrofurantoina", n:"Nitrofurantoína (gestação) - 100 mg comprimido", g:"Antibióticos", l:"UBS/AMA", forma:"Comprimido", via:"Oral", dose:"Adulto: 100mg 6/12h", indicacoes:["ITU","Cistite"], contraindicacoes:["Insuf. renal","<37 semanas","Hipersensibilidade"], interacoes:["Antiácidos (diminui absorção)"], antidotos:["Suporte"], alerta:"⚠️ CONTRAINDICADO a partir da 37ª semana - risco de anemia hemolítica neonatal", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ❌ PROIBIDO (após 37 semanas) - risco de anemia hemolítica neonatal", disponivel:["UBS","AMA"] },
+      { id:"gest_azitromicina", n:"Azitromicina (gestação) - 500 mg comprimido", g:"Antibióticos", l:"UBS/AMA", forma:"Comprimido", via:"Oral", dose:"Adulto: 500mg/dia por 3 dias", indicacoes:["Clamídia","Infecções respiratórias","DST"], contraindicacoes:["Alergia a macrolídeos"], interacoes:["Digoxina","Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ SEGURO - macrolídeo seguro para infecções por clamídia e respiratórias", popular:true, custo:"Médio", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - seguro para clamídia e infecções respiratórias", disponivel:["UBS","AMA","UPA"] },
+      { id:"gest_metildopa", n:"Metildopa (gestação) - 250 mg comprimido", g:"Cardiovascular", l:"UBS/AMA", forma:"Comprimido", via:"Oral", dose:"Adulto: 250mg 2-3x/dia (máx 2g/dia)", indicacoes:["Hipertensão gestacional","Hipertensão arterial"], contraindicacoes:["Insuf. hepática","Feocromocitoma"], interacoes:["AINEs","Antidepressivos","Simpatomiméticos"], antidotos:["Suporte"], alerta:"⚠️ DROGA DE ESCOLHA - para controle crônico da hipertensão arterial gestacional", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - droga de escolha para HA gestacional", disponivel:["UBS","AMA","UPA","PSA"] },
+      { id:"gest_nifedipino", n:"Nifedipino (gestação) - 10 mg comprimido sublingual/liberação prolongada", g:"Cardiovascular", l:"UBS/AMA", forma:"Comprimido sublingual/LP", via:"Oral/Sublingual", dose:"Adulto: 10-20mg SL (crise) | 20-60mg/dia LP (crônico)", indicacoes:["Crise hipertensiva","Hipertensão gestacional","Pré-eclâmpsia"], contraindicacoes:["Hipotensão","IAM","Estenose aórtica"], interacoes:["Grapefruit","Beta-bloqueadores"], antidotos:["Suporte","Cálcio IV"], alerta:"⚠️ ÓTIMA OPÇÃO - oral de liberação prolongada ou para crises urgentes", popular:true, custo:"Médio", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - ótima opção para crises", disponivel:["UBS","AMA","UPA","PSA","Emergência"] },
+      { id:"gest_hidralazina", n:"Hidralazina (gestação) - 20 mg ampola", g:"Cardiovascular", l:"UBS/AMA", forma:"Solução injetável (ampola)", via:"IV", dose:"Adulto: 5-10mg IV lento (repetir 20 min)", indicacoes:["Pré-eclâmpsia","Eclâmpsia","Crise hipertensiva grave"], contraindicacoes:["Hipotensão","Taquicardia","Insuf. cardíaca"], interacoes:["Anti-hipertensivos","Simpatomiméticos"], antidotos:["Suporte"], alerta:"⚠️ DROGA INJETÁVEL DE ESCOLHA - para manejo de emergências hipertensivas (Pré-eclâmpsia)", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - droga injetável de escolha", disponivel:["UBS","AMA","UPA","PSA","Emergência"] },
+      { id:"gest_acido_folico", n:"Ácido fólico (gestação) - 5 mg comprimido", g:"Vitaminas e Suplementos", l:"UBS/AMA", forma:"Comprimido", via:"Oral", dose:"Gestante: 5mg/dia (1º trimestre) | 0,4-0,8mg/dia (prevenção)", indicacoes:["Profilaxia de defeitos do tubo neural","Anemia megaloblástica"], contraindicacoes:["Anemia perniciosa (não diagnosticada)"], interacoes:["Metotrexato","Anticonvulsivantes"], antidotos:["Suporte"], alerta:"⚠️ ESSENCIAL - até a 12ª semana para prevenção de defeitos do tubo neural (DTN)", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ ESSENCIAL | 2º trimestre: ✅ OPCIONAL | 3º trimestre: ✅ OPCIONAL - essencial até a 12ª semana", disponivel:["UBS","AMA"] },
+      { id:"gest_sulfato_ferroso", n:"Sulfato ferroso (gestação) - 40 mg comprimido/gotas", g:"Vitaminas e Suplementos", l:"UBS/AMA", forma:"Comprimido/Solução oral", via:"Oral", dose:"Gestante: 40-60mg/dia (profilaxia) | 100-200mg/dia (anemia)", indicacoes:["Anemia ferropriva","Profilaxia gestacional"], contraindicacoes:["Hemocromatose","Anemia hemolítica"], interacoes:["Antiácidos","Tetraciclinas"], antidotos:["Desferroxamina (intoxicação)"], alerta:"⚠️ SEGURO e RECOMENDADO - suplementação de rotina contra anemia", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - suplementação de rotina", disponivel:["UBS","AMA"] },
+      { id:"gest_insulina_nph", n:"Insulina NPH (gestação) - 100 UI/mL frasco/caneta", g:"Endócrino / Hormônios", l:"UBS/AMA", forma:"Suspensão injetável (frasco/caneta)", via:"SC", dose:"Adulto: 10-40 UI SC 1-2x/dia (ajuste)", indicacoes:["Diabetes gestacional","Diabetes tipo 1","Diabetes tipo 2"], contraindicacoes:["Hipoglicemia ativa"], interacoes:["Álcool","Beta-bloqueadores","Corticosteroides"], antidotos:["Glicose IV","Glucagon"], alerta:"⚠️ PADRÃO-OURO - obrigatório para Diabetes Gestacional refratário à dieta", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - padrão-ouro para DMG", disponivel:["UBS","AMA","UPA","PSA"] },
+      { id:"gest_insulina_regular", n:"Insulina Regular (gestação) - 100 UI/mL frasco/caneta", g:"Endócrino / Hormônios", l:"UBS/AMA", forma:"Solução injetável (frasco/caneta)", via:"IV/SC", dose:"Adulto: 5-10 UI SC (ajuste) | IV em emergência", indicacoes:["Diabetes gestacional","Cetoacidose","Emergência hiperglicêmica"], contraindicacoes:["Hipoglicemia ativa"], interacoes:["Álcool","Beta-bloqueadores","Corticosteroides"], antidotos:["Glicose IV","Glucagon"], alerta:"⚠️ Única insulina para uso IV em emergências - padrão-ouro", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - única insulina para IV", disponivel:["UBS","AMA","UPA","PSA","Emergência"] },
+      { id:"gest_progesterona", n:"Progesterona micronizada (gestação) - 100 mg cápsula", g:"Endócrino / Hormônios", l:"UBS", forma:"Cápsula", via:"Oral/Vaginal", dose:"Adulto: 100-200mg 2x/dia (vaginal) | 200-400mg/dia (oral)", indicacoes:["Ameaça de aborto","Prevenção de parto prematuro","Suporte lúteo"], contraindicacoes:["Hipersensibilidade","Trombofilia","Doença hepática"], interacoes:["Antifúngicos","Anticonvulsivantes","Rifampicina"], antidotos:["Suporte"], alerta:"⚠️ Usada no 1ºT para ameaça de aborto e no 2ºT para prevenção de parto prematuro", popular:true, custo:"Médio", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ OPCIONAL - usada no 1ºT e 2ºT", disponivel:["UBS","AMA"] },
+      { id:"gest_enoxaparina", n:"Enoxaparina (gestação) - 40 mg seringa SC", g:"Cardiovascular", l:"UBS/AMA", forma:"Seringa preenchida", via:"SC", dose:"Adulto: 40mg SC 1x/dia (profilaxia)", indicacoes:["Profilaxia TVP","SCA","Síndrome antifosfolípide"], contraindicacoes:["Hemorragia ativa","Trombocitopenia","Insuf. renal grave"], interacoes:["Anticoagulantes","AINEs","Ácido acetilsalicílico"], antidotos:["Sulfato de protamina"], alerta:"⚠️ ANTICOAGULANTE DE ESCOLHA - não cruza a barreira placentária (Varfarina proibida)", popular:true, custo:"Alto", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO - anticoagulante de escolha", disponivel:["UBS","AMA","UPA","PSA","Emergência"] },
+      { id:"gest_betametasona", n:"Betametasona (gestação) - 4 mg ampola IM", g:"Outros / Diversos", l:"UBS/AMA", forma:"Solução injetável (ampola)", via:"IM", dose:"Adulto: 12mg IM (2 doses de 6mg com 24h de intervalo)", indicacoes:["Maturação pulmonar fetal (24-34 semanas)","Profilaxia de hemorragia intraventricular"], contraindicacoes:["Infecção fúngica sistêmica","Hipersensibilidade"], interacoes:["AINEs","Anticoagulantes","Antidiabéticos"], antidotos:["Suporte"], alerta:"⚠️ USO RESTRITO - indicada via IM exclusivamente entre 24 e 34 semanas para maturação pulmonar", popular:true, custo:"Médio", gestacao:"1º trimestre: ❌ NÃO USAR | 2º trimestre: ⚠️ CAUTELA | 3º trimestre: ✅ SEGURO - entre 24-34 semanas para maturação pulmonar", disponivel:["UBS","AMA","UPA","PSA","Emergência"] },
+
+      // ================================================================
+      // BUSCOPAN (BUTILBROMETO DE ESCOPOLAMINA) - GOTAS E INJETÁVEL
+      // ================================================================
+      { id:"butilbrometo_escopolamina_gotas", n:"Butilbrometo de escopolamina (Buscopan) 0,25 mg/mL solução oral gotas", g:"Gastrointestinal", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Adulto: 20-40 gotas 3-4x/dia | Criança: 1 gota/kg/dose", indicacoes:["Cólica intestinal","Espasmo gastrointestinal"], contraindicacoes:["Glaucoma","Hiperplasia prostática","<1 ano"], interacoes:["Anticolinérgicos"], antidotos:["Fisostigmina"], alerta:"⚠️ Dose pediátrica rigorosa - efeitos anticolinérgicos", popular:true, custo:"Baixo", antiespasmodico:true },
+      { id:"butilbrometo_escopolamina_inj", n:"Butilbrometo de escopolamina (Buscopan) 20 mg/mL ampola IM/IV", g:"Gastrointestinal", l:"AMA/UPA", forma:"Solução injetável (ampola)", via:"IV/IM", dose:"Adulto: 20-40mg IM/IV lento 4/6h", indicacoes:["Cólica renal","Cólica biliar","Dor visceral intensa"], contraindicacoes:["Glaucoma","Hiperplasia prostática","Íleo paralítico"], interacoes:["Anticolinérgicos","Antidepressivos"], antidotos:["Fisostigmina"], alerta:"⚠️ Administrar lentamente (IV: 1-2 min) - monitorar PA e FC", popular:true, custo:"Médio", antiespasmodico:true, diluicao:"Uso direto IV lento ou IM profunda" },
+
+      // ===== ESCPOLAMINA E COMBINAÇÕES (Buscopan composto) =====
+      { id:"escopolamina_10", n:"Escopolamina 10 mg comprimido", g:"Gastrointestinal", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Adulto: 10mg 3x/dia", indicacoes:["Cólica intestinal","SII"], contraindicacoes:["Glaucoma","Retenção urinária","Miastenia"], interacoes:["Anticolinérgicos","Antidepressivos"], antidotos:["Fisostigmina"], alerta:"⚠️ Efeitos anticolinérgicos", popular:true, custo:"Baixo", antiespasmodico:true },
+      { id:"escopolamina_dipirona_gotas", n:"Escopolamina + Dipirona sódica solução oral gotas", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Adulto: 20-40 gotas 6/8h", indicacoes:["Dor espasmódica","Cólica intestinal","Cólica menstrual"], contraindicacoes:["Glaucoma","Hipersensibilidade","Discrasias"], interacoes:["Anticolinérgicos","Clorpromazina"], antidotos:["Suporte"], alerta:"⚠️ Efeitos anticolinérgicos - não exceder dose", popular:true, custo:"Baixo", antiespasmodico:true },
+      { id:"escopolamina_amp_ama", n:"Escopolamina 20 mg/mL ampola - 1 ampola + 100mL SF0,9% IV", g:"Antieméticos / Antivertiginosos", l:"AMA", forma:"Solução injetável (ampola)", via:"IV (infusão)", dose:"Adulto: 1 ampola (20mg) diluída em 100mL SF0,9% - infundir 20-30 min", indicacoes:["Cólica renal intensa","Cólica biliar","Dor visceral","Espasmo gastrointestinal"], contraindicacoes:["Glaucoma de ângulo fechado","Hipersensibilidade","Íleo paralítico"], interacoes:["Anticolinérgicos","Antidepressivos","Anti-histamínicos"], antidotos:["Fisostigmina (overdose)"], alerta:"⚠️ Administrar em infusão lenta - monitorar PA e FC", popular:true, custo:"Baixo", diluicao:"Diluir 1 ampola (20mg) em 100mL SF0,9% - infundir em 20-30 minutos", antiespasmodico:true },
+      { id:"escopolamina_dipirona_inj", n:"Buscopan composto (Escopolamina + Dipirona sódica) solução injetável", g:"Analgésicos / Antitérmicos", l:"AMA", forma:"Solução injetável (ampola)", via:"IV/IM", dose:"Adulto: 1-2 mL IV/IM 6/8h", indicacoes:["Cólica renal","Cólica biliar","Dor visceral"], contraindicacoes:["Glaucoma","Hipersensibilidade","Discrasias"], interacoes:["Anticolinérgicos","Clorpromazina"], antidotos:["Suporte"], alerta:"⚠️ Administrar lentamente - monitorar PA", popular:true, custo:"Baixo", antiespasmodico:true },
+
+      // ================================================================
+      // DRAMIN GOTAS (DIMENIDRINATO)
+      // ================================================================
+      { id:"dimenidrinato_gotas", n:"Dimenidrinato 40 mg/mL solução oral gotas", g:"Antieméticos / Antivertiginosos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Adulto: 20-40 gotas 4/6h | Criança (2-12a): 5-10 gotas 4/6h", indicacoes:["Náusea","Vômito","Cinétose","Vertigem"], contraindicacoes:["<2 anos","Glaucoma","Hiperplasia prostática","Asma"], interacoes:["Depressores SNC","Álcool","Anticolinérgicos","IMAO"], antidotos:["Suporte"], alerta:"⚠️ Causa sonolência - cuidado ao dirigir - dose pediátrica rigorosa", popular:true, custo:"Baixo" },
+
+      // ================================================================
+      // OMEPRAZOL INJETÁVEL (AMA/UPA/PSA)
+      // ================================================================
+      { id:"omeprazol_inj", n:"Omeprazol 40 mg pó para solução injetável", g:"Gastrointestinal", l:"AMA/UPA/PSA", forma:"Pó para solução injetável", via:"IV", dose:"Adulto: 40mg IV 1x/dia", indicacoes:["Úlcera péptica","Refluxo","Esofagite","Sangramento digestivo"], contraindicacoes:["Hipersensibilidade"], interacoes:["Warfarina","Antifúngicos","Antiretrovirais"], antidotos:["Suporte"], alerta:"⚠️ Reconstituir antes do uso – diluir em 100mL SF0,9% – infundir em 30-60 min", popular:true, custo:"Médio", diluicao:"Reconstituir com água estéril – diluir em 100mL SF0,9% – infundir em 30-60 minutos" },
+
+      // ================================================================
+      // PROMETAZINA (FENERGAN) INJETÁVEL
+      // ================================================================
+      { id:"prometazina_amp_ama", n:"Prometazina (Fenergan) 25 mg/mL ampola - 1 ampola IM", g:"Anti-histamínicos", l:"AMA", forma:"Solução injetável (ampola)", via:"IM", dose:"Adulto: 25-50mg IM (1-2 ampolas) 4/6h", indicacoes:["Reações alérgicas graves","Náusea intensa","Prurido","Sedação pré-operatória"], contraindicacoes:["<2 anos","Glaucoma","Hiperplasia prostática","Asma"], interacoes:["Depressores SNC","Álcool","IMAO","Anticolinérgicos"], antidotos:["Suporte"], alerta:"⚠️ Administrar por via IM profunda - não usar IV (risco de necrose)", popular:true, custo:"Baixo", diluicao:"Uso direto IM profunda" },
+
+      // ================================================================
+      // DEXAMETASONA 4 mg INJETÁVEL
+      // ================================================================
+      { id:"dexametasona_amp_ama", n:"Dexametasona 4 mg/mL ampola - 1 ampola IM/IV", g:"Outros / Diversos", l:"AMA", forma:"Solução injetável (ampola)", via:"IM/IV", dose:"Adulto: 4-8mg IV/IM (1-2 ampolas) 6/12h", indicacoes:["Edema cerebral","Reações alérgicas graves","Estado asmático","Insuficiência adrenal"], contraindicacoes:["Infecção fúngica sistêmica","Hipersensibilidade"], interacoes:["AINEs","Anticoagulantes","Antidiabéticos","Diuréticos"], antidotos:["Suporte"], alerta:"⚠️ Suspensão gradual - não interromper abruptamente", popular:true, custo:"Baixo", diluicao:"Uso direto IV lento (1-2 min) ou IM profunda" },
+
+      // ================================================================
+      // HIDROCORTISONA 100 mg e 500 mg INJETÁVEIS
+      // ================================================================
+      { id:"hidrocortisona_100_ama", n:"Hidrocortisona 100 mg pó para solução injetável - 1 frasco IV", g:"Outros / Diversos", l:"AMA", forma:"Pó para solução injetável (frasco-ampola)", via:"IV", dose:"Adulto: 100mg IV (diluir em 100mL SF0,9%) 8/8h (crise)", indicacoes:["Insuficiência adrenal aguda","Estado asmático grave","Choque séptico","Reações alérgicas graves"], contraindicacoes:["Infecção fúngica sistêmica","Hipersensibilidade"], interacoes:["AINEs","Anticoagulantes","Antidiabéticos","Diuréticos"], antidotos:["Suporte"], alerta:"⚠️ EMERGÊNCIA - administrar imediatamente em crise adrenal", popular:true, custo:"Médio", diluicao:"Reconstituir com água estéril - diluir em 100mL SF0,9% ou SG5% - infundir em 30-60 min" },
+      { id:"hidrocortisona_500_ama", n:"Hidrocortisona 500 mg pó para solução injetável - 1 frasco IV", g:"Outros / Diversos", l:"AMA", forma:"Pó para solução injetável (frasco-ampola)", via:"IV", dose:"Adulto: 500mg IV (diluir em 250-500mL SF0,9%) 8/8h (crise grave)", indicacoes:["Insuficiência adrenal grave","Choque séptico refratário","Estado asmático grave"], contraindicacoes:["Infecção fúngica sistêmica","Hipersensibilidade"], interacoes:["AINEs","Anticoagulantes","Antidiabéticos","Diuréticos"], antidotos:["Suporte"], alerta:"⚠️ EMERGÊNCIA - dose alta para choque e insuficiência adrenal grave", popular:true, custo:"Alto", diluicao:"Reconstituir com água estéril - diluir em 250-500mL SF0,9% ou SG5% - infundir em 30-60 min" }
+    ];
+
+    // ================================================================
+    // COMPONENTE PRINCIPAL
+    // ================================================================
+    function App() {
+      const [query, setQuery] = useState("");
+      const [activeGroup, setActiveGroup] = useState(null);
+      const [openIdx, setOpenIdx] = useState(null);
+      const [darkMode, setDarkMode] = useState(false);
+      const [showOnlyPopular, setShowOnlyPopular] = useState(false);
+      const [filterLocal, setFilterLocal] = useState('all');
+      const [filterVia, setFilterVia] = useState('all');
+      const [filterGestacao, setFilterGestacao] = useState(false);
+      const [favorites, setFavorites] = useState(() => {
+        try { return JSON.parse(localStorage.getItem('remume_fav') || '[]'); } catch { return []; }
+      });
+      const [showLista, setShowLista] = useState(false);
+
+      useEffect(() => {
+        localStorage.setItem('remume_fav', JSON.stringify(favorites));
+      }, [favorites]);
+
+      // Lista de grupos com "Antiespasmódicos" após "Antieméticos"
+      const allGroups = [...new Set(MEDS.map(m => m.g))].sort();
+      const antiemeticIndex = allGroups.indexOf("Antieméticos / Antivertiginosos");
+      const groups = [...allGroups];
+      if (antiemeticIndex !== -1) {
+        const existingIndex = groups.indexOf("🔄 Antiespasmódicos");
+        if (existingIndex !== -1) groups.splice(existingIndex, 1);
+        groups.splice(antiemeticIndex + 1, 0, "🔄 Antiespasmódicos");
+      } else {
+        groups.push("🔄 Antiespasmódicos");
+      }
+
+      const groupColors = {
+        "Analgésicos / Antitérmicos":"#B5651D",
+        "Anti-inflamatórios (AINEs)":"#8A5A2B",
+        "Antibióticos":"#1F6F5C",
+        "Cardiovascular":"#A62B2B",
+        "Respiratório":"#2F8A8A",
+        "Neurológico / Psiquiátrico":"#5C4A9E",
+        "Endócrino / Hormônios":"#B2842E",
+        "Gastrointestinal":"#7A5230",
+        "Vitaminas e Suplementos":"#3A8A5C",
+        "Antiparasitários":"#4A7C2F",
+        "Antifúngicos":"#6B4E9E",
+        "Anti-histamínicos":"#B23A5A",
+        "Antieméticos / Antivertiginosos":"#9A6B1F",
+        "🔄 Antiespasmódicos":"#9B59B6",
+        "Outros / Diversos":"#5A5A5A",
+        "Oftálmico/Otológico":"#2E86AB",
+        "Fitoterápicos":"#5E8A2E",
+        "Dermatológico":"#B25E3A"
+      };
+
+      const results = useMemo(() => {
+        const q = query.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        return MEDS.filter(m => {
+          const nome = m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          const grupo = m.g.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          const ind = (m.indicacoes || []).join(' ').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          const gest = (m.gestacao || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+          const matchQ = q.length === 0 || nome.includes(q) || grupo.includes(q) || ind.includes(q) || gest.includes(q);
+          let matchG = true;
+          if (activeGroup === "🔄 Antiespasmódicos") {
+            matchG = m.antiespasmodico === true;
+          } else {
+            matchG = !activeGroup || m.g === activeGroup;
+          }
+          const matchL = filterLocal === 'all' || m.l === filterLocal || m.l.includes(filterLocal);
+          const matchV = filterVia === 'all' || m.via === filterVia || 
+            (filterVia === 'Injetável' && ['IV','IM','IV/IM','SC'].includes(m.via)) ||
+            (filterVia === 'Oral' && m.via === 'Oral') ||
+            (filterVia === 'Inalatória' && m.via === 'Inalatória') ||
+            (filterVia === 'Inalatória (nebulização)' && m.via === 'Inalatória (nebulização)') ||
+            (filterVia === 'Tópica' && m.via === 'Tópica') ||
+            (filterVia === 'Tópica (Oftálmica)' && m.via === 'Tópica (Oftálmica)') ||
+            (filterVia === 'Nasal' && m.via === 'Nasal') ||
+            (filterVia === 'Tópica (Otópica)' && m.via === 'Tópica (Otópica)') ||
+            (filterVia === 'Sublingual' && m.via === 'Sublingual');
+          const matchP = !showOnlyPopular || m.popular;
+          const matchGest = !filterGestacao || (m.gestacao && m.gestacao.length > 0);
+
+          return matchQ && matchG && matchL && matchV && matchP && matchGest;
+        }).sort((a,b) => {
+          if (q.length > 0) {
+            const aNome = a.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const bNome = b.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const aStarts = aNome.startsWith(q);
+            const bStarts = bNome.startsWith(q);
+            if (aStarts && !bStarts) return -1;
+            if (!aStarts && bStarts) return 1;
+          }
+          return a.n.localeCompare(b.n);
+        });
+      }, [query, activeGroup, filterLocal, filterVia, filterGestacao, showOnlyPopular]);
+
+      const toggleFav = (id) => {
+        setFavorites(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
+      };
+
+      const listaAlfabetica = [...MEDS].sort((a,b) => a.n.localeCompare(b.n));
+
+      return (
+        <div className="app" style={{ background: darkMode ? '#0F1A15' : '#EEF2EF', minHeight: '100vh', color: darkMode ? '#DCE8E0' : '#14231D' }}>
+          <header style={{ marginBottom: 22 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  <span style={{ fontFamily: 'monospace', fontSize: 13, fontWeight: 700, color: '#1F6F5C', background: '#DCEAE5', padding: '3px 8px', borderRadius: 4 }}>🏥 REMUME v2</span>
+                  <span style={{ fontSize: 12, background: '#DCEAE5', padding: '2px 8px', borderRadius: 4, color: '#51665D' }}>UBS + AMA + UPA + PSA + Emergência</span>
+                  <span style={{ fontSize: 12, background: '#DCEAE5', padding: '2px 8px', borderRadius: 4, color: '#51665D' }}>{MEDS.length} medicamentos</span>
+                </div>
+                <h1 style={{ fontSize: 26, fontWeight: 800, margin: '10px 0 4px' }}>Medicamentos da rede municipal</h1>
+                <p style={{ fontSize: 14, color: darkMode ? '#7A9A8A' : '#51665D' }}>UBS/AMA/UPA/PSA/Emergência · Orais · Injetáveis · Inaláveis · Oftálmicos · Otológicos · Nasais · Tópicos · Gestação · Antiespasmódicos</p>
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button onClick={() => setShowLista(true)} className="btn-lista">📋 Lista alfabética</button>
+                <button onClick={() => setDarkMode(!darkMode)} style={{ background: darkMode ? '#1A2E28' : '#fff', border: '1.5px solid #C7D6CF', borderRadius: 8, padding: '8px 10px', cursor: 'pointer' }}>
+                  {darkMode ? '☀️' : '🌙'}
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: darkMode ? '#1A2E28' : '#fff', border: `1.5px solid ${darkMode ? '#2A4A3E' : '#C7D6CF'}`, borderRadius: 12, padding: '10px 12px', marginBottom: 10 }}>
+            <span>🔍</span>
+            <input className="input-search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Digite o início do nome, ex: Dexametasona, Fenergan, Hidrocortisona..." style={{ color: darkMode ? '#DCE8E0' : '#14231D' }} />
+            {query && <button onClick={() => setQuery('')} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>✕</button>}
+          </div>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
+            <button className={`btn-filter ${showOnlyPopular ? 'active' : ''}`} onClick={() => setShowOnlyPopular(!showOnlyPopular)}>⭐ Mais usados</button>
+            <button className={`btn-filter ${filterGestacao ? 'active' : ''}`} onClick={() => setFilterGestacao(!filterGestacao)} style={filterGestacao ? { background: '#E91E63', color: '#fff', borderColor: '#E91E63' } : {}}>
+              🤰 Gestação
+            </button>
+            <select className="btn-filter" value={filterLocal} onChange={e => setFilterLocal(e.target.value)} style={{ background: darkMode ? '#1A2E28' : '#fff', color: 'inherit' }}>
+              <option value="all">📍 Todos locais</option>
+              <option value="UBS">🏥 UBS</option>
+              <option value="AMA">💉 AMA</option>
+              <option value="UPA">🚑 UPA</option>
+              <option value="PSA">🏨 PSA</option>
+              <option value="Emergência">🚨 Emergência</option>
+            </select>
+            <select className="btn-filter" value={filterVia} onChange={e => setFilterVia(e.target.value)} style={{ background: darkMode ? '#1A2E28' : '#fff', color: 'inherit' }}>
+              <option value="all">💊 Todas vias</option>
+              <option value="Oral">Oral</option>
+              <option value="Injetável">Injetável</option>
+              <option value="Inalatória">Inalatória</option>
+              <option value="Inalatória (nebulização)">💨 Nebulização</option>
+              <option value="Tópica">🧴 Tópica</option>
+              <option value="Nasal">👃 Nasal</option>
+              <option value="Sublingual">👅 Sublingual</option>
+            </select>
+            <span style={{ fontSize: 12, marginLeft: 'auto', color: darkMode ? '#7A9A8A' : '#51665D' }}>{results.length} resultados</span>
+          </div>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
+            <button className={`chip-group ${!activeGroup ? 'active' : ''}`} onClick={() => setActiveGroup(null)} style={!activeGroup ? { background: '#14231D', color: '#fff', borderColor: '#14231D' } : {}}>Todos</button>
+            {groups.map(g => {
+              const active = activeGroup === g;
+              const color = groupColors[g] || '#51665D';
+              return <button key={g} className={`chip-group ${active ? 'active' : ''}`} onClick={() => setActiveGroup(active ? null : g)} style={active ? { background: color, borderColor: color, color: '#fff' } : {}}>{g}</button>;
+            })}
+          </div>
+
+          {results.length === 0 && <div style={{ padding: 32, textAlign: 'center', color: darkMode ? '#7A9A8A' : '#51665D', background: darkMode ? '#1A2E28' : '#fff', borderRadius: 12 }}>🔍 Nenhum medicamento encontrado. Tente "Dexametasona", "Fenergan" ou "Hidrocortisona".</div>}
+
+          {results.map((m, i) => {
+            const isOpen = openIdx === i;
+            const isFav = favorites.includes(m.id);
+            const isInj = ['IV','IM','IV/IM','SC'].includes(m.via);
+            const color = groupColors[m.g] || '#51665D';
+            const isGestacao = m.gestacao && m.gestacao.length > 0;
+            const isAntiespasmodico = m.antiespasmodico === true;
+
+            return (
+              <div key={m.id} className="card" style={{ borderColor: isOpen ? color : (darkMode ? '#2A4A3E' : '#DCE5E0') }} onClick={() => setOpenIdx(isOpen ? null : i)}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, alignItems: 'center' }}>
+                      {isFav && <span>⭐</span>}
+                      {m.popular && <span className="badge-popular">Popular</span>}
+                      {isInj && <span className="badge-injetavel">💉 Injetável</span>}
+                      {isGestacao && <span className="badge-gestacao">🤰 Gestação</span>}
+                      {isAntiespasmodico && <span className="badge-antiespasmodico">🔄 Antiespasmódico</span>}
+                      {m.l === 'AMA' && <span className="badge-ama">AMA</span>}
+                      {m.l === 'UBS' && <span className="badge-ama">UBS</span>}
+                      {m.l === 'UPA' && <span className="badge-upa">UPA</span>}
+                      {m.l === 'PSA' && <span className="badge-psa">PSA</span>}
+                      {m.l === 'Emergência' && <span className="badge-emergencia">Emergência</span>}
+                      {m.l && m.l.includes('/') && (
+                        <span className="badge-ama" style={{ background: '#1F6F5C' }}>{m.l}</span>
+                      )}
+                      <span style={{ fontFamily: 'monospace', fontWeight: 600, fontSize: 14 }}>{m.n}</span>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 4, fontSize: 12, color: darkMode ? '#7A9A8A' : '#51665D' }}>
+                      <span className="tag">💊 {m.forma}</span>
+                      <span className="tag">{m.via}</span>
+                      <span className="tag">📍 {m.l}</span>
+                      <span className="tag">💰 {m.custo}</span>
+                      {m.diluicao && <span className="tag">💧 {m.diluicao}</span>}
+                    </div>
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 700, color, background: `${color}18`, padding: '4px 8px', borderRadius: 6, whiteSpace: 'nowrap' }}>{m.g}</span>
+                </div>
+
+                <div style={{ display: 'flex', gap: 8, marginTop: 8, borderTop: `1px solid ${darkMode ? '#2A4A3E' : '#DCE5E0'}`, paddingTop: 8 }}>
+                  <button onClick={(e) => { e.stopPropagation(); toggleFav(m.id); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, display: 'flex', gap: 4, alignItems: 'center' }}>{isFav ? '⭐ Favorito' : '☆ Favoritar'}</button>
+                  <button onClick={(e) => { e.stopPropagation(); setOpenIdx(isOpen ? null : i); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, marginLeft: 'auto' }}>{isOpen ? '🔼 Menos' : '🔽 Mais detalhes'}</button>
+                </div>
+
+                {isOpen && (
+                  <div style={{ marginTop: 10, paddingTop: 10, borderTop: `2px solid ${color}` }}>
+                    {m.dose && <div style={{ background: darkMode ? '#1F332C' : '#E8F4F0', padding: '8px 10px', borderRadius: 6, marginBottom: 6 }}><strong>💊 Dose:</strong> {m.dose}</div>}
+                    {m.indicacoes && <div style={{ marginBottom: 6 }}><strong>✓ Indicações:</strong> {m.indicacoes.join(', ')}</div>}
+                    {m.contraindicacoes && <div style={{ marginBottom: 6, color: '#E74C3C' }}><strong>⚠️ Contraindicações:</strong> {m.contraindicacoes.join(', ')}</div>}
+                    {m.interacoes && m.interacoes.length > 0 && <div style={{ marginBottom: 6 }}><strong>🔄 Interações:</strong> {m.interacoes.join(', ')}</div>}
+                    {m.antidotos && m.antidotos.length > 0 && <div style={{ marginBottom: 6, color: '#27AE60' }}><strong>💉 Antídotos:</strong> {m.antidotos.join(', ')}</div>}
+                    {m.diluicao && <div style={{ marginBottom: 6 }}><strong>💧 Diluição/Administração:</strong> {m.diluicao}</div>}
+                    {m.disponivel && m.disponivel.length > 0 && (
+                      <div style={{ marginBottom: 6 }}><strong>🏥 Disponível em:</strong> {m.disponivel.join(' → ')}</div>
+                    )}
+                    {m.gestacao && (
+                      <div style={{ marginBottom: 6, background: darkMode ? '#2A1A3A' : '#FCE4EC', padding: '8px 10px', borderRadius: 6, border: '1px solid #E91E63' }}>
+                        <strong>🤰 Uso na Gestação:</strong> {m.gestacao}
+                      </div>
+                    )}
+                    {m.antiespasmodico && (
+                      <div style={{ marginBottom: 6, background: darkMode ? '#2A1A3A' : '#F3E5F5', padding: '8px 10px', borderRadius: 6, border: '1px solid #9B59B6' }}>
+                        <strong>🔄 Antiespasmódico:</strong> Sim
+                      </div>
+                    )}
+                    {m.alerta && <div style={{ background: darkMode ? '#2A1A1A' : '#FFF3E0', padding: '8px 10px', borderRadius: 6, border: '1px solid #E67E22', color: '#E67E22', fontWeight: 600 }}>⚠️ {m.alerta}</div>}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          <footer style={{ marginTop: 28, fontSize: 11.5, color: darkMode ? '#3A5A4E' : '#8AA098', borderTop: `1px solid ${darkMode ? '#1A2E28' : '#DCE5E0'}`, paddingTop: 16 }}>
+            <p>REMUME v2 - SMS-SP · Dados manuais atualizados ago/2026 · {MEDS.length} medicamentos</p>
+            <p style={{ marginTop: 4 }}>Dica: digite o início do nome (ex: "Dexametasona", "Fenergan", "Hidrocortisona") ou ative os filtros.</p>
+          </footer>
+
+          {showLista && (
+            <div className="modal-overlay" onClick={() => setShowLista(false)}>
+              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <button className="modal-close" onClick={() => setShowLista(false)}>✕</button>
+                <h2 style={{ marginBottom: 16 }}>📋 Lista alfabética de medicamentos</h2>
+                <div className="lista-header" style={{ display: 'flex' }}>
+                  <span className="lista-nome">Nome</span>
+                  <span className="lista-grupo">Grupo</span>
+                  <span className="lista-local">Local</span>
+                  <span className="lista-via">Via</span>
+                </div>
+                {listaAlfabetica.map(m => (
+                  <div key={m.id} className="lista-item">
+                    <span className="lista-nome">{m.n}</span>
+                    <span className="lista-grupo">{m.g}</span>
+                    <span className="lista-local">{m.l}</span>
+                    <span className="lista-via">{m.via}</span>
+                  </div>
+                ))}
+                <div style={{ marginTop: 16, fontSize: 12, color: '#8AA098' }}>
+                  Total: {listaAlfabetica.length} medicamentos
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
