@@ -21,7 +21,7 @@
 | App | Descrição | Acesso |
 |-----|-----------|--------|
 | **Conduta Médica** | Protocolos e condutas para atendimento ambulatorial e de urgência | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/) |
-| **REMUME v2 – Medicamentos SP** | Consulta rápida de medicamentos disponíveis na rede municipal (UBS, AMA, UPA, PSA e Emergência) – versão atualizada com correções para iPhone | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume-v2.html) |
+| **REMUME v2 – Medicamentos SP** | Consulta rápida de medicamentos disponíveis na rede municipal (UBS, AMA, UPA, PSA e Emergência) – versão atualizada com correções para iPhone e mais de 70 medicamentos | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume-v2.html) |
 
 ---
 
@@ -101,16 +101,16 @@ O app permite filtrar as condutas por nível de atendimento, facilitando a decis
 
 ## 💊 REMUME – Medicamentos da rede municipal
 
-O app REMUME (versão v2) contempla **todos os níveis de atendimento** da rede municipal, com medicamentos cadastrados para UBS, AMA, UPA, PSA e Emergência, incluindo uma seção especial para gestação e antiespasmódicos.
+O app REMUME (versão v2) contempla **todos os níveis de atendimento** da rede municipal, com mais de **70 medicamentos** cadastrados para UBS, AMA, UPA, PSA e Emergência, incluindo uma seção especial para gestação e antiespasmódicos.
 
 ### 🏥 Níveis de atendimento
 
 | Nível | Descrição | Exemplos de medicamentos |
 |-------|-----------|--------------------------|
-| **UBS/AMA** | Medicamentos da atenção básica e ambulatórios especializados. | Dipirona, Amoxicilina, Losartana, Metformina, Omeprazol |
-| **UPA** | Medicamentos para estabilização e encaminhamento. | Heparina, Metilprednisolona, Midazolam, Captopril SL |
-| **PSA** | Medicamentos para internação breve e UTI. | Meropenem, Vancomicina, Amicacina, Sulfato de magnésio |
-| **Emergência** | Medicamentos para situações críticas. | Adrenalina, Amiodarona, Noradrenalina, Naloxona, Flumazenil |
+| **UBS/AMA** | Medicamentos da atenção básica e ambulatórios especializados. | Dipirona, Paracetamol, Amoxicilina, Losartana, Metformina, Omeprazol |
+| **UPA** | Medicamentos para estabilização e encaminhamento. | Heparina, Metilprednisolona, Midazolam, Captopril SL, Nifedipino SL, Buscopan ampola |
+| **PSA** | Medicamentos para internação breve e UTI. | Meropenem, Vancomicina, Amicacina, Sulfato de magnésio, Nitroprussiato, Nitroglicerina IV, Amiodarona IV |
+| **Emergência** | Medicamentos para situações críticas. | Adrenalina, Amiodarona, Noradrenalina, Naloxona, Flumazenil, Epinefrina, Atropina, Dobutamina, Dopamina, Glicose 50% |
 
 ### 🤰 Medicamentos seguros na gestação
 
@@ -200,11 +200,11 @@ Pronto! O app vai aparecer como um ícone na sua tela inicial, funcionando em te
 ## 📁 Estrutura do projeto
 
 conduta-medica/
-├── index.html            # App Conduta Médica (condutas e protocolos)
-├── service-worker.js     # Habilita o modo offline (PWA)
-├── remume-v2.html        # App REMUME (medicamentos) – versão atualizada
-├── remume.html           # App REMUME (versão antiga – backup)
-└── README.md             # Este arquivo (documentação)
+- index.html            # App Conduta Médica (condutas e protocolos)
+- service-worker.js     # Habilita o modo offline (PWA)
+- remume-v2.html        # App REMUME (medicamentos) – versão atualizada
+- remume.html           # App REMUME (versão antiga – backup)
+- README.md             # Este arquivo (documentação)
 
 ---
 
