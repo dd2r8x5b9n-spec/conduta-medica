@@ -3,176 +3,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REMUME - Medicamentos SP</title>
+    <title>REMUME – Medicamentos SP</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; padding: 16px; max-width: 800px; margin: auto; }
-        header { background: linear-gradient(135deg, #0055CC, #003399); color: white; padding: 20px; border-radius: 16px; margin-bottom: 20px; }
-        header h1 { font-size: 24px; font-weight: 700; }
-        header p { font-size: 14px; opacity: 0.8; margin-top: 4px; }
-        .filtros { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-        .filtro { background: #e0e7f0; padding: 6px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; border: none; transition: 0.2s; }
-        .filtro.ativo { background: #0055CC; color: white; }
-        .busca { width: 100%; padding: 14px 16px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; margin-bottom: 16px; background: white; }
-        .busca:focus { outline: none; border-color: #0055CC; box-shadow: 0 0 0 3px rgba(0,85,204,0.1); }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; padding: 16px; max-width: 480px; margin: auto; }
+        h1 { font-size: 22px; color: #0055CC; margin-bottom: 4px; }
+        .subtitle { color: #666; font-size: 14px; margin-bottom: 16px; }
+        .filtros-nivel { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+        .filtro-nivel { padding: 6px 14px; border-radius: 20px; border: 1px solid #ddd; background: white; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+        .filtro-nivel.ativo { background: #007AFF; color: white; border-color: #007AFF; }
+        .filtro-especial { background: #f0f0f0; padding: 6px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: all 0.2s; border: 1px solid #ddd; }
+        .filtro-especial.ativo { background: #FF9500; color: white; border-color: #FF9500; }
+        .busca { width: 100%; padding: 12px 16px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; margin-bottom: 12px; background: white; }
+        .busca:focus { outline: none; border-color: #007AFF; }
         .categorias { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-        .categoria { background: #f0f2f5; padding: 4px 12px; border-radius: 16px; font-size: 12px; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
-        .categoria.ativo { background: #0055CC; color: white; border-color: #0055CC; }
-        .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); border-left: 4px solid #0055CC; }
-        .card h3 { font-size: 16px; color: #1a1a1a; }
-        .card .info { font-size: 13px; color: #666; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px; }
-        .card .info span { background: #f0f2f5; padding: 2px 10px; border-radius: 12px; }
-        .sem-resultados { text-align: center; padding: 40px; color: #999; font-size: 16px; }
-        .nivel { font-size: 11px; padding: 2px 10px; border-radius: 12px; background: #e8f0fe; color: #0055CC; }
-        .gestacao { font-size: 11px; padding: 2px 10px; border-radius: 12px; background: #fce4ec; color: #c62828; }
-        .gestacao.seguro { background: #e8f5e9; color: #2e7d32; }
-        .back { display: inline-block; margin-top: 20px; color: #0055CC; text-decoration: none; font-weight: 500; }
+        .categoria { padding: 4px 12px; border-radius: 16px; background: #e8f0fe; color: #0055CC; font-size: 12px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+        .categoria.ativo { background: #007AFF; color: white; }
+        .medicamentos { display: flex; flex-direction: column; gap: 10px; }
+        .medicamento { background: white; border-radius: 12px; padding: 14px 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); border-left: 4px solid #007AFF; }
+        .medicamento .nome { font-weight: 600; font-size: 16px; }
+        .medicamento .info { font-size: 13px; color: #555; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 6px; }
+        .medicamento .info span { background: #f0f0f0; padding: 2px 10px; border-radius: 12px; }
+        .medicamento .niveis { font-size: 12px; color: #888; margin-top: 4px; }
+        .medicamento .gestacao { font-size: 12px; font-weight: 600; margin-top: 4px; }
+        .seguro { color: #34C759; }
+        .cautela { color: #FF9500; }
+        .contraindicado { color: #FF3B30; }
+        .voltar { display: block; text-align: center; margin-top: 20px; padding: 12px; background: #f0f0f0; border-radius: 12px; color: #333; text-decoration: none; font-weight: 500; }
+        .voltar:hover { background: #e0e0e0; }
+        .nenhum { text-align: center; color: #999; padding: 30px 0; }
+        .badge-nivel { font-size: 10px; background: #e8f0fe; color: #0055CC; padding: 2px 6px; border-radius: 10px; margin-left: 4px; }
+        .filtros-extra { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>💊 REMUME – Medicamentos SP</h1>
-    <p>UBS · AMA · UPA · PSA · Emergência</p>
-</header>
+    <h1>📋 REMUME – Medicamentos SP</h1>
+    <p class="subtitle">UBS · AMA · UPA · PSA · Emergência</p>
 
-<!-- FILTROS RÁPIDOS -->
-<div class="filtros">
-    <button class="filtro ativo" data-filtro="todos">📋 Todos</button>
-    <button class="filtro" data-filtro="UBS">🏥 UBS</button>
-    <button class="filtro" data-filtro="AMA">🏥 AMA</button>
-    <button class="filtro" data-filtro="UPA">🚑 UPA</button>
-    <button class="filtro" data-filtro="PSA">🏨 PSA</button>
-    <button class="filtro" data-filtro="Emergencia">🚨 Emergência</button>
-    <button class="filtro" data-filtro="gestacao">🤰 Gestação</button>
-</div>
+    <!-- FILTROS POR NÍVEL -->
+    <div class="filtros-nivel" id="filtrosNivel">
+        <span class="filtro-nivel ativo" data-nivel="todos">Todos</span>
+        <span class="filtro-nivel" data-nivel="UBS">UBS</span>
+        <span class="filtro-nivel" data-nivel="AMA">AMA</span>
+        <span class="filtro-nivel" data-nivel="UPA">UPA</span>
+        <span class="filtro-nivel" data-nivel="PSA">PSA</span>
+        <span class="filtro-nivel" data-nivel="Emergencia">Emergência</span>
+    </div>
 
-<!-- BUSCA -->
-<input type="text" id="busca" class="busca" placeholder="Digite o nome do medicamento (ex: Amoxicilina, Paracetamol)..." oninput="filtrar()">
+    <!-- FILTROS ESPECIAIS -->
+    <div class="filtros-extra">
+        <span class="filtro-especial" data-especial="gestacao_seguro">✅ Gestação Seguro</span>
+        <span class="filtro-especial" data-especial="gestacao_cautela">⚠️ Gestação Cautela</span>
+        <span class="filtro-especial" data-especial="gestacao_contraindicado">🚫 Gestação Contraindicado</span>
+    </div>
 
-<!-- CATEGORIAS -->
-<div class="categorias" id="categoriasContainer">
-    <button class="categoria ativo" data-categoria="todos">Todos</button>
-    <button class="categoria" data-categoria="Analgésicos / Antitérmicos">Analgésicos</button>
-    <button class="categoria" data-categoria="Anti-histamínicos">Anti-histamínicos</button>
-    <button class="categoria" data-categoria="Anti-inflamatórios (AINEs)">AINEs</button>
-    <button class="categoria" data-categoria="Antibióticos">Antibióticos</button>
-    <button class="categoria" data-categoria="Antiespasmódicos">Antiespasmódicos</button>
-    <button class="categoria" data-categoria="Antifúngicos">Antifúngicos</button>
-    <button class="categoria" data-categoria="Antiparasitários">Antiparasitários</button>
-    <button class="categoria" data-categoria="Antivirais">Antivirais</button>
-    <button class="categoria" data-categoria="Cardiovascular">Cardiovascular</button>
-    <button class="categoria" data-categoria="Dermatológico">Dermatológico</button>
-    <button class="categoria" data-categoria="Endócrino / Hormônios">Endócrino</button>
-    <button class="categoria" data-categoria="Gastrointestinal">Gastrointestinal</button>
-    <button class="categoria" data-categoria="Neurológico / Psiquiátrico">Neurológico</button>
-    <button class="categoria" data-categoria="Oftálmicos">Oftálmicos</button>
-    <button class="categoria" data-categoria="Outros / Diversos">Outros</button>
-    <button class="categoria" data-categoria="Respiratório">Respiratório</button>
-    <button class="categoria" data-categoria="Vitaminas e Suplementos">Vitaminas</button>
-</div>
+    <!-- BUSCA -->
+    <input type="text" class="busca" id="busca" placeholder="Digite o nome do medicamento (ex: Amoxicilina, Paracetamol...)">
 
-<!-- LISTA DE MEDICAMENTOS -->
-<div id="listaMedicamentos"></div>
+    <!-- CATEGORIAS -->
+    <div class="categorias" id="categorias">
+        <span class="categoria ativo" data-categoria="todos">Todos</span>
+        <span class="categoria" data-categoria="Analgésicos / Antitérmicos">Analgésicos</span>
+        <span class="categoria" data-categoria="Anti-histamínicos">Anti-histamínicos</span>
+        <span class="categoria" data-categoria="AINEs">AINEs</span>
+        <span class="categoria" data-categoria="Antibióticos">Antibióticos</span>
+        <span class="categoria" data-categoria="Antiespasmódicos">Antiespasmódicos</span>
+        <span class="categoria" data-categoria="Antifúngicos">Antifúngicos</span>
+        <span class="categoria" data-categoria="Antiparasitários">Antiparasitários</span>
+        <span class="categoria" data-categoria="Antivirais">Antivirais</span>
+        <span class="categoria" data-categoria="Cardiovascular">Cardiovascular</span>
+        <span class="categoria" data-categoria="Dermatológico">Dermatológico</span>
+        <span class="categoria" data-categoria="Endócrino">Endócrino</span>
+        <span class="categoria" data-categoria="Gastrointestinal">Gastrointestinal</span>
+        <span class="categoria" data-categoria="Neurológico">Neurológico</span>
+        <span class="categoria" data-categoria="Oftálmicos">Oftálmicos</span>
+        <span class="categoria" data-categoria="Outros">Outros</span>
+        <span class="categoria" data-categoria="Respiratório">Respiratório</span>
+        <span class="categoria" data-categoria="Vitaminas">Vitaminas</span>
+        <span class="categoria" data-categoria="Analgésicos Opioides">Opioides</span>
+        <span class="categoria" data-categoria="Antídoto">Antídoto</span>
+    </div>
 
-<a href="javascript:history.back()" class="back">⬅ Voltar para o app principal</a>
+    <!-- LISTA DE MEDICAMENTOS -->
+    <div class="medicamentos" id="listaMedicamentos"></div>
 
-<script>
-    // ===== BASE DE DADOS (medicamentos) =====
-    const medicamentos = [
-        // EXEMPLOS (você deve substituir pela sua lista completa)
-        { nome: 'Amoxicilina', via: 'Oral', categoria: 'Antibióticos', nivel: ['UBS','AMA','UPA'], gestacao: 'seguro' },
-        { nome: 'Azitromicina', via: 'Oral', categoria: 'Antibióticos', nivel: ['UBS','AMA','UPA'], gestacao: 'cautela' },
-        { nome: 'Paracetamol', via: 'Oral', categoria: 'Analgésicos / Antitérmicos', nivel: ['UBS','AMA','UPA','PSA','Emergencia'], gestacao: 'seguro' },
-        { nome: 'Dipirona', via: 'Oral', categoria: 'Analgésicos / Antitérmicos', nivel: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela' },
-        { nome: 'Dipirona', via: 'Injetável', categoria: 'Analgésicos / Antitérmicos', nivel: ['UPA','PSA','Emergencia'], gestacao: 'cautela' },
-        { nome: 'Ibuprofeno', via: 'Oral', categoria: 'Anti-inflamatórios (AINEs)', nivel: ['UBS','AMA','UPA'], gestacao: 'cautela' },
-        { nome: 'Diclofenaco', via: 'Oral', categoria: 'Anti-inflamatórios (AINEs)', nivel: ['UBS','AMA','UPA'], gestacao: 'cautela' },
-        { nome: 'Diclofenaco', via: 'Injetável', categoria: 'Anti-inflamatórios (AINEs)', nivel: ['UPA','PSA'], gestacao: 'cautela' },
-        { nome: 'Omeprazol', via: 'Oral', categoria: 'Gastrointestinal', nivel: ['UBS','AMA','UPA'], gestacao: 'seguro' },
-        { nome: 'Metoclopramida', via: 'Oral', categoria: 'Gastrointestinal', nivel: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela' },
-        { nome: 'Metoclopramida', via: 'Injetável', categoria: 'Gastrointestinal', nivel: ['UPA','PSA','Emergencia'], gestacao: 'cautela' },
-        { nome: 'Ondansetrona', via: 'Oral', categoria: 'Gastrointestinal', nivel: ['UBS','AMA','UPA','PSA'], gestacao: 'seguro' },
-        { nome: 'Ondansetrona', via: 'Injetável', categoria: 'Gastrointestinal', nivel: ['UPA','PSA','Emergencia'], gestacao: 'seguro' },
-        { nome: 'Salbutamol', via: 'Inalatória', categoria: 'Respiratório', nivel: ['UBS','AMA','UPA','PSA'], gestacao: 'seguro' },
-        { nome: 'Budesonida', via: 'Inalatória', categoria: 'Respiratório', nivel: ['UBS','AMA','UPA'], gestacao: 'seguro' },
-        { nome: 'Prednisona', via: 'Oral', categoria: 'Endócrino / Hormônios', nivel: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela' },
-        { nome: 'Loratadina', via: 'Oral', categoria: 'Anti-histamínicos', nivel: ['UBS','AMA','UPA'], gestacao: 'seguro' },
-        { nome: 'Metformina', via: 'Oral', categoria: 'Endócrino / Hormônios', nivel: ['UBS','AMA','UPA'], gestacao: 'seguro' },
-        { nome: 'Insulina NPH', via: 'Injetável', categoria: 'Endócrino / Hormônios', nivel: ['UBS','AMA','UPA','PSA','Emergencia'], gestacao: 'seguro' },
-        { nome: 'Insulina Regular', via: 'Injetável', categoria: 'Endócrino / Hormônios', nivel: ['UBS','AMA','UPA','PSA','Emergencia'], gestacao: 'seguro' },
-        { nome: 'Captopril', via: 'Oral', categoria: 'Cardiovascular', nivel: ['UBS','AMA','UPA'], gestacao: 'cautela' },
-        { nome: 'Losartana', via: 'Oral', categoria: 'Cardiovascular', nivel: ['UBS','AMA','UPA'], gestacao: 'cautela' },
-        { nome: 'Furosemida', via: 'Oral', categoria: 'Cardiovascular', nivel: ['UBS','AMA','UPA'], gestacao: 'cautela' },
-        { nome: 'Furosemida', via: 'Injetável', categoria: 'Cardiovascular', nivel: ['UPA','PSA','Emergencia'], gestacao: 'cautela' },
-        { nome: 'Hidralazina', via: 'Injetável', categoria: 'Cardiovascular', nivel: ['UPA','PSA','Emergencia'], gestacao: 'seguro' },
-        { nome: 'Escopolamina', via: 'Oral', categoria: 'Antiespasmódicos', nivel: ['UBS','AMA','UPA'], gestacao: 'cautela' },
-        { nome: 'Escopolamina', via: 'Injetável', categoria: 'Antiespasmódicos', nivel: ['UPA','PSA','Emergencia'], gestacao: 'cautela' },
-        // Adicione aqui todos os medicamentos da sua lista
-    ];
+    <!-- BOTÃO VOLTAR -->
+    <a href="./index.html" class="voltar">⬅ Voltar para o app principal</a>
 
-    let filtroNivel = 'todos';
-    let filtroCategoria = 'todos';
+    <script>
+        // ============================================================
+        // BANCO DE DADOS – 143 MEDICAMENTOS
+        // ============================================================
+        const medicamentos = [
+            // 1. ANALGÉSICOS / ANTITÉRMICOS
+            { id: 1, nome: 'Dipirona', via: 'Oral', categoria: 'Analgésicos / Antitérmicos', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'Cautela' },
+            { id: 2, nome: 'Dipirona', via: 'Injetável', categoria: 'Analgésicos / Antitérmicos', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Cautela' },
+            { id: 3, nome: 'Paracetamol', via: 'Oral', categoria: 'Analgésicos / Antitérmicos', niveis: ['UBS','AMA','UPA','PSA','Emergencia'], gestacao: 'Seguro' },
+            { id: 4, nome: 'Paracetamol', via: 'Oral (pediátrico)', categoria: 'Analgésicos / Antitérmicos', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 5, nome: 'Ibuprofeno', via: 'Oral', categoria: 'AINEs', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 6, nome: 'Ibuprofeno', via: 'Oral (pediátrico)', categoria: 'AINEs', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 7, nome: 'Diclofenaco', via: 'Oral', categoria: 'AINEs', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 8, nome: 'Diclofenaco', via: 'Injetável', categoria: 'AINEs', niveis: ['UPA','PSA'], gestacao: 'Cautela' },
+            { id: 9, nome: 'Cetoprofeno', via: 'Injetável', categoria: 'AINEs', niveis: ['UPA','PSA'], gestacao: 'Cautela' },
+            { id: 10, nome: 'Tramadol', via: 'Oral', categoria: 'Analgésicos Opioides', niveis: ['UPA','PSA'], gestacao: 'Cautela' },
+            { id: 11, nome: 'Tramadol', via: 'Injetável', categoria: 'Analgésicos Opioides', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Cautela' },
+            { id: 12, nome: 'Morfina', via: 'Injetável', categoria: 'Analgésicos Opioides', niveis: ['PSA','Emergencia'], gestacao: 'Cautela' },
+            { id: 13, nome: 'Naloxona', via: 'Injetável', categoria: 'Antídoto', niveis: ['Emergencia'], gestacao: 'Seguro' },
 
-    function filtrar() {
-        const termo = document.getElementById('busca').value.toLowerCase().trim();
-        const container = document.getElementById('listaMedicamentos');
-        
-        let resultados = medicamentos.filter(m => {
+            // 2. ANTI-HISTAMÍNICOS
+            { id: 14, nome: 'Loratadina', via: 'Oral', categoria: 'Anti-histamínicos', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 15, nome: 'Prometazina', via: 'Injetável', categoria: 'Anti-histamínicos', niveis: ['UPA','PSA'], gestacao: 'Cautela' },
+
+            // 3. ANTIESPASMÓDICOS
+            { id: 16, nome: 'Escopolamina', via: 'Oral', categoria: 'Antiespasmódicos', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 17, nome: 'Escopolamina', via: 'Injetável', categoria: 'Antiespasmódicos', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Cautela' },
+            { id: 18, nome: 'Escopolamina + Dipirona', via: 'Injetável', categoria: 'Antiespasmódicos', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Cautela' },
+
+            // 4. ANTIBIÓTICOS
+            { id: 19, nome: 'Amoxicilina', via: 'Oral', categoria: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 20, nome: 'Amoxicilina + Clavulanato', via: 'Oral', categoria: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 21, nome: 'Azitromicina', via: 'Oral', categoria: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 22, nome: 'Ciprofloxacino', via: 'Oral', categoria: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 23, nome: 'Claritromicina', via: 'Oral', categoria: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 24, nome: 'Cefalexina', via: 'Oral', categoria: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 25, nome: 'Ceftriaxona', via: 'Injetável', categoria: 'Antibióticos', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Seguro' },
+            { id: 26, nome: 'Penicilina Benzatina', via: 'Injetável', categoria: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 27, nome: 'Benzilpenicilina', via: 'Injetável', categoria: 'Antibióticos', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Seguro' },
+            { id: 28, nome: 'Ampicilina', via: 'Injetável', categoria: 'Antibióticos', niveis: ['UPA','PSA'], gestacao: 'Seguro' },
+            { id: 29, nome: 'Metronidazol', via: 'Oral', categoria: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 30, nome: 'Doxiciclina', via: 'Oral', categoria: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'Contraindicado' },
+            { id: 31, nome: 'Sulfametoxazol + Trimetoprima', via: 'Oral', categoria: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 32, nome: 'Nitrofurantoína', via: 'Oral', categoria: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 33, nome: 'Vancomicina', via: 'Injetável', categoria: 'Antibióticos', niveis: ['PSA','Emergencia'], gestacao: 'Cautela' },
+            { id: 34, nome: 'Gentamicina', via: 'Injetável', categoria: 'Antibióticos', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Cautela' },
+
+            // 5. ANTIVIRAIS
+            { id: 35, nome: 'Aciclovir', via: 'Oral', categoria: 'Antivirais', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 36, nome: 'Aciclovir', via: 'Tópico', categoria: 'Antivirais', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+
+            // 6. ANTIFÚNGICOS
+            { id: 37, nome: 'Fluconazol', via: 'Oral', categoria: 'Antifúngicos', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 38, nome: 'Itraconazol', via: 'Oral', categoria: 'Antifúngicos', niveis: ['UBS','AMA','UPA'], gestacao: 'Contraindicado' },
+            { id: 39, nome: 'Nistatina', via: 'Oral', categoria: 'Antifúngicos', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+
+            // 7. ANTIPARASITÁRIOS
+            { id: 40, nome: 'Albendazol', via: 'Oral', categoria: 'Antiparasitários', niveis: ['UBS','AMA','UPA'], gestacao: 'Contraindicado' },
+            { id: 41, nome: 'Mebendazol', via: 'Oral', categoria: 'Antiparasitários', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 42, nome: 'Ivermectina', via: 'Oral', categoria: 'Antiparasitários', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 43, nome: 'Praziquantel', via: 'Oral', categoria: 'Antiparasitários', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+
+            // 8. CARDIOVASCULAR
+            { id: 44, nome: 'Captopril', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 45, nome: 'Enalapril', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Contraindicado' },
+            { id: 46, nome: 'Losartana', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Contraindicado' },
+            { id: 47, nome: 'Hidroclorotiazida', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 48, nome: 'Propranolol', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 49, nome: 'Atenolol', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 50, nome: 'Carvedilol', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 51, nome: 'Amlodipino', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 52, nome: 'Nifedipino', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 53, nome: 'Metildopa', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 54, nome: 'Digoxina', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 55, nome: 'Amiodarona', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Contraindicado' },
+            { id: 56, nome: 'Espironolactona', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Contraindicado' },
+            { id: 57, nome: 'Furosemida', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 58, nome: 'Furosemida', via: 'Injetável', categoria: 'Cardiovascular', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Cautela' },
+            { id: 59, nome: 'Hidralazina', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 60, nome: 'Hidralazina', via: 'Injetável', categoria: 'Cardiovascular', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Seguro' },
+            { id: 61, nome: 'Isossorbida', via: 'Sublingual', categoria: 'Cardiovascular', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Cautela' },
+            { id: 62, nome: 'Nitroglicerina', via: 'Sublingual', categoria: 'Cardiovascular', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Cautela' },
+            { id: 63, nome: 'Metoprolol', via: 'Oral', categoria: 'Cardiovascular', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+
+            // 9. RESPIRATÓRIO
+            { id: 64, nome: 'Salbutamol', via: 'Inalatória', categoria: 'Respiratório', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'Seguro' },
+            { id: 65, nome: 'Salbutamol + Ipratrópio', via: 'Inalatória', categoria: 'Respiratório', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'Seguro' },
+            { id: 66, nome: 'Ipratrópio', via: 'Inalatória', categoria: 'Respiratório', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 67, nome: 'Budesonida', via: 'Inalatória', categoria: 'Respiratório', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 68, nome: 'Beclometasona', via: 'Inalatória', categoria: 'Respiratório', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 69, nome: 'Fenoterol', via: 'Oral/Inalatória', categoria: 'Respiratório', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 70, nome: 'Prednisona', via: 'Oral', categoria: 'Respiratório', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'Cautela' },
+            { id: 71, nome: 'Prednisona', via: 'Oral', categoria: 'Respiratório', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'Cautela' },
+            { id: 72, nome: 'Teofilina', via: 'Oral', categoria: 'Respiratório', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 73, nome: 'Hidrocortisona', via: 'Injetável', categoria: 'Respiratório', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Seguro' },
+            { id: 74, nome: 'Hidrocortisona', via: 'Injetável', categoria: 'Respiratório', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Seguro' },
+            { id: 75, nome: 'Terbutalina', via: 'Injetável', categoria: 'Respiratório', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Cautela' },
+
+            // 10. GASTROINTESTINAL
+            { id: 76, nome: 'Omeprazol', via: 'Oral', categoria: 'Gastrointestinal', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 77, nome: 'Omeprazol', via: 'Injetável', categoria: 'Gastrointestinal', niveis: ['UPA','PSA'], gestacao: 'Seguro' },
+            { id: 78, nome: 'Ranitidina', via: 'Oral', categoria: 'Gastrointestinal', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 79, nome: 'Hidróxido de Alumínio', via: 'Oral', categoria: 'Gastrointestinal', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 80, nome: 'Metoclopramida', via: 'Oral', categoria: 'Gastrointestinal', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'Cautela' },
+            { id: 81, nome: 'Metoclopramida', via: 'Injetável', categoria: 'Gastrointestinal', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Cautela' },
+            { id: 82, nome: 'Ondansetrona', via: 'Oral', categoria: 'Gastrointestinal', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'Seguro' },
+            { id: 83, nome: 'Ondansetrona', via: 'Injetável', categoria: 'Gastrointestinal', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Seguro' },
+            { id: 84, nome: 'Dimenidrato', via: 'Oral', categoria: 'Gastrointestinal', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 85, nome: 'Dimenidrato', via: 'Injetável', categoria: 'Gastrointestinal', niveis: ['UPA','PSA'], gestacao: 'Seguro' },
+            { id: 86, nome: 'Dimenidrato + B6', via: 'Injetável', categoria: 'Gastrointestinal', niveis: ['UPA','PSA'], gestacao: 'Seguro' },
+            { id: 87, nome: 'Meclizina', via: 'Oral', categoria: 'Gastrointestinal', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 88, nome: 'Bromoprida', via: 'Oral', categoria: 'Gastrointestinal', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+
+            // 11. NEUROLÓGICO / PSIQUIÁTRICO
+            { id: 89, nome: 'Diazepam', via: 'Oral', categoria: 'Neurológico', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 90, nome: 'Diazepam', via: 'Oral', categoria: 'Neurológico', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 91, nome: 'Diazepam', via: 'Injetável', categoria: 'Neurológico', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Cautela' },
+            { id: 92, nome: 'Clonazepam', via: 'Oral', categoria: 'Neurológico', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 93, nome: 'Fenobarbital', via: 'Injetável', categoria: 'Neurológico', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Contraindicado' },
+            { id: 94, nome: 'Carbamazepina', via: 'Oral', categoria: 'Neurológico', niveis: ['UBS','AMA','UPA'], gestacao: 'Contraindicado' },
+            { id: 95, nome: 'Fenitoína', via: 'Oral', categoria: 'Neurológico', niveis: ['UBS','AMA','UPA'], gestacao: 'Contraindicado' },
+            { id: 96, nome: 'Fenitoína Sódica', via: 'Injetável', categoria: 'Neurológico', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Contraindicado' },
+            { id: 97, nome: 'Ácido Valpróico', via: 'Injetável', categoria: 'Neurológico', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Contraindicado' },
+            { id: 98, nome: 'Clorpromazina', via: 'Oral', categoria: 'Neurológico', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 99, nome: 'Haloperidol', via: 'Oral', categoria: 'Neurológico', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 100, nome: 'Risperidona', via: 'Oral', categoria: 'Neurológico', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+
+            // 12. OFTÁLMICOS
+            { id: 101, nome: 'Tobramicina', via: 'Oftálmico', categoria: 'Oftálmicos', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 102, nome: 'Dextrana + Hipromelose', via: 'Oftálmico', categoria: 'Oftálmicos', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 103, nome: 'Cromoglicato Dissódico', via: 'Oftálmico', categoria: 'Oftálmicos', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+
+            // 13. DERMATOLÓGICOS
+            { id: 104, nome: 'Permetrina', via: 'Tópico', categoria: 'Dermatológico', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 105, nome: 'Ivermectina', via: 'Tópico', categoria: 'Dermatológico', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 106, nome: 'Nebacetin', via: 'Tópico', categoria: 'Dermatológico', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 107, nome: 'Cetoconazol', via: 'Tópico', categoria: 'Dermatológico', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 108, nome: 'Clotrimazol', via: 'Tópico', categoria: 'Dermatológico', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 109, nome: 'Miconazol', via: 'Tópico', categoria: 'Dermatológico', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+
+            // 14. ENDÓCRINO / HORMÔNIOS
+            { id: 110, nome: 'Metformina', via: 'Oral', categoria: 'Endócrino', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 111, nome: 'Metformina', via: 'Oral', categoria: 'Endócrino', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 112, nome: 'Glibenclamida', via: 'Oral', categoria: 'Endócrino', niveis: ['UBS','AMA','UPA'], gestacao: 'Cautela' },
+            { id: 113, nome: 'Insulina NPH', via: 'Injetável', categoria: 'Endócrino', niveis: ['UBS','AMA','UPA','PSA','Emergencia'], gestacao: 'Seguro' },
+            { id: 114, nome: 'Insulina Regular', via: 'Injetável', categoria: 'Endócrino', niveis: ['UBS','AMA','UPA','PSA','Emergencia'], gestacao: 'Seguro' },
+            { id: 115, nome: 'Dexametasona', via: 'Oral', categoria: 'Endócrino', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'Cautela' },
+            { id: 116, nome: 'Dexametasona', via: 'Injetável', categoria: 'Endócrino', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Cautela' },
+
+            // 15. VITAMINAS E SUPLEMENTOS
+            { id: 117, nome: 'Ácido Fólico', via: 'Oral', categoria: 'Vitaminas', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 118, nome: 'Sulfato Ferroso', via: 'Oral', categoria: 'Vitaminas', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 119, nome: 'Sulfato Ferroso', via: 'Oral', categoria: 'Vitaminas', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 120, nome: 'Complexo B', via: 'Oral', categoria: 'Vitaminas', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 121, nome: 'Vitamina C', via: 'Oral', categoria: 'Vitaminas', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 122, nome: 'Vitamina D', via: 'Oral', categoria: 'Vitaminas', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+            { id: 123, nome: 'Cianocobalamina (B12)', via: 'Injetável', categoria: 'Vitaminas', niveis: ['UBS','AMA','UPA'], gestacao: 'Seguro' },
+
+            // 16. OUTROS / DIVERSOS
+            { id: 124, nome: 'Glicose 50%', via: 'Injetável', categoria: 'Outros', niveis: ['Emergencia'], gestacao: 'Seguro' },
+            { id: 125, nome: 'Glicose 25%', via: 'Injetável', categoria: 'Outros', niveis: ['Emergencia'], gestacao: 'Seguro' },
+            { id: 126, nome: 'Soro Fisiológico 0,9%', via: 'Injetável', categoria: 'Outros', niveis: ['UBS','AMA','UPA','PSA','Emergencia'], gestacao: 'Seguro' },
+            { id: 127, nome: 'Ringer Lactato', via: 'Injetável', categoria: 'Outros', niveis: ['UBS','AMA','UPA','PSA','Emergencia'], gestacao: 'Seguro' },
+            { id: 128, nome: 'Gluconato de Cálcio', via: 'Injetável', categoria: 'Outros', niveis: ['Emergencia'], gestacao: 'Seguro' },
+            { id: 129, nome: 'Sulfato de Magnésio', via: 'Injetável', categoria: 'Outros', niveis: ['Emergencia'], gestacao: 'Seguro' },
+            { id: 130, nome: 'Bicarbonato de Sódio', via: 'Injetável', categoria: 'Outros', niveis: ['Emergencia'], gestacao: 'Seguro' },
+            { id: 131, nome: 'Enoxaparina', via: 'Injetável', categoria: 'Outros', niveis: ['UPA','PSA','Emergencia'], gestacao: 'Seguro' },
+            { id: 132, nome: 'Atropina', via: 'Injetável', categoria: 'Outros', niveis: ['Emergencia'], gestacao: 'Cautela' },
+            { id: 133, nome: 'Adenosina', via: 'Injetável', categoria: 'Outros', niveis: ['Emergencia'], gestacao: 'Cautela' },
+            { id: 134, nome: 'Norepinefrina', via: 'Injetável', categoria: 'Outros', niveis: ['Emergencia'], gestacao: 'Cautela' }
+        ];
+
+        // ============================================================
+        // LÓGICA DE FILTROS E EXIBIÇÃO
+        // ============================================================
+
+        let filtroNivel = 'todos';
+        let filtroCategoria = 'todos';
+        let filtroEspecial = null; // 'gestacao_seguro', 'gestacao_cautela', 'gestacao_contraindicado'
+        let textoBusca = '';
+
+        function renderizar() {
+            const lista = document.getElementById('listaMedicamentos');
+            let filtrados = medicamentos;
+
             // Filtro por nível
-            if (filtroNivel === 'gestacao') {
-                if (m.gestacao !== 'seguro') return false;
-            } else if (filtroNivel !== 'todos') {
-                if (!m.nivel.includes(filtroNivel)) return false;
+            if (filtroNivel !== 'todos') {
+                filtrados = filtrados.filter(m => m.niveis.includes(filtroNivel));
             }
-            // Filtro por categoria
-            if (filtroCategoria !== 'todos' && m.categoria !== filtroCategoria) return false;
-            // Filtro por nome
-            if (termo && !m.nome.toLowerCase().includes(termo)) return false;
-            return true;
-        });
 
-        if (resultados.length === 0) {
-            container.innerHTML = `<div class="sem-resultados">Nenhum medicamento encontrado.</div>`;
-            return;
+            // Filtro por categoria
+            if (filtroCategoria !== 'todos') {
+                filtrados = filtrados.filter(m => m.categoria === filtroCategoria);
+            }
+
+            // Filtro por gestação
+            if (filtroEspecial) {
+                if (filtroEspecial === 'gestacao_seguro') {
+                    filtrados = filtrados.filter(m => m.gestacao === 'Seguro');
+                } else if (filtroEspecial === 'gestacao_cautela') {
+                    filtrados = filtrados.filter(m => m.gestacao === 'Cautela');
+                } else if (filtroEspecial === 'gestacao_contraindicado') {
+                    filtrados = filtrados.filter(m => m.gestacao === 'Contraindicado');
+                }
+            }
+
+            // Filtro por busca (nome)
+            if (textoBusca.trim() !== '') {
+                const termo = textoBusca.toLowerCase().trim();
+                filtrados = filtrados.filter(m => m.nome.toLowerCase().includes(termo));
+            }
+
+            if (filtrados.length === 0) {
+                lista.innerHTML = '<div class="nenhum">Nenhum medicamento encontrado.</div>';
+                return;
+            }
+
+            // Ordenar por nome
+            filtrados.sort((a, b) => a.nome.localeCompare(b.nome));
+
+            let html = '';
+            filtrados.forEach(m => {
+                const classeGestacao = m.gestacao === 'Seguro' ? 'seguro' : (m.gestacao === 'Cautela' ? 'cautela' : 'contraindicado');
+                const iconeGestacao = m.gestacao === 'Seguro' ? '✅' : (m.gestacao === 'Cautela' ? '⚠️' : '🚫');
+                const niveisStr = m.niveis.join(' · ');
+                html += `
+                    <div class="medicamento">
+                        <div class="nome">${m.nome}</div>
+                        <div class="info">
+                            <span>${m.via}</span>
+                            <span>${m.categoria}</span>
+                        </div>
+                        <div class="niveis">${niveisStr}</div>
+                        <div class="gestacao ${classeGestacao}">${iconeGestacao} ${m.gestacao}</div>
+                    </div>
+                `;
+            });
+            lista.innerHTML = html;
         }
 
-        container.innerHTML = resultados.map(m => `
-            <div class="card">
-                <h3>${m.nome}</h3>
-                <div class="info">
-                    <span>💉 ${m.via}</span>
-                    <span>📂 ${m.categoria}</span>
-                    <span class="nivel">🏥 ${m.nivel.join(' / ')}</span>
-                    ${m.gestacao === 'seguro' ? '<span class="gestacao seguro">🤰 Seguro</span>' : ''}
-                    ${m.gestacao === 'cautela' ? '<span class="gestacao">🤰 Cautela</span>' : ''}
-                </div>
-            </div>
-        `).join('');
-    }
+        // ===== EVENTOS =====
 
-    // Eventos dos filtros
-    document.querySelectorAll('.filtro').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.filtro').forEach(b => b.classList.remove('ativo'));
-            this.classList.add('ativo');
-            filtroNivel = this.dataset.filtro;
-            filtrar();
+        // Filtros de nível
+        document.querySelectorAll('.filtro-nivel').forEach(el => {
+            el.addEventListener('click', function() {
+                document.querySelectorAll('.filtro-nivel').forEach(b => b.classList.remove('ativo'));
+                this.classList.add('ativo');
+                filtroNivel = this.dataset.nivel;
+                renderizar();
+            });
         });
-    });
 
-    document.querySelectorAll('.categoria').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.categoria').forEach(b => b.classList.remove('ativo'));
-            this.classList.add('ativo');
-            filtroCategoria = this.dataset.categoria;
-            filtrar();
+        // Filtros especiais (gestação)
+        document.querySelectorAll('.filtro-especial').forEach(el => {
+            el.addEventListener('click', function() {
+                // Alterna o estado: se já estiver ativo, desativa
+                if (this.classList.contains('ativo')) {
+                    this.classList.remove('ativo');
+                    filtroEspecial = null;
+                } else {
+                    document.querySelectorAll('.filtro-especial').forEach(b => b.classList.remove('ativo'));
+                    this.classList.add('ativo');
+                    filtroEspecial = this.dataset.especial;
+                }
+                renderizar();
+            });
         });
-    });
 
-    // Inicializar
-    filtrar();
-</script>
+        // Categorias
+        document.querySelectorAll('.categoria').forEach(el => {
+            el.addEventListener('click', function() {
+                document.querySelectorAll('.categoria').forEach(b => b.classList.remove('ativo'));
+                this.classList.add('ativo');
+                filtroCategoria = this.dataset.categoria;
+                renderizar();
+            });
+        });
 
+        // Busca
+        document.getElementById('busca').addEventListener('input', function() {
+            textoBusca = this.value;
+            renderizar();
+        });
+
+        // ===== INICIALIZAÇÃO =====
+        renderizar();
+    </script>
 </body>
 </html>
