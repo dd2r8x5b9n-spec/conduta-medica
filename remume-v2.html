@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REMUME v2 - Medicamentos SP</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, system-ui, sans-serif; background: #EEF2EF; }
+    .app { max-width: 820px; margin: 0 auto; padding: 28px 18px 60px; }
+    .card { background: #fff; border-radius: 12px; border: 1px solid #DCE5E0; padding: 12px 14px; margin-bottom: 8px; cursor: pointer; transition: border 0.2s; }
+    .card:hover { border-color: #1F6F5C; }
+    .badge-popular { background: #F5A623; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-injetavel { background: #2E86AB; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-ama { background: #1F6F5C; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-upa { background: #F39C12; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-psa { background: #8E44AD; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-emergencia { background: #E74C3C; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-gestacao { background: #E91E63; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .badge-antiespasmodico { background: #9B59B6; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
+    .tag { background: #F0F4F2; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-right: 4px; }
+    .dark .tag { background: #1F332C; color: #DCE8E0; }
+    .dark .card { background: #1A2E28; border-color: #2A4A3E; color: #DCE8E0; }
+    .dark .card:hover { border-color: #5CB89B; }
+    .dark body { background: #0F1A15; }
+    .input-search { flex: 1; border: none; outline: none; font-size: 15px; background: transparent; color: inherit; }
+    .btn-filter { font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1.5px solid #C7D6CF; background: #fff; cursor: pointer; }
+    .btn-filter.active { background: #14231D; color: #fff; border-color: #14231D; }
+    .dark .btn-filter { background: #1A2E28; border-color: #2A4A3E; color: #DCE8E0; }
+    .dark .btn-filter.active { background: #14231D; color: #fff; border-color: #14231D; }
+    .chip-group { font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1.5px solid #C7D6CF; background: #fff; cursor: pointer; white-space: nowrap; }
+    .chip-group.active { color: #fff; }
+    .dark .chip-group { background: #1A2E28; border-color: #2A4A3E; color: #DCE8E0; }
+    .dark .chip-group.active { color: #fff; }
+    .btn-lista { background: #1F6F5C; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-lista:hover { background: #155a4a; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; justify-content: center; align-items: center; }
+    .modal-content { background: #fff; max-width: 90%; max-height: 90%; width: 800px; border-radius: 12px; padding: 24px; overflow-y: auto; position: relative; }
+    .dark .modal-content { background: #1A2E28; color: #DCE8E0; }
+    .modal-close { position: sticky; top: 0; float: right; background: #E74C3C; color: #fff; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .modal-close:hover { background: #c0392b; }
+    .lista-item { display: flex; border-bottom: 1px solid #DCE5E0; padding: 6px 0; font-size: 13px; }
+    .dark .lista-item { border-color: #2A4A3E; }
+    .lista-nome { flex: 3; font-weight: 500; }
+    .lista-grupo { flex: 2; color: #51665D; }
+    .dark .lista-grupo { color: #7A9A8A; }
+    .lista-local { flex: 1; color: #8AA098; }
+    .dark .lista-local { color: #5A7A6E; }
+    .lista-via { flex: 1; color: #8AA098; }
+    .dark .lista-via { color: #5A7A6E; }
+    .lista-header { font-weight: 700; border-bottom: 2px solid #1F6F5C; padding-bottom: 8px; margin-bottom: 8px; }
+    .dark .lista-header { border-color: #5CB89B; }
+    @media (max-width: 600px) { .lista-nome { flex: 2; } .lista-grupo { flex: 1; } .lista-local, .lista-via { display: none; } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo, useEffect } = React;
+
+    const MEDS = [
+      // ANALGÉSICOS / ANTITÉRMICOS
+      { id:"paracetamol_500", n:"Paracetamol 500 mg comprimido", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"500mg-1g 6/6h", indicacoes:["Febre","Dor"], contraindicacoes:["Insuf. hepática"], interacoes:["Álcool"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Máx 4g/dia", popular:true, custo:"Baixo" },
+      { id:"paracetamol_gotas", n:"Paracetamol 200 mg/mL solução oral gotas", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Criança: 10-15mg/kg/dose", indicacoes:["Febre","Dor"], contraindicacoes:["Insuf. hepática"], interacoes:["Álcool"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Dose pediátrica rigorosa", popular:true, custo:"Baixo" },
+      { id:"dipirona_500", n:"Dipirona sódica 500 mg comprimido", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"500mg-1g 6/6h", indicacoes:["Febre","Dor"], contraindicacoes:["Alergia","Discrasias"], interacoes:["Clorpromazina"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Risco de agranulocitose", popular:true, custo:"Baixo" },
+      { id:"dipirona_gotas", n:"Dipirona sódica 500 mg/mL solução oral gotas", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"20-40 gotas 6/6h", indicacoes:["Febre","Dor"], contraindicacoes:["<3 meses","Alergia"], interacoes:["Clorpromazina"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Contraindicado <3 meses", popular:true, custo:"Baixo" },
+      { id:"dipirona_amp", n:"Dipirona sódica 500 mg/mL ampola IM/IV", g:"Analgésicos / Antitérmicos", l:"AMA", forma:"Solução injetável", via:"IM/IV", dose:"1-2g IM/IV lento", indicacoes:["Dor intensa","Febre alta"], contraindicacoes:["Alergia","Discrasias"], interacoes:["Clorpromazina"], antidotos:["N-acetilcisteína"], alerta:"⚠️ Administrar lentamente", popular:true, custo:"Baixo", diluicao:"Uso direto IV lento ou IM" },
+      { id:"tramadol_50", n:"Tramadol 50 mg comprimido", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"50-100mg 4/6h", indicacoes:["Dor moderada"], contraindicacoes:["Convulsões"], interacoes:["Antidepressivos"], antidotos:["Naloxona"], alerta:"⚠️ Dependência", popular:false, custo:"Médio" },
+      { id:"tramadol_amp", n:"Tramadol 100 mg/2mL ampola IM/IV", g:"Analgésicos / Antitérmicos", l:"UPA", forma:"Solução injetável", via:"IM/IV", dose:"50-100mg IM/IV lento", indicacoes:["Dor intensa"], contraindicacoes:["Convulsões"], interacoes:["Antidepressivos"], antidotos:["Naloxona"], alerta:"⚠️ Dependência", popular:true, custo:"Médio", diluicao:"Uso direto IM ou IV lento" },
+      { id:"morfina_30", n:"Morfina 30 mg comprimido LP", g:"Analgésicos / Antitérmicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"30mg 12/12h", indicacoes:["Dor intensa"], contraindicacoes:["Insuf. respiratória"], interacoes:["Álcool"], antidotos:["Naloxona"], alerta:"⚠️ TABELA A1", popular:false, custo:"Médio" },
+      { id:"morfina_amp", n:"Morfina 10 mg/mL ampola IM/IV/SC", g:"Analgésicos / Antitérmicos", l:"PSA/Emergência", forma:"Solução injetável", via:"IV/IM/SC", dose:"2,5-10mg SC/IM/IV lento", indicacoes:["Dor intensa","Infarto"], contraindicacoes:["Insuf. respiratória"], interacoes:["Álcool"], antidotos:["Naloxona"], alerta:"⚠️ TABELA A1 - Depressão respiratória", popular:true, custo:"Médio", diluicao:"Uso direto IV lento" },
+
+      // ANTI-INFLAMATÓRIOS (AINEs)
+      { id:"ibuprofeno_300", n:"Ibuprofeno 300 mg comprimido", g:"Anti-inflamatórios (AINEs)", l:"UBS", forma:"Comprimido", via:"Oral", dose:"300-600mg 6/8h", indicacoes:["Dor musculoesquelética","Artrite"], contraindicacoes:["Úlcera","Insuf. renal"], interacoes:["Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ Risco cardiovascular", popular:true, custo:"Médio" },
+      { id:"diclofenaco_50", n:"Diclofenaco 50 mg comprimido", g:"Anti-inflamatórios (AINEs)", l:"UBS", forma:"Comprimido", via:"Oral", dose:"50mg 8/8h", indicacoes:["Artrite","Dor aguda"], contraindicacoes:["Úlcera","Asma"], interacoes:["Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ Risco GI", popular:true, custo:"Médio" },
+      { id:"diclofenaco_amp", n:"Diclofenaco 25 mg/mL ampola IM", g:"Anti-inflamatórios (AINEs)", l:"UPA", forma:"Solução injetável", via:"IM", dose:"75mg IM 1-2x/dia", indicacoes:["Dor aguda","Cólica renal"], contraindicacoes:["Úlcera","Insuf. renal"], interacoes:["Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ IM profunda", popular:true, custo:"Médio", diluicao:"Uso direto IM" },
+      { id:"cetoprofeno_amp", n:"Cetoprofeno 100 mg/2mL ampola IM", g:"Anti-inflamatórios (AINEs)", l:"UPA", forma:"Solução injetável", via:"IM", dose:"100mg IM 1-2x/dia", indicacoes:["Dor aguda","Cólica renal"], contraindicacoes:["Úlcera","Insuf. renal"], interacoes:["Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ Risco cardiovascular", popular:true, custo:"Médio", diluicao:"Uso direto IM" },
+
+      // ANTIBIÓTICOS
+      { id:"amoxicilina_500", n:"Amoxicilina 500 mg cápsula", g:"Antibióticos", l:"UBS", forma:"Cápsula", via:"Oral", dose:"500mg 8/8h", indicacoes:["Infecções respiratórias","ITU"], contraindicacoes:["Alergia a penicilinas"], interacoes:["Alopurinol"], antidotos:["Suporte"], alerta:"⚠️ Reações alérgicas", popular:true, custo:"Baixo" },
+      { id:"amoxicilina_susp", n:"Amoxicilina 50 mg/mL suspensão oral", g:"Antibióticos", l:"UBS", forma:"Suspensão oral", via:"Oral", dose:"Criança: 40-50mg/kg/dia", indicacoes:["Otite","Amigdalite"], contraindicacoes:["Alergia a penicilinas"], interacoes:["Alopurinol"], antidotos:["Suporte"], alerta:"⚠️ Dose pediátrica", popular:true, custo:"Baixo" },
+      { id:"cefalexina_500", n:"Cefalexina 500 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"500mg 6/6h", indicacoes:["Infecções respiratórias","Pele"], contraindicacoes:["Alergia a cefalosporinas"], interacoes:["Anticoagulantes"], antidotos:["Suporte"], alerta:"⚠️ Alergia cruzada", popular:true, custo:"Médio" },
+      { id:"azitromicina_500", n:"Azitromicina 500 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"500mg/dia 3 dias", indicacoes:["Infecções respiratórias","DST"], contraindicacoes:["Alergia a macrolídeos"], interacoes:["Digoxina"], antidotos:["Suporte"], alerta:"⚠️ Curta duração", popular:true, custo:"Médio" },
+      { id:"sulfa_tmp", n:"Sulfametoxazol 800mg + Trimetoprima 160mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"1 comp 12/12h", indicacoes:["ITU","Infecções respiratórias"], contraindicacoes:["Insuf. renal","G6PD"], interacoes:["Varfarina"], antidotos:["Ácido folínico"], alerta:"⚠️ Stevens-Johnson", popular:true, custo:"Baixo" },
+      { id:"claritromicina_500", n:"Claritromicina 500 mg comprimido", g:"Antibióticos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"500mg 12/12h", indicacoes:["Infecções respiratórias","H. pylori"], contraindicacoes:["Alergia a macrolídeos"], interacoes:["Digoxina","Estatinas"], antidotos:["Suporte"], alerta:"⚠️ Muitas interações", popular:true, custo:"Médio" },
+
+      // ANTIVIRAIS
+      { id:"aciclovir_200", n:"Aciclovir 200 mg comprimido", g:"Antivirais", l:"UBS", forma:"Comprimido", via:"Oral", dose:"200-400mg 4-5x/dia", indicacoes:["Herpes simples","Herpes zoster"], contraindicacoes:["Insuf. renal"], interacoes:["Probenecida"], antidotos:["Hidratação"], alerta:"⚠️ Ajustar dose em IR", popular:true, custo:"Médio" },
+      { id:"aciclovir_creme", n:"Aciclovir 50 mg/g (5%) creme", g:"Antivirais", l:"UBS", forma:"Creme", via:"Tópica", dose:"Aplicar 5x/dia", indicacoes:["Herpes labial","Herpes genital"], contraindicacoes:["Hipersensibilidade"], interacoes:[], antidotos:["Suporte"], alerta:"⚠️ Aplicar ao primeiro sinal", popular:true, custo:"Médio" },
+
+      // CARDIOVASCULAR
+      { id:"losartana_50", n:"Losartana 50 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"50-100mg/dia", indicacoes:["Hipertensão","Insuf. cardíaca"], contraindicacoes:["Gestação"], interacoes:["AINEs"], antidotos:["Suporte"], alerta:"⚠️ Contraindicado na gestação", popular:true, custo:"Baixo" },
+      { id:"enalapril_5", n:"Enalapril 5 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"5-40mg/dia", indicacoes:["Hipertensão","Insuf. cardíaca"], contraindicacoes:["Gestação","Angioedema"], interacoes:["AINEs"], antidotos:["Suporte"], alerta:"⚠️ Angioedema", popular:true, custo:"Baixo" },
+      { id:"captopril_25", n:"Captopril 25 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"25-50mg 8/12h", indicacoes:["Hipertensão","Insuf. cardíaca"], contraindicacoes:["Gestação"], interacoes:["AINEs"], antidotos:["Suporte"], alerta:"⚠️ Tomar 1h antes ou 2h após refeições", popular:true, custo:"Baixo" },
+      { id:"captopril_sl", n:"Captopril 25 mg comprimido sublingual", g:"Cardiovascular", l:"UPA", forma:"Comprimido sublingual", via:"Sublingual", dose:"25mg SL", indicacoes:["Crise hipertensiva"], contraindicacoes:["Gestação","Hipotensão"], interacoes:["AINEs"], antidotos:["Suporte"], alerta:"⚠️ Colocar sob a língua", popular:true, custo:"Baixo" },
+      { id:"propranolol_40", n:"Propranolol 40 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"40-160mg/dia", indicacoes:["Hipertensão","Migrânia"], contraindicacoes:["Asma","Bradicardia"], interacoes:["Verapamil"], antidotos:["Atropina"], alerta:"⚠️ Não suspender abruptamente", popular:true, custo:"Baixo" },
+      { id:"atenolol_50", n:"Atenolol 50 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"50-100mg/dia", indicacoes:["Hipertensão","Angina"], contraindicacoes:["Asma","Bradicardia"], interacoes:["Verapamil"], antidotos:["Atropina"], alerta:"⚠️ Monitorar FC", popular:true, custo:"Baixo" },
+      { id:"anlodipino_5", n:"Anlodipino 5 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"5-10mg/dia", indicacoes:["Hipertensão","Angina"], contraindicacoes:["Shock cardiogênico"], interacoes:["Grapefruit"], antidotos:["Cálcio IV"], alerta:"⚠️ Edema", popular:true, custo:"Médio" },
+      { id:"furosemida_40", n:"Furosemida 40 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"40-80mg/dia", indicacoes:["Edema","Insuf. cardíaca"], contraindicacoes:["Anúria","Hipocalemia"], interacoes:["Digoxina"], antidotos:["Eletrólitos"], alerta:"⚠️ Monitorar potássio", popular:true, custo:"Baixo" },
+      { id:"furosemida_amp", n:"Furosemida 10 mg/mL ampola IV", g:"Cardiovascular", l:"UPA", forma:"Solução injetável", via:"IV", dose:"20-40mg IV lento", indicacoes:["Edema agudo pulmonar"], contraindicacoes:["Anúria","Hipocalemia"], interacoes:["Digoxina"], antidotos:["Eletrólitos"], alerta:"⚠️ Administrar lentamente", popular:true, custo:"Baixo", diluicao:"Uso direto IV lento" },
+      { id:"sinvastatina_20", n:"Sinvastatina 20 mg comprimido", g:"Cardiovascular", l:"UBS", forma:"Comprimido", via:"Oral", dose:"20-40mg/dia", indicacoes:["Hipercolesterolemia"], contraindicacoes:["Insuf. hepática"], interacoes:["Grapefruit"], antidotos:["Ubiquinona"], alerta:"⚠️ Monitorar CPK", popular:true, custo:"Baixo" },
+
+      // RESPIRATÓRIO
+      { id:"salbutamol_spray", n:"Salbutamol 100 mcg/dose aerossol oral", g:"Respiratório", l:"UBS", forma:"Aerossol oral", via:"Inalatória", dose:"1-2 jatos 4/4h", indicacoes:["Asma","DPOC"], contraindicacoes:["Taquiarritmia"], interacoes:["Beta-bloqueadores"], antidotos:["Suporte"], alerta:"⚠️ Máx 8 jatos/dia", popular:true, custo:"Baixo" },
+      { id:"beclometasona_200", n:"Beclometasona 200 mcg/dose aerossol oral", g:"Respiratório", l:"UBS", forma:"Aerossol oral", via:"Inalatória", dose:"200-400mcg 2x/dia", indicacoes:["Asma","DPOC"], contraindicacoes:["Infecção ativa"], interacoes:["Corticosteroides"], antidotos:["Suporte"], alerta:"⚠️ Enxaguar boca", popular:true, custo:"Médio" },
+
+      // GASTROINTESTINAL
+      { id:"omeprazol_20", n:"Omeprazol 20 mg cápsula", g:"Gastrointestinal", l:"UBS", forma:"Cápsula", via:"Oral", dose:"20-40mg/dia", indicacoes:["Refluxo","Úlcera"], contraindicacoes:["Hipersensibilidade"], interacoes:["Warfarina"], antidotos:["Suporte"], alerta:"⚠️ Deficiência B12", popular:true, custo:"Baixo" },
+      { id:"escopolamina_10", n:"Escopolamina 10 mg comprimido", g:"Antiespasmódicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"10mg 3x/dia", indicacoes:["Cólica intestinal"], contraindicacoes:["Glaucoma","Retenção urinária"], interacoes:["Anticolinérgicos"], antidotos:["Fisostigmina"], alerta:"⚠️ Efeitos anticolinérgicos", popular:true, custo:"Baixo", antiespasmodico:true },
+      { id:"buscopan_gotas", n:"Buscopan 0,25 mg/mL solução oral gotas", g:"Antiespasmódicos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"20-40 gotas 3-4x/dia", indicacoes:["Cólica intestinal"], contraindicacoes:["Glaucoma","<1 ano"], interacoes:["Anticolinérgicos"], antidotos:["Fisostigmina"], alerta:"⚠️ Dose pediátrica", popular:true, custo:"Baixo", antiespasmodico:true },
+      { id:"buscopan_amp", n:"Buscopan 20 mg/mL ampola IM/IV", g:"Antiespasmódicos", l:"UPA", forma:"Solução injetável", via:"IV/IM", dose:"20-40mg IM/IV lento", indicacoes:["Cólica renal","Cólica biliar"], contraindicacoes:["Glaucoma","Íleo paralítico"], interacoes:["Anticolinérgicos"], antidotos:["Fisostigmina"], alerta:"⚠️ Administrar lentamente", popular:true, custo:"Médio", antiespasmodico:true, diluicao:"Uso direto IV lento ou IM" },
+
+      // ANTI-HISTAMÍNICOS
+      { id:"loratadina_10", n:"Loratadina 10 mg comprimido", g:"Anti-histamínicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"10mg/dia", indicacoes:["Rinite alérgica","Urticária"], contraindicacoes:["Hipersensibilidade"], interacoes:["Eritromicina"], antidotos:["Suporte"], alerta:"⚠️ Não causa sonolência", popular:true, custo:"Baixo" },
+      { id:"prometazina_25", n:"Prometazina 25 mg comprimido", g:"Anti-histamínicos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"25-50mg/dia", indicacoes:["Alergias","Náusea"], contraindicacoes:["<2 anos","Glaucoma"], interacoes:["Depressores SNC"], antidotos:["Suporte"], alerta:"⚠️ Sonolência", popular:true, custo:"Baixo" },
+      { id:"prometazina_amp", n:"Prometazina 25 mg/mL ampola IM", g:"Anti-histamínicos", l:"UPA", forma:"Solução injetável", via:"IM", dose:"25-50mg IM 4/6h", indicacoes:["Reações alérgicas graves","Náusea"], contraindicacoes:["<2 anos","Glaucoma"], interacoes:["Depressores SNC"], antidotos:["Suporte"], alerta:"⚠️ IM profunda - não usar IV", popular:true, custo:"Baixo", diluicao:"Uso direto IM" },
+
+      // ANTIPARASITÁRIOS
+      { id:"albendazol_400", n:"Albendazol 400 mg comprimido mastigável", g:"Antiparasitários", l:"UBS", forma:"Comprimido mastigável", via:"Oral", dose:"400mg dose única", indicacoes:["Enterobíase","Ascaridíase"], contraindicacoes:["Gestação"], interacoes:["Dexametasona"], antidotos:["Suporte"], alerta:"⚠️ Dose única - mastigar", popular:true, custo:"Baixo" },
+      { id:"ivermectina_6", n:"Ivermectina 6 mg comprimido", g:"Antiparasitários", l:"UBS", forma:"Comprimido", via:"Oral", dose:"200 mcg/kg dose única", indicacoes:["Escabiose","Estrongiloidíase"], contraindicacoes:["Gestação","<5 anos"], interacoes:[], antidotos:["Suporte"], alerta:"⚠️ Repetir em 7-14 dias", popular:true, custo:"Baixo" },
+
+      // ANTIFÚNGICOS
+      { id:"fluconazol_150", n:"Fluconazol 150 mg cápsula", g:"Antifúngicos", l:"UBS", forma:"Cápsula", via:"Oral", dose:"150mg dose única", indicacoes:["Candidíase vaginal","Candidíase oral"], contraindicacoes:["Gestação"], interacoes:["Varfarina"], antidotos:["Suporte"], alerta:"⚠️ Dose única", popular:true, custo:"Médio" },
+      { id:"nistatina_susp", n:"Nistatina 100.000 UI/mL suspensão oral", g:"Antifúngicos", l:"UBS", forma:"Suspensão oral", via:"Oral", dose:"5-10 mL 4x/dia", indicacoes:["Candidíase oral"], contraindicacoes:["Hipersensibilidade"], interacoes:[], antidotos:["Suporte"], alerta:"⚠️ Manter na boca", popular:true, custo:"Baixo" },
+
+      // VITAMINAS E SUPLEMENTOS
+      { id:"sulfato_ferroso", n:"Sulfato ferroso 125 mg/mL solução oral gotas", g:"Vitaminas e Suplementos", l:"UBS", forma:"Solução oral", via:"Oral", dose:"Criança: 1 gota/kg | Adulto: 20-40 gotas", indicacoes:["Anemia ferropriva"], contraindicacoes:["Hemocromatose"], interacoes:["Antiácidos"], antidotos:["Desferroxamina"], alerta:"⚠️ Intoxicação grave em crianças", popular:true, custo:"Baixo" },
+      { id:"acido_folico_5", n:"Ácido fólico 5 mg comprimido", g:"Vitaminas e Suplementos", l:"UBS", forma:"Comprimido", via:"Oral", dose:"Gestante: 5mg/dia", indicacoes:["Profilaxia gestacional","Anemia megaloblástica"], contraindicacoes:["Anemia perniciosa"], interacoes:["Metotrexato"], antidotos:["Suporte"], alerta:"⚠️ ESSENCIAL na gestação", popular:true, custo:"Baixo" },
+
+      // ENDÓCRINO / HORMÔNIOS
+      { id:"metformina_500", n:"Metformina 500 mg comprimido", g:"Endócrino / Hormônios", l:"UBS", forma:"Comprimido", via:"Oral", dose:"500-850mg 2-3x/dia", indicacoes:["Diabetes tipo 2"], contraindicacoes:["Insuf. renal"], interacoes:["Contraste iodado"], antidotos:["Bicarbonato"], alerta:"⚠️ Acidose láctica", popular:true, custo:"Baixo" },
+      { id:"insulina_nph", n:"Insulina NPH 100 UI/mL frasco SC", g:"Endócrino / Hormônios", l:"UBS", forma:"Suspensão injetável", via:"SC", dose:"10-40 UI SC 1-2x/dia", indicacoes:["Diabetes tipo 1","Diabetes tipo 2"], contraindicacoes:["Hipoglicemia ativa"], interacoes:["Álcool"], antidotos:["Glicose IV"], alerta:"⚠️ Homogeneizar antes de usar", popular:true, custo:"Baixo" },
+
+      // GESTAÇÃO (medicamentos seguros)
+      { id:"gest_paracetamol", n:"Paracetamol (gestação) - 500 mg comprimido", g:"Analgésicos / Antitérmicos", l:"UBS/AMA", forma:"Comprimido", via:"Oral", dose:"500mg-1g 6/6h", indicacoes:["Febre","Dor"], contraindicacoes:["Insuf. hepática"], interacoes:["Álcool"], antidotos:["N-acetilcisteína"], alerta:"⚠️ SEGURO - máx 4g/dia", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO" },
+      { id:"gest_dipirona", n:"Dipirona (gestação) - 500 mg comprimido", g:"Analgésicos / Antitérmicos", l:"UBS/AMA", forma:"Comprimido", via:"Oral", dose:"500mg-1g 6/6h", indicacoes:["Febre","Dor"], contraindicacoes:["Alergia","Discrasias"], interacoes:["Clorpromazina"], antidotos:["N-acetilcisteína"], alerta:"⚠️ EVITAR no 3º trimestre", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ⚠️ EVITAR" },
+      { id:"gest_amoxicilina", n:"Amoxicilina (gestação) - 500 mg cápsula", g:"Antibióticos", l:"UBS/AMA", forma:"Cápsula", via:"Oral", dose:"500mg 8/8h", indicacoes:["ITU","Infecções respiratórias"], contraindicacoes:["Alergia a penicilinas"], interacoes:["Alopurinol"], antidotos:["Suporte"], alerta:"⚠️ SEGURO", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO" },
+      { id:"gest_metildopa", n:"Metildopa (gestação) - 250 mg comprimido", g:"Cardiovascular", l:"UBS/AMA", forma:"Comprimido", via:"Oral", dose:"250mg 2-3x/dia", indicacoes:["Hipertensão gestacional"], contraindicacoes:["Insuf. hepática"], interacoes:["AINEs"], antidotos:["Suporte"], alerta:"⚠️ SEGURO - droga de escolha", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ SEGURO | 2º trimestre: ✅ SEGURO | 3º trimestre: ✅ SEGURO" },
+      { id:"gest_acido_folico", n:"Ácido fólico (gestação) - 5 mg comprimido", g:"Vitaminas e Suplementos", l:"UBS/AMA", forma:"Comprimido", via:"Oral", dose:"5mg/dia (1º trimestre)", indicacoes:["Profilaxia de defeitos do tubo neural"], contraindicacoes:["Anemia perniciosa"], interacoes:["Metotrexato"], antidotos:["Suporte"], alerta:"⚠️ ESSENCIAL até 12ª semana", popular:true, custo:"Baixo", gestacao:"1º trimestre: ✅ ESSENCIAL | 2º trimestre: ✅ OPCIONAL | 3º trimestre: ✅ OPCIONAL" }
+    ];
+
+    function App() {
+      const [query, setQuery] = useState("");
+      const [activeGroup, setActiveGroup] = useState(null);
+      const [openIdx, setOpenIdx] = useState(null);
+      const [darkMode, setDarkMode] = useState(false);
+      const [showOnlyPopular, setShowOnlyPopular] = useState(false);
+      const [filterLocal, setFilterLocal] = useState('all');
+      const [filterVia, setFilterVia] = useState('all');
+      const [filterGestacao, setFilterGestacao] = useState(false);
+      const [favorites, setFavorites] = useState(() => {
+        try { return JSON.parse(localStorage.getItem('remume_fav') || '[]'); } catch { return []; }
+      });
+      const [showLista, setShowLista] = useState(false);
+
+      useEffect(() => {
+        localStorage.setItem('remume_fav', JSON.stringify(favorites));
+      }, [favorites]);
+
+      const allGroups = [...new Set(MEDS.map(m => m.g))].sort();
+      const antiemeticIndex = allGroups.indexOf("Antieméticos / Antivertiginosos");
+      const groups = [...allGroups];
+      if (antiemeticIndex !== -1) {
+        const existingIndex = groups.indexOf("🔄 Antiespasmódicos");
+        if (existingIndex !== -1) groups.splice(existingIndex, 1);
+        groups.splice(antiemeticIndex + 1, 0, "🔄 Antiespasmódicos");
+      } else {
+        groups.push("🔄 Antiespasmódicos");
+      }
+
+      const groupColors = {
+        "Analgésicos / Antitérmicos":"#B5651D",
+        "Anti-inflamatórios (AINEs)":"#8A5A2B",
+        "Antibióticos":"#1F6F5C",
+        "Antivirais":"#2E5C8A",
+        "Cardiovascular":"#A62B2B",
+        "Respiratório":"#2F8A8A",
+        "Neurológico / Psiquiátrico":"#5C4A9E",
+        "Gastrointestinal":"#7A5230",
+        "Antiespasmódicos":"#9B59B6",
+        "Anti-histamínicos":"#B23A5A",
+        "Antiparasitários":"#4A7C2F",
+        "Antifúngicos":"#6B4E9E",
+        "Vitaminas e Suplementos":"#3A8A5C",
+        "Endócrino / Hormônios":"#B2842E",
+        "Dermatológico":"#B25E3A",
+        "Oftálmico":"#2E86AB",
+        "Outros / Diversos":"#5A5A5A"
+      };
+
+      const results = useMemo(() => {
+        const q = query.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        return MEDS.filter(m => {
+          const nome = m.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          const grupo = m.g.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          const ind = (m.indicacoes || []).join(' ').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          const gest = (m.gestacao || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+          const matchQ = q.length === 0 || nome.includes(q) || grupo.includes(q) || ind.includes(q) || gest.includes(q);
+          let matchG = true;
+          if (activeGroup === "🔄 Antiespasmódicos") {
+            matchG = m.antiespasmodico === true;
+          } else {
+            matchG = !activeGroup || m.g === activeGroup;
+          }
+          const matchL = filterLocal === 'all' || m.l === filterLocal || m.l.includes(filterLocal);
+          const matchV = filterVia === 'all' || m.via === filterVia || 
+            (filterVia === 'Injetável' && ['IV','IM','IV/IM','SC'].includes(m.via)) ||
+            (filterVia === 'Oral' && m.via === 'Oral') ||
+            (filterVia === 'Inalatória' && m.via === 'Inalatória') ||
+            (filterVia === 'Tópica' && m.via === 'Tópica') ||
+            (filterVia === 'Sublingual' && m.via === 'Sublingual');
+          const matchP = !showOnlyPopular || m.popular;
+          const matchGest = !filterGestacao || (m.gestacao && m.gestacao.length > 0);
+
+          return matchQ && matchG && matchL && matchV && matchP && matchGest;
+        }).sort((a,b) => {
+          if (q.length > 0) {
+            const aNome = a.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const bNome = b.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const aStarts = aNome.startsWith(q);
+            const bStarts = bNome.startsWith(q);
+            if (aStarts && !bStarts) return -1;
+            if (!aStarts && bStarts) return 1;
+          }
+          return a.n.localeCompare(b.n);
+        });
+      }, [query, activeGroup, filterLocal, filterVia, filterGestacao, showOnlyPopular]);
+
+      const toggleFav = (id) => {
+        setFavorites(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
+      };
+
+      const listaAlfabetica = [...MEDS].sort((a,b) => a.n.localeCompare(b.n));
+
+      return (
+        <div className="app" style={{ background: darkMode ? '#0F1A15' : '#EEF2EF', minHeight: '100vh', color: darkMode ? '#DCE8E0' : '#14231D' }}>
+          <header style={{ marginBottom: 22 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  <span style={{ fontFamily: 'monospace', fontSize: 13, fontWeight: 700, color: '#1F6F5C', background: '#DCEAE5', padding: '3px 8px', borderRadius: 4 }}>🏥 REMUME v2</span>
+                  <span style={{ fontSize: 12, background: '#DCEAE5', padding: '2px 8px', borderRadius: 4, color: '#51665D' }}>UBS + AMA + UPA + PSA + Emergência</span>
+                  <span style={{ fontSize: 12, background: '#DCEAE5', padding: '2px 8px', borderRadius: 4, color: '#51665D' }}>{MEDS.length} medicamentos</span>
+                </div>
+                <h1 style={{ fontSize: 26, fontWeight: 800, margin: '10px 0 4px' }}>Medicamentos da rede municipal</h1>
+                <p style={{ fontSize: 14, color: darkMode ? '#7A9A8A' : '#51665D' }}>UBS/AMA/UPA/PSA/Emergência · Orais · Injetáveis · Inaláveis · Tópicos · Gestação · Antiespasmódicos</p>
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button onClick={() => setShowLista(true)} className="btn-lista">📋 Lista alfabética</button>
+                <button onClick={() => setDarkMode(!darkMode)} style={{ background: darkMode ? '#1A2E28' : '#fff', border: '1.5px solid #C7D6CF', borderRadius: 8, padding: '8px 10px', cursor: 'pointer' }}>
+                  {darkMode ? '☀️' : '🌙'}
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: darkMode ? '#1A2E28' : '#fff', border: `1.5px solid ${darkMode ? '#2A4A3E' : '#C7D6CF'}`, borderRadius: 12, padding: '10px 12px', marginBottom: 10 }}>
+            <span>🔍</span>
+            <input className="input-search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Digite o nome do medicamento (ex: Amoxicilina, Paracetamol)" style={{ color: darkMode ? '#DCE8E0' : '#14231D' }} />
+            {query && <button onClick={() => setQuery('')} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>✕</button>}
+          </div>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
+            <button className={`btn-filter ${showOnlyPopular ? 'active' : ''}`} onClick={() => setShowOnlyPopular(!showOnlyPopular)}>⭐ Mais usados</button>
+            <button className={`btn-filter ${filterGestacao ? 'active' : ''}`} onClick={() => setFilterGestacao(!filterGestacao)} style={filterGestacao ? { background: '#E91E63', color: '#fff', borderColor: '#E91E63' } : {}}>
+              🤰 Gestação
+            </button>
+            <select className="btn-filter" value={filterLocal} onChange={e => setFilterLocal(e.target.value)} style={{ background: darkMode ? '#1A2E28' : '#fff', color: 'inherit' }}>
+              <option value="all">📍 Todos locais</option>
+              <option value="UBS">🏥 UBS</option>
+              <option value="AMA">💉 AMA</option>
+              <option value="UPA">🚑 UPA</option>
+              <option value="PSA">🏨 PSA</option>
+              <option value="Emergência">🚨 Emergência</option>
+            </select>
+            <select className="btn-filter" value={filterVia} onChange={e => setFilterVia(e.target.value)} style={{ background: darkMode ? '#1A2E28' : '#fff', color: 'inherit' }}>
+              <option value="all">💊 Todas vias</option>
+              <option value="Oral">Oral</option>
+              <option value="Injetável">Injetável</option>
+              <option value="Inalatória">Inalatória</option>
+              <option value="Tópica">🧴 Tópica</option>
+              <option value="Sublingual">👅 Sublingual</option>
+            </select>
+            <span style={{ fontSize: 12, marginLeft: 'auto', color: darkMode ? '#7A9A8A' : '#51665D' }}>{results.length} resultados</span>
+          </div>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
+            <button className={`chip-group ${!activeGroup ? 'active' : ''}`} onClick={() => setActiveGroup(null)} style={!activeGroup ? { background: '#14231D', color: '#fff', borderColor: '#14231D' } : {}}>Todos</button>
+            {groups.map(g => {
+              const active = activeGroup === g;
+              const color = groupColors[g] || '#51665D';
+              return <button key={g} className={`chip-group ${active ? 'active' : ''}`} onClick={() => setActiveGroup(active ? null : g)} style={active ? { background: color, borderColor: color, color: '#fff' } : {}}>{g}</button>;
+            })}
+          </div>
+
+          {results.length === 0 && <div style={{ padding: 32, textAlign: 'center', color: darkMode ? '#7A9A8A' : '#51665D', background: darkMode ? '#1A2E28' : '#fff', borderRadius: 12 }}>🔍 Nenhum medicamento encontrado. Tente outro termo.</div>}
+
+          {results.map((m, i) => {
+            const isOpen = openIdx === i;
+            const isFav = favorites.includes(m.id);
+            const isInj = ['IV','IM','IV/IM','SC'].includes(m.via);
+            const color = groupColors[m.g] || '#51665D';
+            const isGestacao = m.gestacao && m.gestacao.length > 0;
+            const isAntiespasmodico = m.antiespasmodico === true;
+
+            return (
+              <div key={m.id} className="card" style={{ borderColor: isOpen ? color : (darkMode ? '#2A4A3E' : '#DCE5E0') }} onClick={() => setOpenIdx(isOpen ? null : i)}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, alignItems: 'center' }}>
+                      {isFav && <span>⭐</span>}
+                      {m.popular && <span className="badge-popular">Popular</span>}
+                      {isInj && <span className="badge-injetavel">💉 Injetável</span>}
+                      {isGestacao && <span className="badge-gestacao">🤰 Gestação</span>}
+                      {isAntiespasmodico && <span className="badge-antiespasmodico">🔄 Antiespasmódico</span>}
+                      {m.l === 'AMA' && <span className="badge-ama">AMA</span>}
+                      {m.l === 'UBS' && <span className="badge-ama">UBS</span>}
+                      {m.l === 'UPA' && <span className="badge-upa">UPA</span>}
+                      {m.l === 'PSA' && <span className="badge-psa">PSA</span>}
+                      {m.l === 'Emergência' && <span className="badge-emergencia">Emergência</span>}
+                      {m.l && m.l.includes('/') && (
+                        <span className="badge-ama" style={{ background: '#1F6F5C' }}>{m.l}</span>
+                      )}
+                      <span style={{ fontFamily: 'monospace', fontWeight: 600, fontSize: 14 }}>{m.n}</span>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 4, fontSize: 12, color: darkMode ? '#7A9A8A' : '#51665D' }}>
+                      <span className="tag">💊 {m.forma}</span>
+                      <span className="tag">{m.via}</span>
+                      <span className="tag">📍 {m.l}</span>
+                      <span className="tag">💰 {m.custo}</span>
+                      {m.diluicao && <span className="tag">💧 {m.diluicao}</span>}
+                    </div>
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 700, color, background: `${color}18`, padding: '4px 8px', borderRadius: 6, whiteSpace: 'nowrap' }}>{m.g}</span>
+                </div>
+
+                <div style={{ display: 'flex', gap: 8, marginTop: 8, borderTop: `1px solid ${darkMode ? '#2A4A3E' : '#DCE5E0'}`, paddingTop: 8 }}>
+                  <button onClick={(e) => { e.stopPropagation(); toggleFav(m.id); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, display: 'flex', gap: 4, alignItems: 'center' }}>{isFav ? '⭐ Favorito' : '☆ Favoritar'}</button>
+                  <button onClick={(e) => { e.stopPropagation(); setOpenIdx(isOpen ? null : i); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, marginLeft: 'auto' }}>{isOpen ? '🔼 Menos' : '🔽 Mais detalhes'}</button>
+                </div>
+
+                {isOpen && (
+                  <div style={{ marginTop: 10, paddingTop: 10, borderTop: `2px solid ${color}` }}>
+                    {m.dose && <div style={{ background: darkMode ? '#1F332C' : '#E8F4F0', padding: '8px 10px', borderRadius: 6, marginBottom: 6 }}><strong>💊 Dose:</strong> {m.dose}</div>}
+                    {m.indicacoes && <div style={{ marginBottom: 6 }}><strong>✓ Indicações:</strong> {m.indicacoes.join(', ')}</div>}
+                    {m.contraindicacoes && <div style={{ marginBottom: 6, color: '#E74C3C' }}><strong>⚠️ Contraindicações:</strong> {m.contraindicacoes.join(', ')}</div>}
+                    {m.interacoes && m.interacoes.length > 0 && <div style={{ marginBottom: 6 }}><strong>🔄 Interações:</strong> {m.interacoes.join(', ')}</div>}
+                    {m.antidotos && m.antidotos.length > 0 && <div style={{ marginBottom: 6, color: '#27AE60' }}><strong>💉 Antídotos:</strong> {m.antidotos.join(', ')}</div>}
+                    {m.diluicao && <div style={{ marginBottom: 6 }}><strong>💧 Diluição/Administração:</strong> {m.diluicao}</div>}
+                    {m.gestacao && (
+                      <div style={{ marginBottom: 6, background: darkMode ? '#2A1A3A' : '#FCE4EC', padding: '8px 10px', borderRadius: 6, border: '1px solid #E91E63' }}>
+                        <strong>🤰 Uso na Gestação:</strong> {m.gestacao}
+                      </div>
+                    )}
+                    {m.antiespasmodico && (
+                      <div style={{ marginBottom: 6, background: darkMode ? '#2A1A3A' : '#F3E5F5', padding: '8px 10px', borderRadius: 6, border: '1px solid #9B59B6' }}>
+                        <strong>🔄 Antiespasmódico:</strong> Sim
+                      </div>
+                    )}
+                    {m.alerta && <div style={{ background: darkMode ? '#2A1A1A' : '#FFF3E0', padding: '8px 10px', borderRadius: 6, border: '1px solid #E67E22', color: '#E67E22', fontWeight: 600 }}>⚠️ {m.alerta}</div>}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          <footer style={{ marginTop: 28, fontSize: 11.5, color: darkMode ? '#3A5A4E' : '#8AA098', borderTop: `1px solid ${darkMode ? '#1A2E28' : '#DCE5E0'}`, paddingTop: 16 }}>
+            <p>REMUME v2 - SMS-SP · Dados manuais atualizados ago/2026 · {MEDS.length} medicamentos</p>
+            <p style={{ marginTop: 4 }}>Dica: digite o início do nome (ex: "Paracetamol", "Amoxicilina") ou ative os filtros.</p>
+          </footer>
+
+          {showLista && (
+            <div className="modal-overlay" onClick={() => setShowLista(false)}>
+              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <button className="modal-close" onClick={() => setShowLista(false)}>✕</button>
+                <h2 style={{ marginBottom: 16 }}>📋 Lista alfabética de medicamentos</h2>
+                <div className="lista-header" style={{ display: 'flex' }}>
+                  <span className="lista-nome">Nome</span>
+                  <span className="lista-grupo">Grupo</span>
+                  <span className="lista-local">Local</span>
+                  <span className="lista-via">Via</span>
+                </div>
+                {listaAlfabetica.map(m => (
+                  <div key={m.id} className="lista-item">
+                    <span className="lista-nome">{m.n}</span>
+                    <span className="lista-grupo">{m.g}</span>
+                    <span className="lista-local">{m.l}</span>
+                    <span className="lista-via">{m.via}</span>
+                  </div>
+                ))}
+                <div style={{ marginTop: 16, fontSize: 12, color: '#8AA098' }}>
+                  Total: {listaAlfabetica.length} medicamentos
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
