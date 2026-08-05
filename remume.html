@@ -32,8 +32,6 @@
         .voltar { display: block; text-align: center; margin-top: 20px; padding: 12px; background: #f0f0f0; border-radius: 12px; color: #333; text-decoration: none; font-weight: 500; }
         .voltar:hover { background: #e0e0e0; }
         .nenhum { text-align: center; color: #999; padding: 30px 0; }
-        .badge-nivel { font-size: 10px; background: #e8f0fe; color: #0055CC; padding: 2px 6px; border-radius: 10px; margin-left: 4px; }
-        .filtros-extra { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
     </style>
 </head>
 <body>
@@ -52,7 +50,7 @@
     </div>
 
     <!-- FILTROS ESPECIAIS -->
-    <div class="filtros-extra">
+    <div class="filtros-extra" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;">
         <span class="filtro-especial" data-especial="gestacao_seguro">✅ Gestação Seguro</span>
         <span class="filtro-especial" data-especial="gestacao_cautela">⚠️ Gestação Cautela</span>
         <span class="filtro-especial" data-especial="gestacao_contraindicado">🚫 Gestação Contraindicado</span>
@@ -269,24 +267,19 @@
 
         let filtroNivel = 'todos';
         let filtroCategoria = 'todos';
-        let filtroEspecial = null; // 'gestacao_seguro', 'gestacao_cautela', 'gestacao_contraindicado'
+        let filtroEspecial = null;
         let textoBusca = '';
 
         function renderizar() {
             const lista = document.getElementById('listaMedicamentos');
             let filtrados = medicamentos;
 
-            // Filtro por nível
             if (filtroNivel !== 'todos') {
                 filtrados = filtrados.filter(m => m.niveis.includes(filtroNivel));
             }
-
-            // Filtro por categoria
             if (filtroCategoria !== 'todos') {
                 filtrados = filtrados.filter(m => m.categoria === filtroCategoria);
             }
-
-            // Filtro por gestação
             if (filtroEspecial) {
                 if (filtroEspecial === 'gestacao_seguro') {
                     filtrados = filtrados.filter(m => m.gestacao === 'Seguro');
@@ -296,8 +289,6 @@
                     filtrados = filtrados.filter(m => m.gestacao === 'Contraindicado');
                 }
             }
-
-            // Filtro por busca (nome)
             if (textoBusca.trim() !== '') {
                 const termo = textoBusca.toLowerCase().trim();
                 filtrados = filtrados.filter(m => m.nome.toLowerCase().includes(termo));
@@ -308,7 +299,6 @@
                 return;
             }
 
-            // Ordenar por nome
             filtrados.sort((a, b) => a.nome.localeCompare(b.nome));
 
             let html = '';
@@ -331,9 +321,7 @@
             lista.innerHTML = html;
         }
 
-        // ===== EVENTOS =====
-
-        // Filtros de nível
+        // EVENTOS
         document.querySelectorAll('.filtro-nivel').forEach(el => {
             el.addEventListener('click', function() {
                 document.querySelectorAll('.filtro-nivel').forEach(b => b.classList.remove('ativo'));
@@ -343,10 +331,8 @@
             });
         });
 
-        // Filtros especiais (gestação)
         document.querySelectorAll('.filtro-especial').forEach(el => {
             el.addEventListener('click', function() {
-                // Alterna o estado: se já estiver ativo, desativa
                 if (this.classList.contains('ativo')) {
                     this.classList.remove('ativo');
                     filtroEspecial = null;
@@ -359,7 +345,6 @@
             });
         });
 
-        // Categorias
         document.querySelectorAll('.categoria').forEach(el => {
             el.addEventListener('click', function() {
                 document.querySelectorAll('.categoria').forEach(b => b.classList.remove('ativo'));
@@ -369,13 +354,11 @@
             });
         });
 
-        // Busca
         document.getElementById('busca').addEventListener('input', function() {
             textoBusca = this.value;
             renderizar();
         });
 
-        // ===== INICIALIZAÇÃO =====
         renderizar();
     </script>
 </body>
