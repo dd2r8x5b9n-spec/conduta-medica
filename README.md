@@ -6,13 +6,9 @@
 
 ---
 
-## 🚀 Acesse os apps
+## 🚀 Acesse o app
 
-| App | Link |
-|-----|------|
-| **Conduta Médica** | [https://dd2r8x5b9n-spec.github.io/conduta-medica/](https://dd2r8x5b9n-spec.github.io/conduta-medica/) |
-| **REMUME v2 (atualizada)** | [https://dd2r8x5b9n-spec.github.io/conduta-medica/remume-v2.html](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume-v2.html) |
-| **REMUME v1 (backup)** | [https://dd2r8x5b9n-spec.github.io/conduta-medica/remume.html](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume.html) |
+[https://dd2r8x5b9n-spec.github.io/conduta-medica/](https://dd2r8x5b9n-spec.github.io/conduta-medica/)
 
 ---
 
@@ -21,11 +17,25 @@
 | App | Descrição | Acesso |
 |-----|-----------|--------|
 | **Conduta Médica** | Protocolos e condutas para atendimento ambulatorial e de urgência | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/) |
-| **REMUME v2 – Medicamentos SP** | Consulta rápida de medicamentos disponíveis na rede municipal (UBS, AMA, UPA, PSA e Emergência) – versão atualizada com correções para iPhone e mais de 200 medicamentos | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume-v2.html) |
+| **REMUME – Medicamentos SP** | Consulta rápida de medicamentos disponíveis na rede municipal de São Paulo | [Abrir](https://dd2r8x5b9n-spec.github.io/conduta-medica/remume.html) |
 
 ---
 
-## 🏥 Conduta Médica – Níveis de Atendimento (Filtros)
+## 🚨 Escala de Manchester (Classificação de Risco)
+
+A Escala de Manchester é utilizada para priorizar o atendimento de acordo com a gravidade do caso:
+
+| Cor | Classificação | Tempo máximo para atendimento | Descrição |
+|-----|---------------|-------------------------------|-----------|
+| 🔴 **Vermelho** | Emergência | **Imediato (tempo 0)** | Risco iminente de morte. Atendimento imediato. |
+| 🟠 **Laranja** | Muito Urgente | **Até 10 minutos** | Risco de perda de função de órgão ou membro. |
+| 🟡 **Amarelo** | Urgente | **Até 60 minutos** | Casos de gravidade moderada. |
+| 🟢 **Verde** | Pouco Urgente | **Até 120 minutos** | Casos menos graves, sem risco imediato. |
+| 🔵 **Azul** | Não Urgente | **Até 240 minutos** | Casos mais leves, que podem aguardar ou ser encaminhados. |
+
+---
+
+## 🏥 Níveis de Atendimento (Filtros)
 
 O app permite filtrar as condutas por nível de atendimento, facilitando a decisão clínica conforme o local de atuação:
 
@@ -34,7 +44,7 @@ O app permite filtrar as condutas por nível de atendimento, facilitando a decis
 | **📋 Todos** | Exibe todas as condutas cadastradas. |
 | **🏥 AMA** | Condutas resolutivas na Atenção Básica (estabilização e encaminhamento). |
 | **🚑 UPA** | Condutas para Unidade de Pronto Atendimento (diagnóstico, estabilização e internação breve). |
-| **🏨 PSA** | Condutas hospitalares (em desenvolvimento). |
+| **🏨 PSA** | Condutas para Pronto-Socorro (estabilização e encaminhamento para especialidades). |
 | **🚨 Emergência** | Condutas para situações de risco iminente (IAM, AVC, Sepse, etc.). |
 
 ---
@@ -43,111 +53,89 @@ O app permite filtrar as condutas por nível de atendimento, facilitando a decis
 
 | CID | Diagnóstico | Diferenciação |
 |-----|-------------|---------------|
-| **I21** | Infarto Agudo do Miocárdio (IAM) | 🔹 IAM com supra ST (trombólise/ICP)<br>🔹 IAM sem supra ST (estratificação de risco)<br>🔹 Bloqueio de ramo novo (tratar como supra) |
-| **I64** | Acidente Vascular Cerebral (AVC) | 🔹 AVC isquêmico (janela de trombólise)<br>🔹 AVC hemorrágico (controle pressórico, neurocirurgia) |
-| **E16** | Hipoglicemia | 🔹 Hipoglicemia leve/moderada (carboidrato rápido)<br>🔹 Hipoglicemia grave (glicose EV/Glucagon)<br>🔹 Suspeita de insulinoma (encaminhamento endocrinológico) |
+| **I21.0** | IAM com Supra ST (IAMCSST) | 🔹 Trombólise ou ICP primária – janela de 12h. |
+| **I21.4** | IAM sem Supra ST (IAMSST) | 🔹 Estratificação de risco (TIMI/GRACE) – AAS + Betabloqueador + Estatina + Heparina. |
+| **I63.9** | AVC Isquêmico (AVCI) | 🔹 Janela de trombólise (até 4,5h) – TC de crânio obrigatória. |
+| **I61.9** | AVC Hemorrágico (AVCH) | 🔹 Controle pressórico rigoroso – TC de crânio confirmatória. |
+| **E16** | Hipoglicemia | 🔹 Leve/moderada vs. grave – suspeita de insulinoma. |
 
 ---
 
-## 📋 Condutas Incluídas (43 CIDs)
+## 📋 Condutas Incluídas
 
-| CID | Diagnóstico | Nível |
-|-----|-------------|-------|
-| A54 | Gonorreia | AMA |
-| A90 | Dengue | AMA |
-| B01 | Varicela | AMA |
-| B02 | Herpes Zoster | AMA |
-| B04 | Mpox | UPA |
-| B26 | Caxumba | AMA |
-| B26.0 | Orquite por Caxumba | UPA |
-| B86 | Escabiose | AMA |
-| E16 | Hipoglicemia (com insulinoma) | AMA |
-| G40 | Crise Epiléptica | Emergência |
-| G43.0 | Enxaqueca sem aura | AMA |
-| G03.9 | Meningite (suspeita) | Emergência |
-| H00.0 | Hordéolo | AMA |
-| H10.9 | Conjuntivite | AMA |
-| H83.0 | Labirintite | AMA |
-| I10 | Hipertensão Arterial | AMA |
-| I16 | Crise Hipertensiva | Emergência |
-| I21 | IAM (com diferenciação) | Emergência |
-| I50 | Insuficiência Cardíaca | UPA |
-| I64 | AVC (isquêmico/hemorrágico) | Emergência |
-| I80.9 | TVP | UPA |
-| I71.0 | Dissecção de Aorta | Emergência |
-| I67.1 | Aneurisma Cerebral | Emergência |
-| J11 | Síndrome Gripal / Dengue | AMA |
-| J44 | Exacerbação de DPOC / Asma | AMA |
-| K81.0 | Colecistite | UPA |
-| N23 | Cólica renal | AMA |
-| N39 | ITU | AMA |
-| N94.6 | Dismenorreia | AMA |
-| O14 | Pré-eclâmpsia | Emergência |
-| O21 | Hiperêmese Gravídica | AMA |
-| R04.0 | Epistaxe | AMA |
-| R06.0 | Dispneia | AMA |
-| R07.4 | Dor Torácica | AMA |
-| R10.0 | Abdômen Agudo | AMA |
-| R42 | Tontura | AMA |
-| R51 | Cefaleia | AMA |
-| R65.2 | Sepse | Emergência |
-| T63 | Acidente por animal peçonhento | UPA |
-| T78.2 | Choque anafilático | Emergência |
-| U07.1 | COVID-19 | AMA |
-| W54 | Mordedura de cão | AMA |
-| W57 | Picada de inseto | AMA |
+### 🏥 AMA (Atenção Básica)
+- A54 – Gonorreia
+- A90 – Dengue
+- B01 – Varicela
+- B02 – Herpes Zoster
+- B26 – Caxumba
+- B86 – Escabiose
+- E16 – Hipoglicemia
+- G43.0 – Enxaqueca
+- H00.0 – Hordéolo
+- H10.9 – Conjuntivite
+- H83.0 – Labirintite
+- I10 – Hipertensão Arterial
+- J11 – Síndrome Gripal
+- N23 – Cólica renal
+- N39 – ITU
+- O21 – Hiperêmese Gravídica
+- R04.0 – Epistaxe
+- R06.0 – Dispneia
+- R07.4 – Dor Torácica
+- R10.0 – Abdômen Agudo
+- R42 – Tontura
+- R51 – Cefaleia
+- U07.1 – COVID-19
+- W54 – Mordedura de cão
+- W57 – Picada de inseto
 
----
+### 🚑 UPA (Unidade de Pronto Atendimento)
+- B04 – Mpox
+- B26.0 – Orquite por Caxumba
+- I16 – Crise Hipertensiva
+- I21.4 – IAM sem Supra ST
+- I50 – Insuficiência Cardíaca
+- I80.9 – TVP
+- J44 – Exacerbação de DPOC
+- K81.0 – Colecistite Aguda
+- N20.0 – Litíase Urinária Obstrutiva
+- N10 – Pielonefrite Aguda
+- O14 – Pré-eclâmpsia
+- R33 – Retenção Urinária Aguda
+- R65.2 – Sepse (estabilização)
+- T63 – Acidente por animal peçonhento
+- T78.2 – Choque anafilático
 
-## 💊 REMUME – Medicamentos da rede municipal
+### 🏨 PSA (Pronto-Socorro)
+- E86 – Gastroenterite com Desidratação
+- K35 – Apendicite Aguda
 
-O app REMUME (versão v2) agora contempla **todos os níveis de atendimento** da rede municipal, com **mais de 200 medicamentos** cadastrados para UBS, AMA, UPA, PSA e Emergência, incluindo seções especiais para gestação, antiespasmódicos, tuberculose, HIV/hepatites e antivirais.
-
-### 🏥 Níveis de atendimento
-
-| Nível | Descrição | Exemplos de medicamentos |
-|-------|-----------|--------------------------|
-| **UBS/AMA** | Medicamentos da atenção básica e ambulatórios especializados. | Dipirona, Paracetamol, Amoxicilina, Losartana, Metformina, Omeprazol |
-| **UPA** | Medicamentos para estabilização e encaminhamento. | Tramadol, Diclofenaco, Tenoxicam, Furosemida, Captopril SL, Nifedipino SL, Prometazina, Midazolam |
-| **PSA** | Medicamentos para internação breve e UTI. | Morfina, Furosemida, Amiodarona IV, Metoprolol IV, Nitroprussiato, Nitroglicerina IV, Adenosina |
-| **Emergência** | Medicamentos para situações críticas. | Adrenalina, Amiodarona, Noradrenalina, Naloxona, Flumazenil, Atropina, Dobutamina, Dopamina, Glicose 50% |
-
-### 🤰 Medicamentos seguros na gestação
-
-O app inclui uma seção especial com medicamentos seguros para gestantes, com indicação detalhada por trimestre (1º, 2º e 3º), incluindo: Paracetamol, Dipirona (com cautela no 3ºT), Ibuprofeno (proibido no 3ºT), Amoxicilina, Ceftriaxona, Metildopa, Nifedipino, Ácido fólico, Sulfato ferroso, Insulina NPH e Regular, Progesterona, Enoxaparina e Betametasona.
-
-### 🏷️ Badges e filtros
-
-- **Badges coloridos** identificam o nível de atendimento:
-  - 🟢 **UBS/AMA** – atenção básica
-  - 🟡 **UPA** – estabilização
-  - 🟣 **PSA** – internação
-  - 🔴 **Emergência** – situações críticas
-  - 🩷 **Gestação** – medicamentos seguros para gestantes
-  - 🟣 **Antiespasmódicos** – medicamentos para cólicas e espasmos
-
-- **Filtros disponíveis:**
-  - **Local:** UBS, AMA, UPA, PSA, Emergência (ou todos)
-  - **Via:** Oral, Injetável, Inalatória, Nebulização, Tópica, Nasal, Sublingual, Vaginal
-  - **Grupo terapêutico:** Analgésicos, Antibióticos, Antivirais, Cardiovasculares, Antiespasmódicos, Tuberculose, HIV/Hepatites, etc.
-  - **Popularidade:** medicamentos mais usados
-  - **Gestação:** medicamentos seguros para gestantes
-
-### 🔍 Busca inteligente
-
-A busca prioriza o **início do nome** do medicamento. Exemplos:
-- Digite `"Paracetamol"` → aparece no topo.
-- Digite `"Amoxicilina"` → aparece o antibiótico.
-- Digite `"gestação"` → aparecem todos os medicamentos seguros para gestantes.
+### 🚨 Emergência
+- E05.9 – Crise Tireotóxica
+- E10.1 – Cetoacidose Diabética
+- E11.0 – Estado Hiperosmolar Hiperglicêmico
+- G41 – Estado de Mal Epiléptico
+- I21.0 – IAM com Supra ST
+- I48 – Arritmias Cardíacas
+- I60 – Hemorragia Subaracnoide
+- I61.9 – AVC Hemorrágico
+- I63.9 – AVC Isquêmico
+- K56 – Obstrução Intestinal
+- K80.3 – Litíase Biliar Obstrutiva
+- K85 – Pancreatite Aguda
+- N44 – Torção Testicular
+- S06 – TCE
+- S27/S36 – Trauma Torácico/Abdominal
 
 ---
 
-## 🛠️ Funcionalidades do Conduta Médica
+## 🛠️ Funcionalidades
 
 - ✅ **Busca por CID ou diagnóstico** com filtro simultâneo pelo nível de atendimento.
 - ✅ **Catálogo dinâmico** que se adapta ao filtro selecionado.
 - ✅ **Edição, exclusão e cadastro** de condutas (dados salvos localmente).
-- ✅ **Campo "Observações Importantes"** para lembretes rápidos, tabelas e diferenciações.
+- ✅ **Campo "Observações Importantes"** para lembretes rápidos, diferenciações e prescrições de internação.
 - ✅ **Funcionamento offline** (Service Worker).
 - ✅ **Botão secreto** (5 toques no título) para exportar dados em JSON (apenas para o administrador).
 - ✅ **Ícone na Tela de Início** (PWA) para acesso rápido no iPhone.
@@ -165,7 +153,7 @@ Pronto! O app vai aparecer como um ícone na sua tela inicial, funcionando em te
 
 ---
 
-## ✏️ Como adicionar ou editar condutas (Conduta Médica)
+## ✏️ Como adicionar ou editar condutas
 
 ### Pelo próprio app (recomendado)
 - Role a tela até a seção **"Cadastrar nova conduta"**.
@@ -189,21 +177,22 @@ Pronto! O app vai aparecer como um ícone na sua tela inicial, funcionando em te
 
 ---
 
-## 🔄 Como atualizar os apps
+## 🔄 Como atualizar o app
 
-1. Edite os arquivos (`index.html` ou `remume-v2.html`) no computador.
+1. Edite os arquivos no computador.
 2. Faça **upload** no GitHub (substituindo os arquivos antigos).
 3. No iPhone, abra o app (com internet) e feche – ele vai carregar a versão nova.
 
 ---
 
-## 📁 Estrutura do projeto
+## 📂 Estrutura do projeto
 conduta-medica/
-├── index.html # App Conduta Médica (condutas e protocolos)
-├── service-worker.js # Habilita o modo offline (PWA)
-├── remume-v2.html # App REMUME (medicamentos) – versão atualizada
-├── remume.html # App REMUME (versão antiga – backup)
-└── README.md # Este arquivo (documentação)
+├── index.html # Página principal do app (todo o código)
+├── service-worker.js # Habilita o modo offline
+├── remume.html # App REMUME (medicamentos)
+├── README.md # Este arquivo (documentação)
+└── (futuramente) icon/ # Ícones para o PWA
+
 
 ---
 
@@ -217,7 +206,7 @@ O app não substitui o julgamento clínico nem a avaliação presencial do pacie
 
 ## 🙏 Agradecimentos
 
-- Secretaria Municipal da Saúde de São Paulo (SMS/SP) – protocolos clínicos e REMUME.
+- Secretaria Municipal da Saúde de São Paulo (SMS/SP) – protocolos clínicos.
 - GitHub Pages – hospedagem gratuita.
 - Comunidade de desenvolvedores que compartilhou conhecimento.
 
