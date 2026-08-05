@@ -1,993 +1,178 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conduta Médica - SMS/SP</title>
+    <title>REMUME - Medicamentos SP</title>
     <style>
-        body { font-family: Arial; padding: 20px; background: #f5f5f5; max-width: 600px; margin: auto; }
-        h1 { color: #0055CC; }
-        .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        input, textarea, select { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: Arial; }
-        textarea { resize: vertical; }
-        button { background: #007AFF; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
-        button:hover { opacity: 0.9; }
-        .btn-excluir { background: #FF3B30; }
-        .btn-editar { background: #FF9500; }
-        .resultado { background: #e8f0fe; padding: 16px; border-radius: 8px; margin-top: 16px; }
-        .resultado button { margin-right: 8px; margin-top: 8px; }
-        .fonte { font-size: 12px; color: #666; margin-top: 8px; }
-        .observacoes { background: #f0f8ff; padding: 12px; border-radius: 8px; margin-top: 8px; border-left: 4px solid #007AFF; font-size: 14px; white-space: pre-wrap; }
-        .aviso { background: #fef9e7; padding: 10px; border-left: 4px solid #f39c12; font-size: 13px; margin-top: 16px; }
-        .catalogo { font-size: 14px; }
-        .catalogo table { width: 100%; border-collapse: collapse; }
-        .catalogo th, .catalogo td { padding: 6px 8px; border-bottom: 1px solid #eee; text-align: left; }
-        .catalogo th { background: #f0f0f0; }
-        .catalogo tr:hover { background: #f9f9f9; }
-        .filtros { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-        .filtro-btn { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; background: #e0e0e0; color: #333; }
-        .filtro-btn.ativo { background: #007AFF; color: white; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; padding: 16px; max-width: 800px; margin: auto; }
+        header { background: linear-gradient(135deg, #0055CC, #003399); color: white; padding: 20px; border-radius: 16px; margin-bottom: 20px; }
+        header h1 { font-size: 24px; font-weight: 700; }
+        header p { font-size: 14px; opacity: 0.8; margin-top: 4px; }
+        .filtros { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+        .filtro { background: #e0e7f0; padding: 6px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; border: none; transition: 0.2s; }
+        .filtro.ativo { background: #0055CC; color: white; }
+        .busca { width: 100%; padding: 14px 16px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; margin-bottom: 16px; background: white; }
+        .busca:focus { outline: none; border-color: #0055CC; box-shadow: 0 0 0 3px rgba(0,85,204,0.1); }
+        .categorias { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+        .categoria { background: #f0f2f5; padding: 4px 12px; border-radius: 16px; font-size: 12px; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
+        .categoria.ativo { background: #0055CC; color: white; border-color: #0055CC; }
+        .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); border-left: 4px solid #0055CC; }
+        .card h3 { font-size: 16px; color: #1a1a1a; }
+        .card .info { font-size: 13px; color: #666; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .card .info span { background: #f0f2f5; padding: 2px 10px; border-radius: 12px; }
+        .sem-resultados { text-align: center; padding: 40px; color: #999; font-size: 16px; }
+        .nivel { font-size: 11px; padding: 2px 10px; border-radius: 12px; background: #e8f0fe; color: #0055CC; }
+        .gestacao { font-size: 11px; padding: 2px 10px; border-radius: 12px; background: #fce4ec; color: #c62828; }
+        .gestacao.seguro { background: #e8f5e9; color: #2e7d32; }
+        .back { display: inline-block; margin-top: 20px; color: #0055CC; text-decoration: none; font-weight: 500; }
     </style>
 </head>
 <body>
 
-    <h1>📋 Conduta Médica</h1>
-    <p style="color: #555;">Protocolos da Prefeitura de São Paulo - SMS/SP</p>
+<header>
+    <h1>💊 REMUME – Medicamentos SP</h1>
+    <p>UBS · AMA · UPA · PSA · Emergência</p>
+</header>
 
-    <!-- BUSCA -->
-    <div class="card">
-        <h3>🔍 Buscar conduta</h3>
-        <input type="text" id="busca" placeholder="Digite o diagnóstico ou CID...">
-        <button onclick="buscar()">Buscar</button>
-    </div>
+<!-- FILTROS RÁPIDOS -->
+<div class="filtros">
+    <button class="filtro ativo" data-filtro="todos">📋 Todos</button>
+    <button class="filtro" data-filtro="UBS">🏥 UBS</button>
+    <button class="filtro" data-filtro="AMA">🏥 AMA</button>
+    <button class="filtro" data-filtro="UPA">🚑 UPA</button>
+    <button class="filtro" data-filtro="PSA">🏨 PSA</button>
+    <button class="filtro" data-filtro="Emergencia">🚨 Emergência</button>
+    <button class="filtro" data-filtro="gestacao">🤰 Gestação</button>
+</div>
 
-    <!-- RESULTADO -->
-    <div id="resultado" class="card resultado" style="display:none;"></div>
+<!-- BUSCA -->
+<input type="text" id="busca" class="busca" placeholder="Digite o nome do medicamento (ex: Amoxicilina, Paracetamol)..." oninput="filtrar()">
 
-    <!-- FILTROS POR NÍVEL -->
-    <div class="filtros">
-        <button class="filtro-btn ativo" data-nivel="todos">📋 Todos</button>
-        <button class="filtro-btn" data-nivel="AMA">🏥 AMA</button>
-        <button class="filtro-btn" data-nivel="UPA">🚑 UPA</button>
-        <button class="filtro-btn" data-nivel="PSA">🏨 PSA</button>
-        <button class="filtro-btn" data-nivel="Emergencia">🚨 Emergência</button>
-    </div>
+<!-- CATEGORIAS -->
+<div class="categorias" id="categoriasContainer">
+    <button class="categoria ativo" data-categoria="todos">Todos</button>
+    <button class="categoria" data-categoria="Analgésicos / Antitérmicos">Analgésicos</button>
+    <button class="categoria" data-categoria="Anti-histamínicos">Anti-histamínicos</button>
+    <button class="categoria" data-categoria="Anti-inflamatórios (AINEs)">AINEs</button>
+    <button class="categoria" data-categoria="Antibióticos">Antibióticos</button>
+    <button class="categoria" data-categoria="Antiespasmódicos">Antiespasmódicos</button>
+    <button class="categoria" data-categoria="Antifúngicos">Antifúngicos</button>
+    <button class="categoria" data-categoria="Antiparasitários">Antiparasitários</button>
+    <button class="categoria" data-categoria="Antivirais">Antivirais</button>
+    <button class="categoria" data-categoria="Cardiovascular">Cardiovascular</button>
+    <button class="categoria" data-categoria="Dermatológico">Dermatológico</button>
+    <button class="categoria" data-categoria="Endócrino / Hormônios">Endócrino</button>
+    <button class="categoria" data-categoria="Gastrointestinal">Gastrointestinal</button>
+    <button class="categoria" data-categoria="Neurológico / Psiquiátrico">Neurológico</button>
+    <button class="categoria" data-categoria="Oftálmicos">Oftálmicos</button>
+    <button class="categoria" data-categoria="Outros / Diversos">Outros</button>
+    <button class="categoria" data-categoria="Respiratório">Respiratório</button>
+    <button class="categoria" data-categoria="Vitaminas e Suplementos">Vitaminas</button>
+</div>
 
-    <!-- CADASTRO / EDIÇÃO -->
-    <div class="card">
-        <h3 id="tituloFormulario">➕ Cadastrar nova conduta</h3>
-        <input type="text" id="cid" placeholder="CID (ex: I10)">
-        <input type="text" id="diagnostico" placeholder="Diagnóstico (ex: Hipertensão Arterial)">
-        <textarea id="exames" placeholder="🧪 Exames a solicitar"></textarea>
-        <textarea id="tratamento" placeholder="💊 Tratamento"></textarea>
-        <textarea id="conduta" placeholder="📋 Conduta geral"></textarea>
-        <select id="nivel">
-            <option value="AMA">🏥 AMA</option>
-            <option value="UPA">🚑 UPA</option>
-            <option value="PSA">🏨 PSA</option>
-            <option value="Emergencia">🚨 Emergência</option>
-        </select>
-        <textarea id="observacoes" placeholder="📌 Observações Importantes (lembretes rápidos, tabelas, diferenciações...)" style="border-left: 4px solid #007AFF;"></textarea>
-        <input type="text" id="fonte" placeholder="Fonte (ex: Protocolo SMS/SP - 2024)">
-        <button id="btnSalvar" onclick="salvar()">💾 Salvar</button>
-        <button onclick="cancelarEdicao()" id="btnCancelar" style="display:none; background:#999;">Cancelar</button>
-    </div>
+<!-- LISTA DE MEDICAMENTOS -->
+<div id="listaMedicamentos"></div>
 
-    <!-- CATÁLOGO DE CIDs -->
-    <div class="card catalogo">
-        <h3>📋 Catálogo de CID-10</h3>
-        <p style="font-size:13px; color:#666;">Busque por CID ou diagnóstico – a lista atualiza automaticamente.</p>
-        <div id="listaCIDs">
-            <table>
-                <thead><tr><th>CID</th><th>Diagnóstico</th></tr></thead>
-                <tbody id="tabelaCIDs"></tbody>
-            </table>
-        </div>
-    </div>
+<a href="javascript:history.back()" class="back">⬅ Voltar para o app principal</a>
 
-    <div class="aviso">
-        ⚠️ <strong>Lembre-se:</strong> Esta é uma ferramenta de apoio à decisão clínica. A conduta final é sempre do médico responsável.
-    </div>
+<script>
+    // ===== BASE DE DADOS (medicamentos) =====
+    const medicamentos = [
+        // EXEMPLOS (você deve substituir pela sua lista completa)
+        { nome: 'Amoxicilina', via: 'Oral', categoria: 'Antibióticos', nivel: ['UBS','AMA','UPA'], gestacao: 'seguro' },
+        { nome: 'Azitromicina', via: 'Oral', categoria: 'Antibióticos', nivel: ['UBS','AMA','UPA'], gestacao: 'cautela' },
+        { nome: 'Paracetamol', via: 'Oral', categoria: 'Analgésicos / Antitérmicos', nivel: ['UBS','AMA','UPA','PSA','Emergencia'], gestacao: 'seguro' },
+        { nome: 'Dipirona', via: 'Oral', categoria: 'Analgésicos / Antitérmicos', nivel: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela' },
+        { nome: 'Dipirona', via: 'Injetável', categoria: 'Analgésicos / Antitérmicos', nivel: ['UPA','PSA','Emergencia'], gestacao: 'cautela' },
+        { nome: 'Ibuprofeno', via: 'Oral', categoria: 'Anti-inflamatórios (AINEs)', nivel: ['UBS','AMA','UPA'], gestacao: 'cautela' },
+        { nome: 'Diclofenaco', via: 'Oral', categoria: 'Anti-inflamatórios (AINEs)', nivel: ['UBS','AMA','UPA'], gestacao: 'cautela' },
+        { nome: 'Diclofenaco', via: 'Injetável', categoria: 'Anti-inflamatórios (AINEs)', nivel: ['UPA','PSA'], gestacao: 'cautela' },
+        { nome: 'Omeprazol', via: 'Oral', categoria: 'Gastrointestinal', nivel: ['UBS','AMA','UPA'], gestacao: 'seguro' },
+        { nome: 'Metoclopramida', via: 'Oral', categoria: 'Gastrointestinal', nivel: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela' },
+        { nome: 'Metoclopramida', via: 'Injetável', categoria: 'Gastrointestinal', nivel: ['UPA','PSA','Emergencia'], gestacao: 'cautela' },
+        { nome: 'Ondansetrona', via: 'Oral', categoria: 'Gastrointestinal', nivel: ['UBS','AMA','UPA','PSA'], gestacao: 'seguro' },
+        { nome: 'Ondansetrona', via: 'Injetável', categoria: 'Gastrointestinal', nivel: ['UPA','PSA','Emergencia'], gestacao: 'seguro' },
+        { nome: 'Salbutamol', via: 'Inalatória', categoria: 'Respiratório', nivel: ['UBS','AMA','UPA','PSA'], gestacao: 'seguro' },
+        { nome: 'Budesonida', via: 'Inalatória', categoria: 'Respiratório', nivel: ['UBS','AMA','UPA'], gestacao: 'seguro' },
+        { nome: 'Prednisona', via: 'Oral', categoria: 'Endócrino / Hormônios', nivel: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela' },
+        { nome: 'Loratadina', via: 'Oral', categoria: 'Anti-histamínicos', nivel: ['UBS','AMA','UPA'], gestacao: 'seguro' },
+        { nome: 'Metformina', via: 'Oral', categoria: 'Endócrino / Hormônios', nivel: ['UBS','AMA','UPA'], gestacao: 'seguro' },
+        { nome: 'Insulina NPH', via: 'Injetável', categoria: 'Endócrino / Hormônios', nivel: ['UBS','AMA','UPA','PSA','Emergencia'], gestacao: 'seguro' },
+        { nome: 'Insulina Regular', via: 'Injetável', categoria: 'Endócrino / Hormônios', nivel: ['UBS','AMA','UPA','PSA','Emergencia'], gestacao: 'seguro' },
+        { nome: 'Captopril', via: 'Oral', categoria: 'Cardiovascular', nivel: ['UBS','AMA','UPA'], gestacao: 'cautela' },
+        { nome: 'Losartana', via: 'Oral', categoria: 'Cardiovascular', nivel: ['UBS','AMA','UPA'], gestacao: 'cautela' },
+        { nome: 'Furosemida', via: 'Oral', categoria: 'Cardiovascular', nivel: ['UBS','AMA','UPA'], gestacao: 'cautela' },
+        { nome: 'Furosemida', via: 'Injetável', categoria: 'Cardiovascular', nivel: ['UPA','PSA','Emergencia'], gestacao: 'cautela' },
+        { nome: 'Hidralazina', via: 'Injetável', categoria: 'Cardiovascular', nivel: ['UPA','PSA','Emergencia'], gestacao: 'seguro' },
+        { nome: 'Escopolamina', via: 'Oral', categoria: 'Antiespasmódicos', nivel: ['UBS','AMA','UPA'], gestacao: 'cautela' },
+        { nome: 'Escopolamina', via: 'Injetável', categoria: 'Antiespasmódicos', nivel: ['UPA','PSA','Emergencia'], gestacao: 'cautela' },
+        // Adicione aqui todos os medicamentos da sua lista
+    ];
 
-    <!-- BOTÃO EXPORTAR DADOS (JSON) - INICIALMENTE ESCONDIDO -->
-    <div class="card" style="text-align: center; display: none;" id="areaBotaoExportar">
-        <button onclick="exportarDados()" style="background: #34C759; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
-            📤 Exportar dados (JSON)
-        </button>
-    </div>
+    let filtroNivel = 'todos';
+    let filtroCategoria = 'todos';
 
-    <div id="areaExportacao" class="card" style="display:none; background: #1e1e1e; color: #d4d4d4; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-wrap: break-word; max-height: 400px; overflow-y: auto; padding: 16px; border-radius: 8px;">
-        <pre id="jsonExportado"></pre>
-        <button onclick="copiarJSON()" style="background: #007AFF; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; margin-top: 8px;">📋 Copiar JSON</button>
-        <p style="color: #aaa; font-size: 11px; margin-top: 8px;">Copie este JSON e cole no lugar da lista `condutas` no arquivo `index.html`.</p>
-    </div>
-
-    <!-- SERVICE WORKER -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/conduta-medica/service-worker.js')
-                .then(() => console.log('✅ Service Worker registrado'))
-                .catch(err => console.log('❌ Erro:', err));
-        }
-    </script>
-
-    <script>
-        // ===== BANCO DE DADOS =====
-        let condutas = [];
-        let editandoId = null;
-        let filtroAtual = 'todos';
-
-        function carregar() {
-            const dados = localStorage.getItem('condutas');
-            if (dados) {
-                condutas = JSON.parse(dados);
-                condutas = condutas.map(c => {
-                    if (!c.nivel) c.nivel = 'AMA';
-                    return c;
-                });
-                salvarDados();
-            } else {
-                // ===== LISTA COMPLETA =====
-                condutas = [
-                    // =====================================================
-                    // CONDUTAS DA AMA (mantidas)
-                    // =====================================================
-                    {
-                        cid: 'A54',
-                        diagnostico: 'Gonorreia',
-                        exames: 'Teste rápido, Gram de secreção, Sorologias HIV/Sífilis/Hepatites.',
-                        tratamento: 'Ceftriaxona 500mg IM + Azitromicina 1g VO (dose única).',
-                        conduta: 'RESOLVE NA AMA. Orientar abstinência sexual até 7 dias após o tratamento e tratamento de parceiros. Notificar o agravo. ⚠️ ENCAMINHAR UPA/PSA se complicações (DIP, abscesso, epididimite, artrite séptica).',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\nA54 - Gonorreia: sempre tratar parceiros simultaneamente. Notificação compulsória.',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - ISTs'
-                    },
-                    {
-                        cid: 'A90',
-                        diagnostico: 'Dengue (Classificação de risco e sinais de alarme)',
-                        exames: 'Prova do laço, Hemograma com plaquetas, Glicemia, Testes rápidos (Dengue/COVID).',
-                        tratamento: 'Dipirona ou Paracetamol para dor e febre. CONTRAINDICAR AAS e AINEs (ibuprofeno, diclofenaco). Hidratação oral (80mL/kg/dia).',
-                        conduta: 'RESOLVE NA AMA (classificação A e B). Orientar hidratação vigorosa e sinais de alarme. Se sinais de alarme ou plaquetas < 50k: ENCAMINHAR UPA/PSA.',
-                        observacoes: '📋 CLASSIFICAÇÃO DE RISCO DENGUE:\n| Grupo | Critérios | Conduta na AMA |\n| A | Sem sinais de alarme, sem comorbidades, prova do laço negativa | ✅ Resolve na AMA |\n| B | Prova do laço positiva OU comorbidades/risco social | ✅ Resolve na AMA – hemograma + reavaliação 24-48h |\n| C | Qualquer sinal de alarme presente | ⚠️ Encaminhar UPA/PSA – Hidratação venosa (20mL/kg/h) |\n| D | Choque, hemorragia grave, desconforto respiratório | ⚠️ Encaminhamento URGENTE com monitorização contínua |\n\n⚠️ SINAIS DE ALARME (Grupo C):\n- Dor abdominal: intensa e contínua\n- Vômitos: persistentes (>3 episódios em 1h)\n- Hipotensão postural: tontura ao levantar\n- Hepatomegalia: dolorosa\n- Sangramento de mucosas: gengivas, nariz\n- Sonolência ou irritabilidade: rebaixamento da consciência\n- Diminuição da diurese: oligúria\n- Aumento repentino do hematócrito: >10% do basal\n- Queda abrupta de plaquetas: risco de sangramento\n\n↪️ Se qualquer sinal de alarme estiver presente, o paciente NÃO RESOLVE NA AMA e deve ser encaminhado para UPA/PSA com urgência.',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Dengue'
-                    },
-                    {
-                        cid: 'B01',
-                        diagnostico: 'Varicela (Catapora)',
-                        exames: 'Diagnóstico essencialmente clínico. Hemograma/PCR se sinais de infecção secundária.',
-                        tratamento: 'Dipirona 1g VO/EV ou Paracetamol 750mg VO (febre/dor). Anti-histamínico oral + loção de calamina (prurido). Aciclovir 800mg 5x/dia VO por 5-7 dias (adolescentes/adultos e imunossuprimidos – iniciar até 72h do exantema).',
-                        conduta: 'RESOLVE NA AMA (crianças e adultos hígidos). Isolamento domiciliar até todas as lesões em crosta (5-7 dias). Notificação compulsória (SINAN). ⚠️ ENCAMINHAR UPA/PSA se: gestante, imunossuprimido, recém-nascido, pneumonia (tosse + dispneia + SatO2 < 94%), infecção bacteriana secundária extensa.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Varicela típica em criança hígida | Sintomáticos + isolamento + notificação |\n| Varicela em adolescente/adulto | Sintomáticos + Aciclovir (iniciar até 72h) |\n| Varicela em gestante ou imunossuprimido | ⚠️ Encaminhar UPA |\n| Pneumonia por varicela (tosse + dispneia + SatO2 < 94%) | ⚠️ Encaminhar URGENTE |\n| Infecção bacteriana secundária | ⚠️ Encaminhar UPA (antibioticoterapia) |\n\n⚠️ ATENÇÃO ESPECIAL:\n- Isolamento: 1-2 dias antes do exantema até todas as lesões em crosta (5-7 dias).\n- Não usar AAS (ácido acetilsalicílico) – risco de síndrome de Reye.\n- Notificação compulsória (SINAN).',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Doenças Infecciosas'
-                    },
-                    {
-                        cid: 'B02',
-                        diagnostico: 'Herpes Zoster (Cobreiro)',
-                        exames: 'Diagnóstico essencialmente clínico. Glicemia (descartar diabetes). Sorologia anti-HIV se imunossupressão suspeita.',
-                        tratamento: 'Aciclovir 800mg 5x/dia VO por 7 dias OU Valaciclovir 1000mg 3x/dia VO por 7 dias. Analgesia: Dipirona 1g VO/EV ou Paracetamol 750mg VO. Para dor neuropática: Amitriptilina 25mg 1x/dia ou Gabapentina 300mg 1x/dia.',
-                        conduta: 'RESOLVE NA AMA (imunocompetentes, lesão em dermatomo tóraco-abdominal). Orientar repouso, analgesia, evitar contato com gestantes não vacinadas, imunossuprimidos e recém-nascidos. ⚠️ ENCAMINHAR UPA/PSA se: comprometimento ocular (oftálmico), Ramsay Hunt, zoster disseminado (>20 lesões), imunossuprimidos graves, dor intensa refratária.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\nB02 - Herpes Zoster: iniciar Aciclovir idealmente até 72h do início das lesões. Suspeitar de Herpes Zoster Oftálmico se lesão em ramo oftálmico do trigêmeo (encaminhar urgente ao oftalmologista).',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Dermatologia'
-                    },
-                    {
-                        cid: 'B04',
-                        diagnostico: 'Mpox (Varíola dos macacos)',
-                        exames: 'Diagnóstico clínico. PCR para MPXV a partir de swab de lesão cutânea (vesícula, pústula ou crosta).',
-                        tratamento: 'Sintomáticos: Dipirona 1g VO/EV ou Paracetamol 750mg VO. Cuidados com as lesões: manter limpas e secas. Em casos selecionados (imunossuprimidos, formas graves): considerar Tecovirimat (uso hospitalar).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. Isolamento imediato, uso de EPI, notificação compulsória e encaminhamento para UPA/SAE/CTA para confirmação diagnóstica e acompanhamento. Isolamento domiciliar até queda de todas as crostas.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Suspeita de Mpox | Isolamento + notificação + encaminhar UPA/SAE/CTA |\n| Paciente com lesões | Usar EPI completo |\n| Caso confirmado | Isolamento domiciliar até queda de todas as crostas |\n| Contatos assintomáticos | Monitoramento diário, sem quarentena |',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Mpox (Nota Técnica MS)'
-                    },
-                    {
-                        cid: 'B26',
-                        diagnostico: 'Caxumba (Parotidite epidêmica)',
-                        exames: 'Diagnóstico essencialmente clínico. Sorologia IgM para caxumba (a partir do 5º dia). Amilase sérica (se dor abdominal intensa – suspeita de pancreatite).',
-                        tratamento: 'Dipirona 1g VO/EV ou Paracetamol 750mg VO (febre/dor). Compressas mornas ou frias na região da parótida. Hidratação oral vigorosa e alimentação pastosa (evitar alimentos ácidos). Isolamento respiratório até o 9º dia após o início do aumento das parótidas.',
-                        conduta: 'RESOLVE NA AMA (casos típicos, sem complicações). Orientar isolamento domiciliar, repouso, hidratação, alimentação pastosa, e sinais de alarme para retorno imediato. Notificação compulsória (SINAN). ⚠️ ENCAMINHAR UPA/PSA se: orquite intensa, meningite (cefaleia intensa + rigidez nucal + vômitos), pancreatite (dor abdominal intensa), encefalite (rebaixamento, convulsões).',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Parotidite típica (febre + aumento de parótida) | Sintomáticos + isolamento + alta com orientação |\n| Orquite (dor testicular intensa) | ⚠️ Encaminhar UPA/PSA (risco de infertilidade) |\n| Meningite (cefaleia + rigidez nucal) | ⚠️ Encaminhar UPA/PSA (exame de LCR) |\n| Pancreatite (dor abdominal intensa + vômitos) | ⚠️ Encaminhar UPA/PSA (risco de complicações) |\n\n⚠️ RESUMO: O CID é o mesmo, mas a abordagem na AMA é diferente. Caxumba (sem complicações) e Orquite por Caxumba são duas entradas distintas.',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Doenças Infecciosas'
-                    },
-                    {
-                        cid: 'B26.0',
-                        diagnostico: 'Orquite por Caxumba (Complicação)',
-                        exames: 'Avaliação clínica com palpação testicular (dor, aumento de volume, calor local). Ultrassom Doppler testicular (na UPA) para descartar torção. Sumário de urina.',
-                        tratamento: 'Dipirona 1g VO/EV ou Ibuprofeno 600mg VO. Compressas frias locais. Suspensório escrotal (se disponível). Não usar corticoide sistêmico.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA com vaga em urologia. Risco de atrofia testicular e infertilidade (10-30% dos casos). Na UPA, realizar ultrassom Doppler para confirmar diagnóstico e descartar torção testicular (emergência cirúrgica).',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Orquite suspeita (dor testicular + história de caxumba) | ⚠️ Encaminhar UPA/PSA (urgência urológica) |\n| Torção testicular (dor súbita + ausência de fluxo ao Doppler) | ⚠️ Encaminhamento cirúrgico imediato (emergência) |\n| Abscesso testicular (febre alta + flutuação local) | ⚠️ Encaminhar para UPA/PSA (intervenção cirúrgica) |',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Complicações da Caxumba'
-                    },
-                    {
-                        cid: 'B86',
-                        diagnostico: 'Escabiose (Sarna)',
-                        exames: 'Diagnóstico essencialmente clínico. Exame dermatológico minucioso (procurar sulcos/interdigitais, punhos, axilas, região genital). Raspado de pele (se disponível).',
-                        tratamento: 'Permetrina 5% loção (aplicar no corpo todo do pescoço para baixo, deixar agir por 8-12h e enxaguar – repetir em 7 dias). OU Ivermectina VO 200mcg/kg (dose única, repetir em 7-14 dias). Anti-histamínico oral (Loratadina 10mg 1x/dia ou Dexclorfeniramina 2mg 8/8h) para prurido.',
-                        conduta: 'RESOLVE NA AMA. Tratar TODOS os contatos domiciliares e parceiros sexuais SIMULTANEAMENTE. O prurido pode persistir por 2-4 semanas após o tratamento eficaz. Orientar limpeza do ambiente (lavar roupas em água quente ≥ 60°C ou guardar em saco plástico por 3 dias). ⚠️ ENCAMINHAR UPA/PSA OU DERMATOLOGIA se: prurido intenso refratário, eczema extenso secundário, infecção bacteriana secundária (celulite/impetigo), ou suspeita de sarna crostosa (imunossuprimidos).',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Escabiose típica | Permetrina ou Ivermectina + tratar contatos |\n| Prurido persistente > 4 semanas | Reavaliar – pode ser falha ou reação alérgica pós-tratamento |\n| Escabiose crostosa | ⚠️ Encaminhar UPA/Dermatologia (altamente contagiosa) |\n| Infecção secundária (celulite) | ⚠️ Encaminhar UPA |\n\n⚠️ ATENÇÃO ESPECIAL:\n- Tratar todos os contatos SIMULTANEAMENTE.\n- O ácaro sobrevive até 72h fora do corpo – lavar roupas em água quente ou guardar em saco plástico por 3 dias.',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Dermatologia'
-                    },
-                    // ENDOCRINOLOGIA
-                    {
-                        cid: 'E16',
-                        diagnostico: 'Hipoglicemia (inclui suspeita de insulinoma)',
-                        exames: 'Glicemia capilar imediata. Se suspeita de insulinoma: glicemia + insulina + peptídeo C (em jejum).',
-                        tratamento: '• Consciente: 15g de carboidrato rápido (suco, açúcar, glicose gel) – reavaliar em 15min. • Inconsciente: Glicose 50% IV 20-50mL ou Glucagon IM. • Insulinoma: encaminhar para endocrinologia/cirurgia após estabilização.',
-                        conduta: 'RESOLVE NA AMA (hipoglicemia leve/moderada, consciente, sem recorrência). Após recuperação, orientar refeição com carboidrato de absorção lenta. ⚠️ ENCAMINHAR UPA/PSA se: refratária, recorrente, inconsciente, ou suspeita de insulinoma (hipoglicemia de repetição em jejum/pós-exercício, com sintomas neuroglicopênicos).',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n🔹 HIPOGLICEMIA LEVE/MODERADA (consciente):\n- 15g carboidrato rápido (suco, açúcar, glicose gel).\n- Reavaliar glicemia em 15 minutos.\n- Se mantiver < 70, repetir.\n\n🔹 HIPOGLICEMIA GRAVE (inconsciente):\n- Glicose 50% IV 20-50mL.\n- Glucagon IM (se acesso venoso difícil).\n\n🔹 SUSPEITA DE INSULINOMA:\n- Hipoglicemia de repetição, em jejum ou pós-exercício.\n- Investigar: glicemia + insulina + peptídeo C (em jejum).\n- Encaminhar para endocrinologia/cirurgia (ressecção do tumor).',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Endocrinologia'
-                    },
-                    // NEUROLOGIA
-                    {
-                        cid: 'G40',
-                        diagnostico: 'Crise Epiléptica (Convulsão) – Epilético conhecido',
-                        exames: 'Glicemia capilar, Eletrólitos, avaliar infecção.',
-                        tratamento: 'Crise > 5min: Diazepam 10mg IV ou Midazolam IM. Proteger cabeça e vias aéreas.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA (crise prolongada/1ª crise). Estabilizar e encaminhar UPA/PSA. Se crise breve em epiléptico conhecido, orientar e agendar retorno na UBS.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Crise breve (< 5min) em epilético conhecido | ✅ Resolve na AMA – proteção, O2, alta com orientação |\n| Crise prolongada (> 5min) ou repetição | ⚠️ Encaminhar UPA/PSA – Diazepam IV/Midazolam IM |\n| Primeira crise (sem diagnóstico prévio) | ⚠️ Encaminhar UPA/PSA – investigação (TC, EEG) |\n| Trauma durante a crise (queda, TCE) | ⚠️ Encaminhar UPA/PSA – avaliação de trauma e neurológica |\n| Gestante com crise epiléptica | ⚠️ Encaminhar UPA/MATERNIDADE – risco para a gestação |',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Neurologia'
-                    },
-                    {
-                        cid: 'G43.0',
-                        diagnostico: 'Enxaqueca sem aura',
-                        exames: 'Sinais vitais, Glicemia capilar, Avaliação neurológica sumária. ECG se > 50 anos ou fatores de risco.',
-                        tratamento: 'Dipirona 1g EV/IM/VO ou Ibuprofeno 600mg VO. Metoclopramida 10mg EV/IM (náuseas). Sumatriptano 50-100mg VO (refratário).',
-                        conduta: 'RESOLVE NA AMA (critérios típicos). Repouso, hidratação, prescrever analgésico de resgate. ⚠️ ENCAMINHAR se refratária, piora súbita, 1ª crise > 40 anos, sinais de alarme.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\nG43.0 - Enxaqueca sem aura: diferenciação com cefaleia tensional e cefaleia secundária (sinais de alarme: febre, rigidez nucal, déficit focal).',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Cefaleias'
-                    },
-                    // OFTALMOLOGIA
-                    {
-                        cid: 'H00.0',
-                        diagnostico: 'Hordéolo (Terçol)',
-                        exames: 'Diagnóstico clínico. Acuidade visual se queixa.',
-                        tratamento: 'Compressas mornas 10-15min 3-4x/dia. Pomada antibiótica (Tobramicina/Gentamicina) 5-7 dias. Dipirona 1g VO se dor. Não espremer.',
-                        conduta: 'RESOLVE NA AMA. Orientar higiene. ⚠️ ENCAMINHAR se abscesso extenso, celulite periorbitária, acometimento visual, recidivas frequentes.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Hordéolo típico | Compressas mornas + pomada antibiótica + alta com orientação |\n| Hordéolo com abscesso | ⚠️ Encaminhar UPA/Oftalmologia (drenagem cirúrgica) |\n| Celulite periorbitária | ⚠️ Encaminhamento URGENTE (risco de complicações) |\n| Recidivas frequentes | Investigar blefarite crônica, diabetes, ou demodex |\n\n⚠️ ATENÇÃO ESPECIAL:\n- Hordéolo interno (calázio): se persistir > 2 semanas, encaminhar para oftalmologia.\n- Não espremer! A manipulação pode disseminar a infecção.',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Oftalmologia'
-                    },
-                    {
-                        cid: 'H10.9',
-                        diagnostico: 'Conjuntivite aguda não especificada',
-                        exames: 'Exame clínico com lanterna. Teste de fluoresceína (se suspeita de ceratite).',
-                        tratamento: 'Viral: Compressas frias + lubrificante. Bacteriana: Tobramicina 0,3% 1 gota 4/4h 5-7 dias. Alérgica: Antihistamínico tópico + lubrificante.',
-                        conduta: 'RESOLVE NA AMA. Afastamento trabalho/escola. Higiene das mãos. ⚠️ ENCAMINHAR se dor intensa, fotofobia, baixa acuidade, ceratite, herpes ocular, oftalmia neonatal.',
-                        observacoes: '📋 DIFERENCIAÇÃO RÁPIDA:\n| Tipo | Secreção | Prurido | Adenomegalia |\n| Viral | Serosa/aquosa | Leve | Presente |\n| Bacteriana | Purulenta/hialina | Ausente | Ausente |\n| Alérgica | Serosa | Intenso | Ausente |\n\n⚠️ Lentes de contato: suspender imediatamente e só retornar após resolução completa.',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Oftalmologia'
-                    },
-                    {
-                        cid: 'H83.0',
-                        diagnostico: 'Labirintite (Inflamação do labirinto)',
-                        exames: 'Diagnóstico clínico. Exame otoneurológico (nistagmo, Romberg, Dix-Hallpike).',
-                        tratamento: 'Meclizina 25mg 8/8h ou Dimenidrato 50mg 8/8h. Ondansetrona 4mg IV ou Metoclopramida 10mg EV (náuseas).',
-                        conduta: 'RESOLVE NA AMA (quadro típico estável). Repouso, hidratação. ⚠️ ENCAMINHAR se sintomas intensos, perda de consciência, dificuldade para falar, visão dupla, suspeita de AVC.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Crise aguda de vertigem + náuseas, sem sinais neurológicos | Sintomáticos + repouso + alta com orientação para otorrino |\n| Vertigem + perda auditiva + zumbido | Suspeita de Labirintite – tratar sintomas e encaminhar para otorrino |\n| Vertigem + sinais neurológicos | ⚠️ Suspeita de AVC – Encaminhar UPA/PSA URGENTE |\n| Idoso com vertigem e instabilidade postural | ⚠️ Risco de queda – orientar repouso |',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Vertigem'
-                    },
-                    // CARDIOVASCULAR
-                    {
-                        cid: 'I10',
-                        diagnostico: 'Hipertensão Arterial Sistêmica',
-                        exames: 'Hemograma, Creatinina, Potássio, Glicemia, Colesterol, ECG, Fundoscopia.',
-                        tratamento: 'Losartana 50mg 1x/dia ou Enalapril 10mg 2x/dia.',
-                        conduta: 'RESOLVE NA AMA. Orientar redução de sal, exercícios, controle ponderal, reavaliar em 30 dias.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n- PA alvo: < 130x80 mmHg (diabéticos/renais) ou < 140x90 mmHg (geral).\n- Se PA ≥ 180x120 mmHg: Crise hipertensiva – avaliar lesão de órgão-alvo.\n- Se lesão de órgão-alvo: ⚠️ ENCAMINHAR UPA/PSA.\n- Se sem lesão: Captopril 25mg VO ou Nifedipino 10mg VO, reavaliar em 1-2h.',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Atenção Básica'
-                    },
-                    {
-                        cid: 'I16',
-                        diagnostico: 'Crise Hipertensiva',
-                        exames: 'Aferir PA em ambos os braços, Glicemia, Creatinina, Potássio, Sumário de urina, Fundoscopia.',
-                        tratamento: 'Sem lesão: Captopril 25mg VO ou Nifedipino 10mg VO. Com lesão: estabilizar e encaminhar UPA/PSA.',
-                        conduta: 'Identificar emergência (com lesão). Se urgência (sem lesão), tratar e reavaliar na AMA. ⚠️ ENCAMINHAR se lesão de órgão-alvo.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\nI16 - Crise Hipertensiva: diferenciação entre urgência (sem lesão de órgão-alvo) e emergência (com lesão). Na emergência, o encaminhamento deve ser imediato.',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Hipertensão'
-                    },
-                    // IAM - DIVIDIDO
-                    {
-                        cid: 'I21.0',
-                        diagnostico: 'IAM com Supra ST (IAMCSST)',
-                        exames: 'ECG urgente (em até 10min), Troponina, CPK-MB, Hemograma, Creatinina, Potássio, Glicemia.',
-                        tratamento: 'AAS 200-300mg mastigado + Nitroglicerina SL (se PA > 90) + Morfina 2-5mg EV + O2 (se SatO2 < 94%).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA COM URGÊNCIA.\n\n🔹 **No PSA (primeiro atendimento):**\n- ECG imediato, aspirina, nitrato, morfina, oxigênio.\n- Avaliar janela para trombólise (até 12h) ou ICP primária.\n- Contatar hemodinâmica e UTI Coronariana.\n\n🔹 **Emergencista (continuidade):**\n- Definir estratégia de reperfusão (trombólise vs. ICP).\n- Indicar internação em UTI Coronariana.\n- Monitorizar arritmias e complicações.',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – IAMCSST:\n🔹 Diagnóstico: IAM com supra ST – indicação de ICP primária.\n🔹 Conduta na internação: UTI Coronariana, monitorização contínua, ECG seriado.\n🔹 Medicações: AAS 200mg, Clopidogrel 300mg, Heparina, Nitroglicerina EV se PA > 110, Morfina EV se dor.\n🔹 Exames: Troponina seriada, Ecocardiograma, Coronariografia.\n🔹 Cuidados: Repouso absoluto, restrição hídrica, dieta zero.\n🔹 Fluxo: Contatar CTI, comunicar equipe de hemodinâmica.',
-                        nivel: 'Emergencia',
-                        fonte: 'Protocolo SMS/SP - Cardiologia'
-                    },
-                    {
-                        cid: 'I21.4',
-                        diagnostico: 'IAM sem Supra ST (IAMSST)',
-                        exames: 'ECG urgente (em até 10min), Troponina seriada, CPK-MB, Hemograma, Creatinina, Potássio, Glicemia.',
-                        tratamento: 'AAS 200-300mg mastigado + Betabloqueador (Metoprolol 25-50mg VO) + Estatina (Atorvastatina 80mg) + Heparina (na UPA).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA COM URGÊNCIA.\n\n🔹 **No PSA (primeiro atendimento):**\n- ECG, troponina, estratificação de risco (TIMI/GRACE).\n- Iniciar AAS, betabloqueador, estatina, heparina.\n- Se alto risco, encaminhar para ICP (angioplastia).\n\n🔹 **Emergencista (continuidade):**\n- Definir necessidade de ICP.\n- Indicar internação em unidade coronariana.\n- Ajustar antiagregação e anticoagulação.',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – IAMSST:\n🔹 Diagnóstico: IAM sem supra ST – estratificação de risco.\n🔹 Conduta na internação: Unidade Coronariana, monitorização contínua.\n🔹 Medicações: AAS 200mg, Clopidogrel 300mg, Heparina, Metoprolol 25-50mg VO.\n🔹 Exames: Troponina seriada, Ecocardiograma, Teste ergométrico (após estabilização).\n🔹 Cuidados: Repouso relativo, controle glicêmico, dieta leve.\n🔹 Fluxo: Contatar CTI, agendar ICP se necessário.',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Cardiologia'
-                    },
-                    {
-                        cid: 'I50',
-                        diagnostico: 'Insuficiência Cardíaca',
-                        exames: 'ECG, Raio-X tórax, BNP, Ecocardiograma, Creatinina, Potássio.',
-                        tratamento: 'Furosemida 40mg + Enalapril 10mg + Carvedilol 12,5mg.',
-                        conduta: 'Restrição hídrica e salina, pesagem diária. ⚠️ ENCAMINHAR se sinais de gravidade (EAP, baixo débito).',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\nI50 - Insuficiência Cardíaca: sinais de descompensação incluem dispneia súbita, edema agudo de pulmão (EAP) e baixo débito – encaminhar urgentemente.',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Cardiologia'
-                    },
-                    // AVC - DIVIDIDO
-                    {
-                        cid: 'I63.9',
-                        diagnostico: 'AVC Isquêmico (AVCI) – Janela de trombólise',
-                        exames: 'Glicemia capilar, ECG, Hemograma, Coagulograma. TC de crânio (urgente – descartar hemorragia).',
-                        tratamento: 'Manter vias aéreas, O2 (se SatO2 < 94%), cabeceira elevada 30°. NÃO usar AAS antes da TC. Se elegível: trombólise (até 4,5h).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA COM URGÊNCIA.\n\n🔹 **No PSA (primeiro atendimento):**\n- TC de crânio urgente (descartar hemorragia).\n- Avaliar elegibilidade para trombólise (janela < 4,5h, NIHSS, idade, anticoagulantes).\n- Se elegível, encaminhar para centro de trombólise.\n\n🔹 **Emergencista (continuidade):**\n- Definir trombólise ou terapia endovascular.\n- Indicar internação em UTI Neurológica.\n- Monitorizar déficits e complicações.',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – AVCI:\n🔹 Diagnóstico: AVC isquêmico – janela de trombólise.\n🔹 Conduta na internação: UTI Neurológica, monitorização neurológica rigorosa.\n🔹 Medicações: Trombólise (se elegível) – Alteplase 0,9mg/kg EV. AAS (após TC negativa, se não trombolisado).\n🔹 Exames: TC de crânio (controle), Doppler transcraniano, Ecocardiograma (fonte embólica).\n🔹 Cuidados: Cabeceira elevada 30°, controle glicêmico, prevenir aspiração.\n🔹 Fluxo: Contatar neurointervenção, UTI Neurológica.',
-                        nivel: 'Emergencia',
-                        fonte: 'Protocolo SMS/SP - Neurologia'
-                    },
-                    {
-                        cid: 'I61.9',
-                        diagnostico: 'AVC Hemorrágico (AVCH) – Sangramento intracraniano',
-                        exames: 'Glicemia capilar, ECG, Hemograma, Coagulograma. TC de crânio (urgente – confirmar sangramento).',
-                        tratamento: 'Manter vias aéreas, O2 (se SatO2 < 94%), cabeceira elevada 30°. Controle pressórico rigoroso (PA < 140/90 mmHg). Suspender anticoagulantes/antiagregantes.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA COM URGÊNCIA.\n\n🔹 **No PSA (primeiro atendimento):**\n- TC de crânio urgente (confirmar sangramento).\n- Controle pressórico rigoroso (PA < 140/90 mmHg).\n- Suspender anticoagulantes/antiagregantes.\n- Avaliar necessidade de neurocirurgia (hematoma com efeito de massa).\n\n🔹 **Emergencista (continuidade):**\n- Indicar neurocirurgia se necessário.\n- Internar em UTI Neurológica.\n- Monitorizar PIC e complicações.',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – AVCH:\n🔹 Diagnóstico: AVC hemorrágico – hipertensão grave.\n🔹 Conduta na internação: UTI Neurológica, monitorização de PIC.\n🔹 Medicações: Controle pressórico (Nitroprussiato, Labetalol), anticonvulsivantes (se crise).\n🔹 Exames: TC de crânio (controle), angiografia (se suspeita de aneurisma).\n🔹 Cuidados: Cabeceira elevada 30°, repouso absoluto, evitar esforço.\n🔹 Fluxo: Contatar neurocirurgia, UTI Neurológica.',
-                        nivel: 'Emergencia',
-                        fonte: 'Protocolo SMS/SP - Neurologia'
-                    },
-                    {
-                        cid: 'I80.9',
-                        diagnostico: 'Trombose Venosa Profunda (TVP)',
-                        exames: 'Avaliação clínica, Critérios de Wells, D-dímero. ECG.',
-                        tratamento: 'HBPM (Enoxaparina 1mg/kg SC 12/12h). Dipirona 1g VO/EV. Repouso com elevação do membro.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR UPA/PSA para US Doppler e definição terapêutica.',
-                        observacoes: '📋 CRITÉRIOS DE WELLS PARA TVP (PONTUAÇÃO):\n| Critério | Pontos |\n| Câncer ativo | +1 |\n| Paresia ou imobilização recente | +1 |\n| Imobilização ≥ 3 dias ou cirurgia | +1 |\n| Dor à palpação das veias profundas | +1 |\n| Edema de toda a perna | +1 |\n| Edema > 2 cm acima do tornozelo contralateral | +1 |\n| Veias colaterais superficiais | +1 |\n| Diagnóstico alternativo tão provável | -2 |\n\n📊 ESCORE:\n| ≥ 2 | Alta | Encaminhar com urgência |\n| 1 | Moderada | Encaminhar para investigação |\n| ≤ 0 | Baixa | Considerar diagnóstico alternativo |\n\n⚠️ SINAIS DE ALARME (EMBOLIA PULMONAR):\n- Dispneia súbita, dor torácica ventilatório-dependente, hemoptise, hipoxemia (SatO2 < 94%), hipotensão, rebaixamento da consciência.\nSe presente: O2, monitorização e encaminhamento imediato para UPA/PSA com suporte avançado.',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - TVP'
-                    },
-                    // RESPIRATÓRIO
-                    {
-                        cid: 'J11',
-                        diagnostico: 'Síndrome Gripal / Dengue',
-                        exames: 'Prova do laço, Hemograma com plaquetas, Glicemia, Testes rápidos (Dengue/COVID).',
-                        tratamento: 'Dipirona ou Paracetamol. CONTRAINDICAR AAS e AINEs.',
-                        conduta: 'RESOLVE NA AMA (grupo A e B). Hidratação vigorosa e orientar sinais de alarme. Se sinais de alarme ou plaquetas < 50k: ENCAMINHAR UPA/PSA.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\nJ11 - Síndrome Gripal/Dengue: na suspeita de Dengue, contraindicar AAS e AINEs. Orientar hidratação e sinais de alarme.',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Vigilância'
-                    },
-                    {
-                        cid: 'J44',
-                        diagnostico: 'Exacerbação de DPOC / Asma Grave',
-                        exames: 'Oximetria de pulso, Gasometria, Raio-X de tórax (se pneumonia).',
-                        tratamento: 'Salbutamol + Ipratrópio com espaçador (repetir 20/20min). Prednisona 40-60mg VO ou Hidrocortisona IV. O2 para SatO2 > 92%.',
-                        conduta: 'Se melhora: observação e tratamento para casa com retorno 48h. Se sinais de gravidade: ENCAMINHAR UPA/PSA.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\nJ44 - DPOC/Asma: avaliar gravidade pela FR, uso de musculatura acessória e SatO2. Se melhora com broncodilatador, pode ser tratado na AMA. Se sem melhora, encaminhar.',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Pneumologia'
-                    },
-                    // GASTROINTESTINAL
-                    {
-                        cid: 'K81.0',
-                        diagnostico: 'Colecistite Aguda',
-                        exames: 'Sinais vitais, Hemograma, PCR, Amilase, Bilirrubinas, USG (se disponível).',
-                        tratamento: 'Jejum zero, Hidratação venosa (SF 0,9% ou Ringer). Dipirona 1g EV + Escopolamina 20mg EV (cólica). Se dor intensa: Morfina 2-5mg EV lento. Antibioticoterapia empírica (Ampicilina + Gentamicina + Metronidazol).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA (🟠 Laranja – Manchester).\n\n🔹 **PSA:** Jejum, hidratação, analgesia, antibioticoterapia.\n🔹 **Emergencista (cirurgião):** Avaliação para colecistectomia (urgente ou eletiva).',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – COLECISTITE:\n🔹 Diagnóstico: Colecistite aguda.\n🔹 Conduta: Internação para antibioticoterapia EV e avaliação cirúrgica.\n🔹 Medicações: Jejum, hidratação, analgesia (Dipirona + Escopolamina), antibiótico (Ampicilina + Gentamicina + Metronidazol).\n🔹 Exames: Hemograma, PCR, USG.\n🔹 Cuidados: Jejum zero, monitorização de sinais de peritonite.',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Abdome Agudo'
-                    },
-                    // NEFROLOGIA / UROLOGIA
-                    {
-                        cid: 'N23',
-                        diagnostico: 'Cólica renal (Litíase urinária)',
-                        exames: 'Sumário de urina, Glicemia capilar, Creatinina, USG.',
-                        tratamento: 'Dipirona 1g EV + Escopolamina 20mg EV. Morfina 2-5mg EV lento ou Tramadol 50-100mg EV/IM.',
-                        conduta: 'RESOLVE NA AMA (caso típico). Hidratação vigorosa, analgésicos para casa, retorno 48-72h. ⚠️ ENCAMINHAR se febre, dor refratária, gestante, rim único.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\nN23 - Cólica renal: a dor pode ser intensa. O tratamento com Dipirona + Escopolamina é a primeira linha. Se dor refratária, Morfina ou Tramadol. Encaminhar se febre (pielonefrite) ou dor refratária.',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Litíase Urinária'
-                    },
-                    {
-                        cid: 'N39',
-                        diagnostico: 'Infecção do Trato Urinário (ITU)',
-                        exames: 'Sumário de urina, Urocultura, Hemograma, Creatinina.',
-                        tratamento: 'Antibiótico empírico (Ciprofloxacino 500mg 12/12h ou Nitrofurantoína 100mg 6/6h). Dipirona.',
-                        conduta: 'RESOLVE NA AMA (mulheres jovens). Se febre alta, idoso, diabético: ENCAMINHAR UPA/PSA.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\nN39 - ITU: na AMA, o tratamento é resolutivo para a maioria das mulheres jovens sem comorbidades. Se pielonefrite suspeita (febre alta, dor lombar), encaminhar.',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Infectologia'
-                    },
-                    // =====================================================
-                    // OBSTETRÍCIA - O14 (PRÉ-ECLÂMPSIA) ATUALIZADA
-                    // =====================================================
-                    {
-                        cid: 'O14',
-                        diagnostico: 'Pré-eclâmpsia',
-                        exames: 'Aferir PA, Proteinúria, Hemograma (plaquetas), Creatinina, Ácido úrico, TGO/TGP, Bilirrubinas.',
-                        tratamento: 'Sulfato de Magnésio IV. Hidralazina IV ou Nifedipino VO (se PA ≥ 160x110). Corticoides (se IG < 34 sem).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA OBSTÉTRICA. Encaminhar UPA/MATERNIDADE imediatamente.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Hipertensão + Proteinúria (sem sinais de gravidade) | ⚠️ Não resolve – Encaminhar para avaliação obstétrica |\n| PA ≥ 160x110 mmHg ou sinais de iminência de eclâmpsia | ⚠️ Emergência – Medicar e encaminhar URGENTE |\n| Convulsão (Eclâmpsia - O15) | ⚠️ Emergência máxima – Diazepam IV, Sulfato de Magnésio e encaminhar IMEDIATAMENTE |\n\n⚠️ DROGA DE ESCOLHA PARA ECLAMPSIA: MgSO4 (Sulfato de Magnésio).\n- Dose de Ataque (IV): 4g EV em 15-20min.\n- Dose de Manutenção (IM): 10g IM (5g em cada nádega).\n- Antídoto: Gluconato de Cálcio 10% (10-20mL EV lento).\n\n📌 HIDRALAZINA INJETÁVEL (PRÉ-ECLÂMPSIA) – LEMBRETE RÁPIDO:\n✅ Indicada: Crise hipertensiva grave (PA diastólica ≥ 110 mmHg) na pré-eclâmpsia/eclâmpsia.\n✅ Dose: 5-10 mg EV lento (2-5 min). Repetir a cada 15-20 min se necessário. Máx: 20 mg.\n✅ Alvo: PA 140-150 x 90-100 mmHg.\n⚠️ Cuidados: Monitorizar PA e FC a cada 5-10 min. Risco de hipotensão abrupta.\n❌ Contraindicações: Dissecção aórtica, IAM com supra ST, hipersensibilidade, feocromocitoma.\n🤰 Gestação: Segura (categoria C) – droga de escolha na pré-eclâmpsia.\n🔹 Interações: Assoc. com outros anti-hipertensivos pode potencializar efeito. AINEs reduzem efeito.',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Síndromes Hipertensivas'
-                    },
-                    {
-                        cid: 'O21',
-                        diagnostico: 'Hiperêmese Gravídica (Vômitos na gravidez)',
-                        exames: 'Sinais vitais, Glicemia capilar, Eletrólitos, Beta-HCG, Sumário de urina (cetose).',
-                        tratamento: 'Ondansetrona 4mg 8/8h VO/EV ou Metoclopramida 10mg 8/8h. Hidratação venosa (SF 0,9% ou Ringer) se vômitos incoercíveis.',
-                        conduta: 'RESOLVE NA AMA (casos leves – O21.0). Alimentação fracionada, repouso. ⚠️ ENCAMINHAR se desidratação grave, perda de peso > 5%, cetose, vômitos incoercíveis (O21.1).',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\nO21 - Hiperêmese Gravídica: a maioria dos casos leves resolve na AMA com antieméticos e orientação alimentar. Se desidratação grave ou perda de peso > 5%, encaminhar para maternidade.',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Obstetrícia'
-                    },
-                    // SINTOMAS E SINAIS
-                    {
-                        cid: 'R04.0',
-                        diagnostico: 'Epistaxe (Sangramento nasal)',
-                        exames: 'Sinais vitais, Coagulograma (se anticoagulantes).',
-                        tratamento: 'Compressão digital, Vasoconstritor tópico, Tamponamento anterior.',
-                        conduta: 'RESOLVE NA AMA (sangramento anterior). ⚠️ ENCAMINHAR se sangramento abundante, falha tamponamento.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Tipo de sangramento | Conduta na AMA |\n| Anterior (plexo de Kiesselbach) – leve/moderado | Compressão + vasoconstritor + alta com orientação |\n| Anterior refratário | Tamponamento anterior + encaminhar UPA |\n| Posterior (suspeita: deglutição de sangue) | ⚠️ Encaminhar UPA/PSA (tamponamento posterior e avaliação) |\n| Uso de anticoagulantes | ⚠️ Encaminhar UPA/PSA (risco de sangramento grave) |',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Otorrinolaringologia'
-                    },
-                    {
-                        cid: 'R06.0',
-                        diagnostico: 'Dispneia (Dificuldade respiratória)',
-                        exames: 'Oximetria, Sinais vitais, ECG, Raio-X tórax.',
-                        tratamento: 'O2 se SatO2 < 94%. Broncodilatador. Se EAP: Furosemida IV + Nitroglicerina SL + sedestação com pernas pendentes.',
-                        conduta: 'RESOLVE NA AMA se SatO2 > 94%. ⚠️ ENCAMINHAR IMEDIATAMENTE se SatO2 < 92%, FR > 30, confusão.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Causa | Achado típico | Conduta imediata na AMA |\n| Asma/DPOC | Sibilos, expiração prolongada | Broncodilatador + corticoide |\n| EAP (Insuficiência Cardíaca) | Estertores crepitantes, dispneia súbita | Furosemida IV + Nitro SL + Oxigênio |\n| Pneumonia | Febre, tosse, estertores localizados | Antibiótico + O2 (se grave, encaminhar) |\n| TEP | Dispneia súbita + dor torácica + hemoptise | Estabilizar e ENCAMINHAR URGENTE |\n| Corpo estranho | Início súbito, estridor | Manobra de Heimlich |',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Dispneia'
-                    },
-                    {
-                        cid: 'R07.4',
-                        diagnostico: 'Dor Torácica não especificada',
-                        exames: 'Sinais vitais, ECG (em até 10min), Glicemia capilar, Troponina, Raio-X tórax.',
-                        tratamento: 'IAM suspeito: AAS + Nitroglicerina SL + Morfina + O2. Costocondrite: AINE + compressa quente. DRGE: Antácido + Omeprazol 20mg VO.',
-                        conduta: '⚠️ NUNCA ignorar dor torácica. RESOLVE NA AMA se costocondrite, DRGE. ⚠️ ENCAMINHAR IMEDIATAMENTE se IAM, Embolia Pulmonar, Dissecção Aórtica, Pneumotórax Hipertensivo, Pericardite Aguda, Taquiarritmia instável.',
-                        observacoes: '📋 LEMBRETE RÁPIDO (ABORDAGEM SINDRÔMICA):\n| Causa | Achado típico | Conduta na AMA |\n| IAM (Infarto) | Dor precordial, sudorese, ECG com supra/infradesnivelamento | ⚠️ AAS, Nitro, Morfina, O2 → Encaminhar URGENTE |\n| Embolia Pulmonar | Dispneia súbita + dor torácica + hemoptise | ⚠️ O2, estabilizar → Encaminhar URGENTE |\n| Dissecção Aórtica | Dor súbita e lancinante, irradiação para dorso | ⚠️ Encaminhar URGENTE para cirurgia cardíaca |\n| Pneumotórax | Dor + dispneia + abolição do MV + SatO2 < 90% | ⚠️ Encaminhar URGENTE (drenagem) |\n| Pericardite | Dor à inspiração, melhora com inclinação | ⚠️ Encaminhar UPA (tratamento específico) |\n| Costocondrite | Dor à palpação, piora com movimento | ✅ Resolve na AMA (AINE + compressa quente) |\n| DRGE | Dor retroesternal, piora com deitado | ✅ Resolve na AMA (antácido + IBP) |',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Dor Torácica'
-                    },
-                    {
-                        cid: 'R10.0',
-                        diagnostico: 'Abdômen Agudo (Dor abdominal aguda)',
-                        exames: 'Sinais vitais, Exame abdominal, Glicemia capilar, B-HCG, ECG, Hemograma, Amilase, PCR, USG.',
-                        tratamento: 'Jejum, Dipirona 1g EV + Escopolamina 20mg EV. Morfina 2-5mg EV (dor intensa). Antiemético: Ondansetrona 4mg IV ou Metoclopramida 10mg EV.',
-                        conduta: '⚠️ DIFERENCIAR causas cirúrgicas de clínicas. RESOLVE NA AMA se gastroenterite, dispepsia, cólica intestinal, constipação, cistite. ⚠️ ENCAMINHAR IMEDIATAMENTE se apendicite, colecistite, pancreatite, obstrução, gravidez ectópica.',
-                        observacoes: '📋 LEMBRETE RÁPIDO (CAUSAS MAIS COMUNS):\n| Causa | Achado típico | Conduta na AMA |\n| Apendicite | Dor em FID, Blumberg +, náuseas, febre | ⚠️ Encaminhar UPA/PSA (avaliação cirúrgica) |\n| Colecistite | Dor em HCD, Murphy +, febre | ⚠️ Encaminhar UPA/PSA (cirurgia) |\n| Pancreatite | Dor em faixa abdominal, vômitos, amilase elevada | ⚠️ Encaminhar UPA/PSA (internação) |\n| Obstrução intestinal | Distensão, parada de eliminação de gases | ⚠️ Encaminhar UPA/PSA (cirurgia) |\n| Gravidez ectópica | Dor pélvica + sangramento + B-HCG + | ⚠️ Encaminhar URGENTE |\n| Gastroenterite | Vômitos/diarreia, febre baixa | ✅ Resolve na AMA |\n| Cólica intestinal/constipação | Dor cólica, distensão | ✅ Resolve na AMA |\n| ITU/Cistite | Dor em HCD ou pelve, disúria, febre | ✅ Resolve na AMA |',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Abdômen Agudo'
-                    },
-                    {
-                        cid: 'R42',
-                        diagnostico: 'Tontura e instabilidade',
-                        exames: 'Sinais vitais, Glicemia capilar, ECG, Dix-Hallpike.',
-                        tratamento: 'Meclizina 25mg 8/8h. Náuseas: Ondansetrona 4mg IV ou Metoclopramida 10mg EV. Pré-síncope: Hidratação venosa SF 0,9%.',
-                        conduta: 'RESOLVE NA AMA (VPPB). ⚠️ ENCAMINHAR UPA/PSA se disartria, diplopia, ataxia grave, cefaleia súbita (AVC).',
-                        observacoes: '📋 DIFERENCIAÇÃO RÁPIDA:\n| Característica | Periférica (VPPB/Neurite) | Central (AVE/Tumor) |\n| Nistagmo | Horizontal, unidirecional, suprimível | Vertical, rotatório, não suprimível |\n| Desequilíbrio | Leve a moderado | Grave (incapacidade de ficar em pé) |\n| Sinais neurológicos | Ausentes | Presentes (disartria, diplopia, ataxia) |\n| Conduta | RESOLVE NA AMA | ENCAMINHAR UPA/PSA |',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Neurologia'
-                    },
-                    {
-                        cid: 'R51',
-                        diagnostico: 'Cefaleia (Dor de cabeça)',
-                        exames: 'Sinais vitais, Glicemia capilar, Avaliação neurológica sumária (pupilas, pares cranianos, força, sensibilidade, coordenação, marcha). Fundoscopia (se disponível). ECG se > 50 anos.',
-                        tratamento: '• Tensional/Enxaqueca leve: Dipirona 1g VO/EV ou Ibuprofeno 600mg VO ou Paracetamol 750mg VO. • Com náuseas: Metoclopramida 10mg EV/IM ou Ondansetrona 4mg IV. • Refratária: Sumatriptano 50-100mg VO (se disponível). • Em salvas: Oxigênio 100% (12-15L/min) 15-20min + Sumatriptano.',
-                        conduta: 'RESOLVE NA AMA (cefaleia primária, sem sinais de alarme). Orientar repouso, hidratação, evitar gatilhos. ⚠️ ENCAMINHAR UPA/PSA IMEDIATAMENTE se: "pior dor de cabeça da vida", febre + rigidez nucal (meningite), déficit focal, rebaixamento, papiledema, imunossuprimido, esforço/atividade sexual.',
-                        observacoes: '📋 DIFERENCIAÇÃO RÁPIDA:\n| Tipo | Características | Conduta |\n| Tensional | Opressiva/bilateral, leve a moderada | ✅ Resolve na AMA |\n| Enxaqueca | Pulsátil/unilateral, náuseas, fotofobia | ✅ Resolve na AMA |\n| Em salvas | Unilateral/periorbitária, intensa, lacrimejamento | ⚠️ Oxigênio + encaminhar UPA |\n| Secundária (sinais de alarme) | Início súbito, febre, déficit focal | ⚠️ ENCAMINHAR URGENTE |\n\n⚠️ SINAIS DE ALARME:\n- "Pior dor de cabeça da vida" (início súbito)\n- Cefaleia + febre + rigidez nucal\n- Déficit neurológico focal\n- Rebaixamento da consciência\n- Papiledema',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Cefaleias'
-                    },
-                    {
-                        cid: 'R65.2',
-                        diagnostico: 'Sepse / Choque Séptico',
-                        exames: 'Sinais vitais, Lactato sérico, Gasometria, Hemograma, Creatinina, Bilirrubinas, Coagulograma, PCR, Hemoculturas, Urocultura, RX tórax.',
-                        tratamento: 'O2 (SatO2 ≥ 94%). Reposição volêmica 20-30 mL/kg EV. Antibiótico de amplo espectro (1ª hora). Vasopressor: Noradrenalina EV (PAM ≥ 65 mmHg).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA. ENCAMINHAR PARA UPA/PSA IMEDIATAMENTE após estabilização. Pacote de 1 hora: lactato, hemoculturas, antibiótico, volume, vasopressor se necessário.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Suspeita de sepse (infecção + 2 critérios de SIRS + disfunção orgânica) | ⚠️ Estabilizar (O2, acesso, volume) e encaminhar URGENTE |\n| Choque séptico (hipotensão refratária a volume) | ⚠️ Noradrenalina + encaminhamento com monitorização contínua |\n| Lactato elevado (> 2 mmol/L) | ⚠️ Marcador de gravidade |\n| Paciente com sepse e instabilidade hemodinâmica | ⚠️ Não tentar resolver na AMA – estabilizar e transferir |\n\n⚠️ PACOTE DE 1 HORA:\n1. Medir lactato\n2. Coletar hemoculturas\n3. Iniciar antibiótico de amplo espectro\n4. Reposição volêmica com cristaloides (20-30 mL/kg)\n5. Vasopressor se hipotensão (PAM ≥ 65 mmHg)',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Sepse'
-                    },
-                    // ACIDENTES
-                    {
-                        cid: 'T63',
-                        diagnostico: 'Acidente por animal peçonhento',
-                        exames: 'Sinais vitais, Observar local da picada, Coagulograma.',
-                        tratamento: 'Limpeza local, compressa fria. Não fazer torniquete. Vacina antitetânica.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA na maioria. ENCAMINHAR UPA/PSA (soro antiveneno).',
-                        observacoes: '📋 DIFERENCIAÇÃO RÁPIDA:\n| Animal | Sinais principais | Conduta na AMA |\n| Cobra (Botrópica – Jararaca) | Edema, equimose, bolhas, sangramento gengival | Encaminhar urgente (risco de sangramento/necrose) |\n| Cobra (Elapídica – Coral) | Ptose palpebral, visão dupla, fraqueza muscular | Encaminhar urgente (risco de insuficiência respiratória) |\n| Escorpião | Dor intensa, sudorese, sialorreia, taquicardia | Observar ou encaminhar (se grave ou criança) |\n| Aranha (Marrom/Loxosceles) | Lesão necrótica, dor, bolha, febre | Encaminhar (risco de necrose) |\n| Aranha (Armadeira) | Dor intensa, sudorese, priapismo | Encaminhar (risco de efeitos sistêmicos) |\n| Lagarta / Lacraia | Dor local, eritema, edema | Resolve na AMA (sintomático) |',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Acidentes com Animais Peçonhentos'
-                    },
-                    {
-                        cid: 'T78.2',
-                        diagnostico: 'Choque anafilático',
-                        exames: 'Diagnóstico clínico. Sinais vitais a cada 5 min.',
-                        tratamento: 'Adrenalina IM (1:1000) 0,3-0,5mg adultos. O2. Reposição volêmica. Hidrocortisona EV.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. EMERGÊNCIA MÉDICA. ENCAMINHAR UPA/PSA IMEDIATAMENTE.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n✅ Primeira droga: ADRENALINA IM (1:1000) 0,3-0,5mg adultos.\n✅ Posicionamento: Decúbito dorsal com pernas elevadas (Trendelenburg).\n✅ O2 (máscara com reservatório) – manter SatO2 ≥ 94%.\n✅ Reposição volêmica agressiva: SF 0,9% 20-30 mL/kg EV.\n\n⚠️ CONTRAINDICAÇÕES ABSOLUTAS:\n❌ Adrenalina EV em bolus → arritmias fatais.\n❌ Anti-histamínicos orais como primeira linha.\n❌ Corticoide como primeira droga.\n❌ Posicionamento em pé ou sentado.',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Anafilaxia'
-                    },
-                    {
-                        cid: 'U07.1',
-                        diagnostico: 'COVID-19 (Síndrome Gripal / SARS-CoV-2)',
-                        exames: 'Teste rápido de antígeno ou RT-PCR. Hemograma, PCR, DHL, Ferritina, Ureia, Creatinina.',
-                        tratamento: 'Dipirona 1g VO/EV. Antiviral (NMV/r - Paxlovid) para elegíveis (≥65 anos ou imunossuprimidos) – até 5º dia de sintomas. NÃO prescrever corticoides na fase aguda ambulatorial.',
-                        conduta: 'RESOLVE NA AMA (quadro leve/moderado). Isolamento. Notificação no e-SUS VE. ⚠️ ENCAMINHAR se SatO2 ≤ 94%, dispneia, rebaixamento, hipotensão, sinais de sepse.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Síndrome Gripal + SatO2 ≥ 95% | Testar + sintomáticos + isolamento + alta com orientação |\n| ≥ 65 anos ou imunossuprimido + até 5 dias de sintomas | Avaliar elegibilidade para antiviral (NMV/r - Paxlovid) |\n| Dispneia, SatO2 ≤ 94% ou SRAG | ⚠️ Emergência! Estabilizar e encaminhar URGENTE para UPA |\n| Exames de risco elevados (PCR, DHL, ferritina) | Indicam maior risco de evolução grave – considerar encaminhamento precoce |',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - COVID-19'
-                    },
-                    {
-                        cid: 'W54',
-                        diagnostico: 'Mordedura de cão',
-                        exames: 'Avaliação da ferida, Sinais vitais, Radiografia (se fratura).',
-                        tratamento: 'Limpeza exaustiva com SF. Antibiótico profilático (Amoxicilina + Clavulanato). Profilaxia antitetânica (dT).',
-                        conduta: 'RESOLVE NA AMA (feridas superficiais). ⚠️ ENCAMINHAR se feridas profundas, face/mãos/pés, cão desconhecido (profilaxia da raiva).',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Mordida superficial – cão conhecido e vacinado | Limpeza + antitetânica + alta com orientação |\n| Mordida profunda – face/mãos/pés | Limpeza + antitetânica + antibiótico + encaminhamento UPA |\n| Cão desconhecido ou não vacinado | Limpeza + antitetânica + encaminhamento UPA (profilaxia da raiva) |\n| Sinais de infecção (febre, secreção, celulite) | Encaminhar UPA (antibioticoterapia venosa) |',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Acidentes com Animais'
-                    },
-                    {
-                        cid: 'W57',
-                        diagnostico: 'Picada de inseto não venenoso',
-                        exames: 'Sinais vitais. Inspeção da lesão.',
-                        tratamento: 'Limpeza, compressa fria, Dipirona 1g VO, Anti-histamínico VO. Anafilaxia: Adrenalina IM 0,3-0,5mg.',
-                        conduta: 'RESOLVE NA AMA (reações locais). ⚠️ ENCAMINHAR IMEDIATAMENTE se anafilaxia, infecção grave.',
-                        observacoes: '📋 LEMBRETE RÁPIDO:\n| Situação | Conduta na AMA |\n| Reação local (dor, edema, prurido) | Limpeza + compressa fria + analgésico/anti-histamínico + alta com orientação |\n| Reação alérgica grave (anafilaxia) | ⚠️ Emergência – Adrenalina 0,3-0,5mg IM + O2 + encaminhamento UPA/PSA |\n| Sinais de infecção (celulite, abscesso) | Antibiótico (se leve) ou encaminhamento UPA (se grave) |\n| Suspeita de doença transmitida por vetor | Investigar sintomas associados e encaminhar conforme protocolo |',
-                        nivel: 'AMA',
-                        fonte: 'Protocolo SMS/SP - Acidentes com Animais'
-                    },
-                    // =====================================================
-                    // EMERGÊNCIAS CLÍNICAS (NOVAS)
-                    // =====================================================
-                    {
-                        cid: 'E86',
-                        diagnostico: 'Gastroenterite Aguda com Desidratação',
-                        exames: 'Sinais vitais, Glicemia capilar, Eletrólitos, Creatinina, Ureia, Hemograma, PCR, Sumário de urina (cetose).',
-                        tratamento: 'Hidratação venosa (SF 0,9% ou Ringer Lactato) 20-30 mL/kg EV + reposição de eletrólitos (K, Na). Antiemético: Ondansetrona 4mg IV ou Metoclopramida 10mg EV. Sintomáticos: Dipirona 1g VO/EV.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Hidratação venosa, monitorização de diurese, reposição eletrolítica.\n🔹 **Emergencista:** Avaliar necessidade de internação (choque hipovolêmico, desidratação grave, desequilíbrio eletrolítico).',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO:\n🔹 Diagnóstico: Gastroenterite aguda com desidratação grave.\n🔹 Conduta: Internação para hidratação venosa, reposição eletrolítica e monitorização.\n🔹 Exames: Eletrólitos seriados, creatinina, ureia, hemograma, PCR.\n🔹 Cuidados: Controle hídrico rigoroso, dieta zero (primeiras 24h).',
-                        nivel: 'PSA',
-                        fonte: 'Protocolo SMS/SP - Gastroenterites'
-                    },
-                    // =====================================================
-                    // EMERGÊNCIAS ENDOCRINOLÓGICAS
-                    // =====================================================
-                    {
-                        cid: 'E10.1',
-                        diagnostico: 'Cetoacidose Diabética (CAD)',
-                        exames: 'Glicemia capilar, Gasometria arterial, Eletrólitos (K, Na), Creatinina, Ureia, Hemograma, PCR, Sumário de urina (corpos cetônicos). ECG (se > 40 anos).',
-                        tratamento: 'Reposição volêmica: SF 0,9% 20 mL/kg EV em 1h (até 2-3L em 4h). Insulina regular EV (0,1 U/kg/h). Reposição de potássio (se K < 5,5 mEq/L). Bicarbonato (se pH < 7,0 – uso limitado). Monitorização glicêmica horária.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Hidratação venosa, insulina EV, monitorização de potássio e glicemia.\n🔹 **Emergencista:** Internação em UTI (se pH < 7,1, K < 3,5, coma, hipotensão). Ajuste de insulina e eletrólitos.',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – CAD:\n🔹 Diagnóstico: Cetoacidose Diabética.\n🔹 Conduta: Internar em UTI Clínica (se grave) ou enfermaria.\n🔹 Medicações: Insulina regular EV + SF 0,9% + KCl (se indicado).\n🔹 Exames: Gasometria seriada, glicemia capilar a cada 1h, eletrólitos.\n🔹 Cuidados: Controle hídrico, balanço hídrico rigoroso, prevenir hipoglicemia.',
-                        nivel: 'Emergencia',
-                        fonte: 'Protocolo SMS/SP - Diabetes'
-                    },
-                    {
-                        cid: 'E11.0',
-                        diagnostico: 'Estado Hiperosmolar Hiperglicêmico (EHH)',
-                        exames: 'Glicemia capilar, Gasometria, Eletrólitos (K, Na), Creatinina, Ureia, Hemograma, PCR, Osmolaridade sérica.',
-                        tratamento: 'Reposição volêmica agressiva: SF 0,9% 20-30 mL/kg EV (até 5-10L em 24h). Insulina regular EV (0,05-0,1 U/kg/h). Reposição de potássio (se K < 4,5 mEq/L). Monitorização glicêmica horária.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Hidratação venosa agressiva, insulina EV, monitorização de eletrólitos.\n🔹 **Emergencista:** Internação em UTI (se osmolaridade > 320, rebaixamento, desidratação grave).',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – EHH:\n🔹 Diagnóstico: Estado Hiperosmolar Hiperglicêmico.\n🔹 Conduta: Internar em UTI (se grave) ou enfermaria.\n🔹 Medicações: SF 0,9% EV + Insulina regular EV + KCl.\n🔹 Exames: Eletrólitos seriados, glicemia capilar a cada 1h, osmolaridade.\n🔹 Cuidados: Controle hídrico, balanço hídrico rigoroso, prevenir trombose.',
-                        nivel: 'Emergencia',
-                        fonte: 'Protocolo SMS/SP - Diabetes'
-                    },
-                    {
-                        cid: 'E05.9',
-                        diagnostico: 'Crise Tireotóxica (Tempestade Tireoidiana)',
-                        exames: 'TSH, T4 livre, T3 total, Eletrólitos, Glicemia, ECG, Hemograma, PCR.',
-                        tratamento: 'Tionamida (Propiltiouracil 600-1000mg VO ou Metimazol 60-80mg VO). Betabloqueador (Propranolol 40-80mg VO 4/4h ou Esmolol EV). Corticoide (Hidrocortisona 100mg EV 6/6h). Iodo (solução de Lugol – após bloqueio da tireoide). Suporte: O2, hidratação, controle da febre (paracetamol).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Tionamida + betabloqueador + corticoide + suporte.\n🔹 **Emergencista:** Internação em UTI, monitorização cardíaca contínua, controle da temperatura.',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – CRISE TIREOTÓXICA:\n🔹 Diagnóstico: Crise tireotóxica.\n🔹 Conduta: Internar em UTI (se instável).\n🔹 Medicações: Propiltiouracil, Propranolol, Hidrocortisona, Iodo.\n🔹 Exames: TSH, T4, T3 seriados, eletrólitos, ECG.\n🔹 Cuidados: Controle da febre, monitorização cardíaca, evitar estímulos.',
-                        nivel: 'Emergencia',
-                        fonte: 'Protocolo SMS/SP - Endocrinologia'
-                    },
-                    // =====================================================
-                    // EMERGÊNCIAS CIRÚRGICAS
-                    // =====================================================
-                    {
-                        cid: 'K35',
-                        diagnostico: 'Apendicite Aguda',
-                        exames: 'Sinais vitais, Exame abdominal (Blumberg, Rovsing, dor em FID), Hemograma, PCR, USG (se disponível). B-HCG (mulheres em idade fértil).',
-                        tratamento: 'Jejum zero, Hidratação venosa (SF 0,9% ou Ringer). Analgesia: Dipirona 1g EV + Escopolamina 20mg EV. Morfina 2-5mg EV (dor intensa). Antibioticoterapia (se perfuração suspeita). Encaminhamento cirúrgico.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Jejum, hidratação, analgesia, antibioticoterapia (se indicado).\n🔹 **Emergencista (cirurgião):** Avaliação para apendicectomia de urgência.',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – APENDICITE:\n🔹 Diagnóstico: Apendicite aguda.\n🔹 Conduta: Internação para apendicectomia de urgência.\n🔹 Medicações: Jejum, hidratação EV, analgesia (Dipirona + Escopolamina).\n🔹 Exames: Hemograma, PCR, USG (se disponível).\n🔹 Cuidados: Jejum zero, monitorização de sinais de peritonite.',
-                        nivel: 'PSA',
-                        fonte: 'Protocolo SMS/SP - Abdome Agudo'
-                    },
-                    {
-                        cid: 'K56',
-                        diagnostico: 'Obstrução Intestinal',
-                        exames: 'Sinais vitais, Exame abdominal (distensão, peristalse ausente, timpanismo), Hemograma, Amilase, PCR, Raio-X de abdome (níveis hidroaéreos), USG ou TC (se disponível).',
-                        tratamento: 'Jejum zero (NPO), Hidratação venosa (SF 0,9% ou Ringer). Sonda nasogástrica (descompressão). Analgesia: Dipirona 1g EV + Escopolamina 20mg EV. Morfina 2-5mg EV (dor intensa). Avaliação cirúrgica urgente.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Jejum, hidratação, sonda nasogástrica, analgesia.\n🔹 **Emergencista (cirurgião):** Avaliação para laparotomia (se perfuração/estrangulamento).',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – OBSTRUÇÃO INTESTINAL:\n🔹 Diagnóstico: Obstrução intestinal (suspeita de brida/hérnia).\n🔹 Conduta: Internação para descompressão e avaliação cirúrgica.\n🔹 Medicações: Jejum, hidratação EV, sonda nasogástrica.\n🔹 Exames: RX de abdome, TC (se disponível), hemograma, amilase.\n🔹 Cuidados: Jejum zero, monitorização de sinais de perfuração/peritonite.',
-                        nivel: 'Emergencia',
-                        fonte: 'Protocolo SMS/SP - Abdome Agudo'
-                    },
-                    {
-                        cid: 'S27/S36',
-                        diagnostico: 'Trauma Torácico/Abdominal Grave',
-                        exames: 'Sinais vitais, FAST (USG), Raio-X tórax/abdome, Hemograma, Amilase, PCR, Coagulograma, Gasometria.',
-                        tratamento: 'Estabilização: O2 (se SatO2 < 94%), acesso venoso calibroso (dois acessos). Reposição volêmica (cristaloide 20-30 mL/kg EV). Drenagem de tórax (se pneumotórax/hemotórax – na UPA). Analgesia: Morfina 2-5mg EV. Encaminhamento cirúrgico urgente.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Estabilização, O2, acesso venoso, reposição volêmica, avaliação com FAST.\n🔹 **Emergencista (cirurgião):** Internação em UTI ou centro cirúrgico (se sangramento ativo/perfuração).',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – TRAUMA TORÁCICO/ABDOMINAL:\n🔹 Diagnóstico: Trauma torácico/abdominal grave.\n🔹 Conduta: Internação em UTI ou CTI para estabilização e cirurgia.\n🔹 Medicações: O2, reposição volêmica, analgesia (Morfina EV).\n🔹 Exames: TC de tórax/abdome, FAST, hemograma, coagulograma.\n🔹 Cuidados: Monitorização contínua, drenagem de tórax (se indicado).',
-                        nivel: 'Emergencia',
-                        fonte: 'Protocolo SMS/SP - Trauma'
-                    },
-                    // =====================================================
-                    // EMERGÊNCIAS CARDIOVASCULARES
-                    // =====================================================
-                    {
-                        cid: 'I48',
-                        diagnostico: 'Arritmias Cardíacas (FA / TV)',
-                        exames: 'ECG (imediato), Troponina, Eletrólitos (K, Mg), Hemograma, TSH (se suspeita de tireoide).',
-                        tratamento: '• **Fibrilação Atrial (FA):** Se instável → cardioversão elétrica (na UPA). Se estável → controle de FC (Metoprolol 25-50mg VO ou Diltiazem 120mg VO). Anticoagulação (avaliação – na UPA). • **Taquicardia Ventricular (TV):** Se instável → cardioversão elétrica. Se estável → Amiodarona IV 150mg (na UPA) + encaminhamento para UTI.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** ECG, estabilização, controle de FC, anticoagulação se FA.\n🔹 **Emergencista:** Internação em UTI (se TV, FA instável, ou comorbidades).',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – ARRITMIA:\n🔹 Diagnóstico: Arritmia cardíaca (FA/TV).\n🔹 Conduta: Internação em UTI (se TV ou FA instável) ou unidade coronariana.\n🔹 Medicações: Controle de FC (Metoprolol, Diltiazem), anticoagulação (FA).\n🔹 Exames: ECG seriado, troponina, eletrólitos.\n🔹 Cuidados: Monitorização cardíaca contínua, evitar esforço.',
-                        nivel: 'Emergencia',
-                        fonte: 'Protocolo SMS/SP - Cardiologia'
-                    },
-                    // =====================================================
-                    // EMERGÊNCIAS NEUROLÓGICAS
-                    // =====================================================
-                    {
-                        cid: 'G41',
-                        diagnostico: 'Estado de Mal Epiléptico',
-                        exames: 'Glicemia capilar, Eletrólitos, Hemograma, Coagulograma, TC de crânio (urgente).',
-                        tratamento: 'Diazepam 10mg IV (repetir 10min se necessário) ou Midazolam IM (10mg). Fenitoína 20mg/kg EV (dose de ataque). Se refratário: Propofol ou Tiopental (na UPA). Proteger vias aéreas (intubação se necessário).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Diazepam IV, fenitoína, proteção de vias aéreas.\n🔹 **Emergencista:** Internação em UTI, monitorização contínua, EEG.',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – ESTADO DE MAL EPILÉPTICO:\n🔹 Diagnóstico: Estado de mal epiléptico.\n🔹 Conduta: Internação em UTI (se refratário) ou enfermaria.\n🔹 Medicações: Diazepam, Fenitoína, Midazolam, Propofol (se refratário).\n🔹 Exames: TC de crânio, EEG, eletrólitos.\n🔹 Cuidados: Proteger vias aéreas, monitorização neurológica.',
-                        nivel: 'Emergencia',
-                        fonte: 'Protocolo SMS/SP - Neurologia'
-                    },
-                    {
-                        cid: 'S06',
-                        diagnostico: 'Traumatismo Cranioencefálico (TCE)',
-                        exames: 'Sinais vitais, Exame neurológico (Glasgow, pupilas, força, sensibilidade), TC de crânio (urgente). Coagulograma, Hemograma.',
-                        tratamento: 'Estabilização: O2 (se SatO2 < 94%), cabeceira elevada 30°. Controle da PA (não reduzir agressivamente – manter PAM > 90 mmHg). Controle da dor: Dipirona 1g EV. NÃO usar anticoagulantes. Encaminhamento para neurocirurgia (se hematoma ou efeito de massa).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Estabilização, TC de crânio, controle da PA.\n🔹 **Emergencista (neurocirurgião):** Internação em UTI, monitorização de PIC, neurocirurgia (se indicado).',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – TCE:\n🔹 Diagnóstico: TCE grave (hematoma/contusão).\n🔹 Conduta: Internação em UTI Neurológica.\n🔹 Medicações: Controle da PA, analgesia (Dipirona). NÃO usar anticoagulantes.\n🔹 Exames: TC de crânio (controle), avaliação neurocirúrgica.\n🔹 Cuidados: Cabeceira elevada 30°, monitorização neurológica rigorosa.',
-                        nivel: 'Emergencia',
-                        fonte: 'Protocolo SMS/SP - Neurologia'
-                    },
-                    {
-                        cid: 'I60',
-                        diagnostico: 'Hemorragia Subaracnoide (HSA)',
-                        exames: 'TC de crânio (urgente), Glicemia capilar, ECG, Hemograma, Coagulograma.',
-                        tratamento: 'Estabilização: O2 (se SatO2 < 94%), acesso venoso. Controle da PA (manter PA < 160x100 mmHg). Controle da dor: Morfina 2-5mg EV. NÃO usar anticoagulantes. Encaminhamento para neurocirurgia (angiografia, tratamento do aneurisma).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** TC de crânio, controle da PA, analgesia.\n🔹 **Emergencista (neurocirurgião):** Internação em UTI, angiografia, tratamento do aneurisma.',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – HSA:\n🔹 Diagnóstico: Hemorragia subaracnoide (suspeita de aneurisma).\n🔹 Conduta: Internação em UTI Neurológica.\n🔹 Medicações: Controle da PA, analgesia (Morfina EV). NÃO usar anticoagulantes.\n🔹 Exames: TC de crânio, angiografia (se necessário).\n🔹 Cuidados: Repouso absoluto, evitar esforço, monitorização neurológica.',
-                        nivel: 'Emergencia',
-                        fonte: 'Protocolo SMS/SP - Neurologia'
-                    },
-                    // =====================================================
-                    // EMERGÊNCIAS UROLÓGICAS
-                    // =====================================================
-                    {
-                        cid: 'R33',
-                        diagnostico: 'Retenção Urinária Aguda',
-                        exames: 'Palpação de bexiga (distensão), Ultrassom (se disponível), Eletrólitos, Creatinina, Ureia, Sumário de urina.',
-                        tratamento: 'Sondagem vesical imediata (alívio). Se obstrução (HPB): alfa-bloqueador (Tansulosina 0,4mg VO). Analgesia: Dipirona 1g VO/EV. Avaliação urológica (encaminhamento).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Sondagem vesical, analgesia, alfa-bloqueador.\n🔹 **Emergencista (urologista):** Avaliação para internação (se infecção, insuficiência renal).',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – RETENÇÃO URINÁRIA:\n🔹 Diagnóstico: Retenção urinária aguda.\n🔹 Conduta: Sondagem vesical de alívio + internação (se complicações).\n🔹 Medicações: Tansulosina 0,4mg VO (se HPB).\n🔹 Exames: Ultrassom, eletrólitos, creatinina.\n🔹 Cuidados: Monitorizar diurese, evitar infecção urinária.',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Urologia'
-                    },
-                    {
-                        cid: 'N10',
-                        diagnostico: 'Pielonefrite Aguda (ITU Complicada)',
-                        exames: 'Sumário de urina, Urocultura, Hemograma, PCR, Creatinina, USG (se disponível).',
-                        tratamento: 'Antibioticoterapia EV (Ceftriaxona 2g EV + Gentamicina 5mg/kg EV, ou Ciprofloxacino 400mg EV 12/12h). Hidratação venosa (SF 0,9%). Analgesia: Dipirona 1g VO/EV. Antiemético: Ondansetrona 4mg IV.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Antibioticoterapia EV, hidratação, analgesia.\n🔹 **Emergencista:** Internação (se gravidade, febre alta, sepse, insuficiência renal).',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – PIELONEFRITE:\n🔹 Diagnóstico: Pielonefrite aguda.\n🔹 Conduta: Internação (se gravidade) ou acompanhamento ambulatorial.\n🔹 Medicações: Antibiótico EV (Ceftriaxona/Gentamicina).\n🔹 Exames: Urocultura, hemograma, PCR, creatinina.\n🔹 Cuidados: Hidratação, monitorização de febre e função renal.',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Infectologia'
-                    },
-                    {
-                        cid: 'N44',
-                        diagnostico: 'Torção Testicular',
-                        exames: 'Exame físico (testículo aumentado, doloroso, elevado), Ultrassom Doppler (urgente – avaliar fluxo). Sumário de urina (descartar ITU).',
-                        tratamento: 'Analgesia: Dipirona 1g VO/EV + Morfina 2-5mg EV (se dor intensa). NÃO tentar redução manual (risco de complicação). Encaminhamento cirúrgico URGENTE (urologia) – janela de 4-6 horas para salvar o testículo.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** US Doppler, analgesia, encaminhamento cirúrgico imediato.\n🔹 **Emergencista (urologista):** Internação para cirurgia de urgência (orquidopexia/orquiectomia).',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – TORÇÃO TESTICULAR:\n🔹 Diagnóstico: Torção testicular.\n🔹 Conduta: Internação para cirurgia de urgência.\n🔹 Medicações: Analgesia (Morfina EV).\n🔹 Exames: US Doppler (urgente).\n🔹 Cuidados: Repouso, monitorização, orientação sobre risco de perda do testículo.',
-                        nivel: 'Emergencia',
-                        fonte: 'Protocolo SMS/SP - Urologia'
-                    },
-                    // =====================================================
-                    // NOVAS: PANCREATITE, LITÍASE BILIAR, LITÍASE URINÁRIA
-                    // =====================================================
-                    {
-                        cid: 'K85',
-                        diagnostico: 'Pancreatite Aguda',
-                        exames: 'Sinais vitais, Amilase e Lipase séricas, Hemograma, PCR, Glicemia, Creatinina, Eletrólitos, Gasometria, USG ou TC de abdome (se disponível).',
-                        tratamento: 'Jejum zero (NPO), Hidratação venosa agressiva (SF 0,9% ou Ringer Lactato) 20-30 mL/kg EV. Analgesia: Dipirona 1g EV + Morfina 2-5mg EV (se dor intensa). Antiemético: Ondansetrona 4mg IV. Antibiótico (se sinais de infecção – na UPA).',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Hidratação, analgesia, monitorização de sinais de gravidade (Ranson, APACHE).\n🔹 **Emergencista:** Internação (se grave) – UTI se disfunção orgânica. Avaliar necessidade de CPRE (se coledocolitíase).',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – PANCREATITE AGUDA:\n🔹 Diagnóstico: Pancreatite aguda.\n🔹 Conduta: Internação (enfermaria ou UTI, se grave).\n🔹 Medicações: Hidratação EV, analgesia (Morfina), jejum zero.\n🔹 Exames: Amilase/lipase seriadas, TC de abdome, USG.\n🔹 Cuidados: Controle glicêmico, balanço hídrico, evitar nutrição enteral precoce (se grave).',
-                        nivel: 'Emergencia',
-                        fonte: 'Protocolo SMS/SP - Gastroenterologia'
-                    },
-                    {
-                        cid: 'K80.3',
-                        diagnostico: 'Litíase Biliar Obstrutiva (Coledocolitíase)',
-                        exames: 'Sinais vitais, Bilirrubinas (total e frações), Fosfatase alcalina, Gama-GT, Amilase, Hemograma, PCR, USG de abdome (dilatação de vias biliares), Colangio-RM (se disponível).',
-                        tratamento: 'Jejum zero, Hidratação venosa (SF 0,9%). Analgesia: Dipirona 1g EV + Escopolamina 20mg EV. Antibioticoterapia (se colangite – Ceftriaxona 2g EV + Metronidazol). Encaminhamento para CPRE (colangiopancreatografia endoscópica retrógrada) – na UPA/PSA com suporte.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** USG, antibioticoterapia, hidratação, analgesia.\n🔹 **Emergencista (gastroenterologista/cirurgião):** CPRE de urgência (se colangite, icterícia progressiva).',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – COLECOLITÍASE:\n🔹 Diagnóstico: Litíase biliar obstrutiva.\n🔹 Conduta: Internação para CPRE e possível colecistectomia.\n🔹 Medicações: Antibiótico EV, analgesia, hidratação.\n🔹 Exames: Bilirrubinas, USG, Colangio-RM.\n🔹 Cuidados: Monitorizar sinais de colangite (febre, dor, icterícia).',
-                        nivel: 'Emergencia',
-                        fonte: 'Protocolo SMS/SP - Gastroenterologia'
-                    },
-                    {
-                        cid: 'N20.0',
-                        diagnostico: 'Litíase Urinária Obstrutiva (Cálculo Renal com Hidronefrose)',
-                        exames: 'Sumário de urina, USG de vias urinárias (hidronefrose), Creatinina, Ureia, Eletrólitos, Hemograma, PCR.',
-                        tratamento: 'Analgesia: Dipirona 1g EV + Escopolamina 20mg EV. Se dor refratária: Morfina 2-5mg EV lento. Hidratação venosa (SF 0,9% 20-30 mL/kg). Se febre (pielonefrite obstrutiva): antibioticoterapia EV (Ceftriaxona 2g EV + Gentamicina) + encaminhamento urgente.',
-                        conduta: '⚠️ NÃO RESOLVE NA AMA. ENCAMINHAR PARA UPA/PSA.\n\n🔹 **PSA:** Analgesia, hidratação, USG, avaliação de função renal.\n🔹 **Emergencista (urologista):** Internação (se hidronefrose grave, pielonefrite obstrutiva, insuficiência renal). Avaliar necessidade de drenagem (sonda duplo-J ou nefrostomia).',
-                        observacoes: '📋 PRESCRIÇÃO DE INTERNAÇÃO – LITÍASE OBSTRUTIVA:\n🔹 Diagnóstico: Litíase urinária obstrutiva com hidronefrose.\n🔹 Conduta: Internação para drenagem (se urgente) ou observação.\n🔹 Medicações: Analgesia, hidratação, antibiótico (se infecção).\n🔹 Exames: USG, creatinina, eletrólitos, sumário de urina.\n🔹 Cuidados: Monitorizar diurese, função renal, sinais de infecção.',
-                        nivel: 'UPA',
-                        fonte: 'Protocolo SMS/SP - Urologia'
-                    }
-                ];
-                salvarDados();
+    function filtrar() {
+        const termo = document.getElementById('busca').value.toLowerCase().trim();
+        const container = document.getElementById('listaMedicamentos');
+        
+        let resultados = medicamentos.filter(m => {
+            // Filtro por nível
+            if (filtroNivel === 'gestacao') {
+                if (m.gestacao !== 'seguro') return false;
+            } else if (filtroNivel !== 'todos') {
+                if (!m.nivel.includes(filtroNivel)) return false;
             }
-        }
-
-        // ===== FUNÇÕES CRUD =====
-        function salvarDados() {
-            localStorage.setItem('condutas', JSON.stringify(condutas));
-        }
-
-        function salvar() {
-            const nova = {
-                cid: document.getElementById('cid').value.trim(),
-                diagnostico: document.getElementById('diagnostico').value.trim(),
-                exames: document.getElementById('exames').value.trim(),
-                tratamento: document.getElementById('tratamento').value.trim(),
-                conduta: document.getElementById('conduta').value.trim(),
-                nivel: document.getElementById('nivel').value,
-                observacoes: document.getElementById('observacoes').value.trim(),
-                fonte: document.getElementById('fonte').value.trim() || 'Protocolo SMS/SP'
-            };
-
-            if (!nova.diagnostico || !nova.exames || !nova.tratamento) {
-                alert('⚠️ Preencha pelo menos: Diagnóstico, Exames e Tratamento!');
-                return;
-            }
-
-            if (editandoId !== null) {
-                condutas[editandoId] = nova;
-                editandoId = null;
-                document.getElementById('btnSalvar').textContent = '💾 Salvar';
-                document.getElementById('tituloFormulario').textContent = '➕ Cadastrar nova conduta';
-                document.getElementById('btnCancelar').style.display = 'none';
-                alert('✅ Conduta atualizada com sucesso!');
-            } else {
-                condutas.push(nova);
-                alert('✅ Conduta cadastrada com sucesso!');
-            }
-
-            salvarDados();
-            limparFormulario();
-            document.getElementById('resultado').style.display = 'none';
-            atualizarCatalogo();
-        }
-
-        function limparFormulario() {
-            document.getElementById('cid').value = '';
-            document.getElementById('diagnostico').value = '';
-            document.getElementById('exames').value = '';
-            document.getElementById('tratamento').value = '';
-            document.getElementById('conduta').value = '';
-            document.getElementById('nivel').value = 'AMA';
-            document.getElementById('observacoes').value = '';
-            document.getElementById('fonte').value = '';
-        }
-
-        function cancelarEdicao() {
-            editandoId = null;
-            document.getElementById('btnSalvar').textContent = '💾 Salvar';
-            document.getElementById('tituloFormulario').textContent = '➕ Cadastrar nova conduta';
-            document.getElementById('btnCancelar').style.display = 'none';
-            limparFormulario();
-        }
-
-        function buscar() {
-            const termo = document.getElementById('busca').value.toLowerCase().trim();
-            const resultadoDiv = document.getElementById('resultado');
-
-            if (!termo) {
-                resultadoDiv.innerHTML = 'Digite um diagnóstico ou CID para buscar.';
-                resultadoDiv.style.display = 'block';
-                return;
-            }
-
-            let listaFiltrada = [...condutas];
-            if (filtroAtual !== 'todos') {
-                listaFiltrada = listaFiltrada.filter(c => c.nivel === filtroAtual);
-            }
-
-            const encontrados = listaFiltrada.filter(c => 
-                c.diagnostico.toLowerCase().includes(termo) || 
-                c.cid.toLowerCase().includes(termo)
-            );
-
-            if (encontrados.length === 0) {
-                resultadoDiv.innerHTML = '❌ Nenhuma conduta encontrada. Cadastre uma nova!';
-                resultadoDiv.style.display = 'block';
-                return;
-            }
-
-            const c = encontrados[0];
-            const index = condutas.indexOf(c);
-
-            let html = `
-                <h2>${c.diagnostico} (${c.cid})</h2>
-                <p><strong>🧪 Exames:</strong> ${c.exames}</p>
-                <p><strong>💊 Tratamento:</strong> ${c.tratamento}</p>
-                <p><strong>📋 Conduta:</strong> ${c.conduta}</p>
-                <p><strong>🏥 Nível:</strong> ${c.nivel}</p>
-            `;
-
-            if (c.observacoes && c.observacoes.trim() !== '') {
-                html += `<div class="observacoes"><strong>📌 Observações Importantes:</strong><br>${c.observacoes}</div>`;
-            }
-
-            html += `
-                <p class="fonte">📚 Fonte: ${c.fonte || 'Não informada'}</p>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;">
-                    <button class="btn-editar" onclick="editarConduta(${index})">✏️ Editar</button>
-                    <button class="btn-excluir" onclick="excluirConduta(${index})">🗑️ Excluir</button>
-                </div>
-            `;
-
-            resultadoDiv.innerHTML = html;
-            resultadoDiv.style.display = 'block';
-        }
-
-        function editarConduta(index) {
-            const c = condutas[index];
-            document.getElementById('cid').value = c.cid || '';
-            document.getElementById('diagnostico').value = c.diagnostico || '';
-            document.getElementById('exames').value = c.exames || '';
-            document.getElementById('tratamento').value = c.tratamento || '';
-            document.getElementById('conduta').value = c.conduta || '';
-            document.getElementById('nivel').value = c.nivel || 'AMA';
-            document.getElementById('observacoes').value = c.observacoes || '';
-            document.getElementById('fonte').value = c.fonte || '';
-
-            editandoId = index;
-            document.getElementById('btnSalvar').textContent = '✏️ Atualizar';
-            document.getElementById('tituloFormulario').textContent = '✏️ Editando conduta';
-            document.getElementById('btnCancelar').style.display = 'inline-block';
-
-            document.querySelector('.card:last-child').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function excluirConduta(index) {
-            if (confirm(`Tem certeza que deseja excluir "${condutas[index].diagnostico}"?`)) {
-                condutas.splice(index, 1);
-                salvarDados();
-                document.getElementById('resultado').style.display = 'none';
-                if (editandoId !== null) cancelarEdicao();
-                atualizarCatalogo();
-                alert('🗑️ Conduta excluída com sucesso!');
-            }
-        }
-
-        function atualizarCatalogo() {
-            const tabela = document.getElementById('tabelaCIDs');
-            if (!tabela) return;
-
-            let listaFiltrada = [...condutas];
-            if (filtroAtual !== 'todos') {
-                listaFiltrada = listaFiltrada.filter(c => c.nivel === filtroAtual);
-            }
-
-            const sorted = listaFiltrada.sort((a, b) => a.cid.localeCompare(b.cid));
-            tabela.innerHTML = sorted.map(c => `
-                <tr>
-                    <td><strong>${c.cid}</strong></td>
-                    <td>${c.diagnostico}</td>
-                </tr>
-            `).join('');
-        }
-
-        function mudarFiltro(nivel) {
-            filtroAtual = nivel;
-            document.querySelectorAll('.filtro-btn').forEach(btn => {
-                btn.classList.remove('ativo');
-                if (btn.dataset.nivel === nivel) {
-                    btn.classList.add('ativo');
-                }
-            });
-            atualizarCatalogo();
-        }
-
-        function exportarDados() {
-            const dados = JSON.stringify(condutas, null, 2);
-            const pre = document.getElementById('jsonExportado');
-            pre.textContent = dados;
-            document.getElementById('areaExportacao').style.display = 'block';
-            document.getElementById('areaExportacao').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function copiarJSON() {
-            const pre = document.getElementById('jsonExportado');
-            const texto = pre.textContent;
-            navigator.clipboard.writeText(texto).then(() => {
-                alert('✅ JSON copiado!');
-            }).catch(() => {
-                alert('❌ Erro ao copiar. Selecione manualmente.');
-            });
-        }
-
-        // ===== BOTÃO SECRETO (5 TOQUES NO TÍTULO) =====
-        document.addEventListener('DOMContentLoaded', function() {
-            const titulo = document.querySelector('h1');
-            let contadorCliques = 0;
-            let timeout;
-
-            if (titulo) {
-                titulo.addEventListener('click', function() {
-                    contadorCliques++;
-                    clearTimeout(timeout);
-
-                    if (contadorCliques >= 5) {
-                        const areaBotao = document.getElementById('areaBotaoExportar');
-                        if (areaBotao) {
-                            areaBotao.style.display = 'block';
-                            alert('🔓 Botão de exportação liberado!');
-                        }
-                        contadorCliques = 0;
-                    }
-
-                    timeout = setTimeout(() => {
-                        contadorCliques = 0;
-                    }, 2000);
-                });
-            }
-
-            document.querySelectorAll('.filtro-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const nivel = this.dataset.nivel;
-                    mudarFiltro(nivel);
-                });
-            });
-
-            document.getElementById('busca').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    buscar();
-                }
-            });
+            // Filtro por categoria
+            if (filtroCategoria !== 'todos' && m.categoria !== filtroCategoria) return false;
+            // Filtro por nome
+            if (termo && !m.nome.toLowerCase().includes(termo)) return false;
+            return true;
         });
 
-        // ===== INICIALIZAÇÃO =====
-        carregar();
-        atualizarCatalogo();
+        if (resultados.length === 0) {
+            container.innerHTML = `<div class="sem-resultados">Nenhum medicamento encontrado.</div>`;
+            return;
+        }
 
-        console.log('✅ App Conduta Médica carregado com sucesso!');
-        console.log(`📋 ${condutas.length} condutas disponíveis.`);
-        console.log(`🔍 Filtro atual: ${filtroAtual}`);
-    </script>
+        container.innerHTML = resultados.map(m => `
+            <div class="card">
+                <h3>${m.nome}</h3>
+                <div class="info">
+                    <span>💉 ${m.via}</span>
+                    <span>📂 ${m.categoria}</span>
+                    <span class="nivel">🏥 ${m.nivel.join(' / ')}</span>
+                    ${m.gestacao === 'seguro' ? '<span class="gestacao seguro">🤰 Seguro</span>' : ''}
+                    ${m.gestacao === 'cautela' ? '<span class="gestacao">🤰 Cautela</span>' : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Eventos dos filtros
+    document.querySelectorAll('.filtro').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filtro').forEach(b => b.classList.remove('ativo'));
+            this.classList.add('ativo');
+            filtroNivel = this.dataset.filtro;
+            filtrar();
+        });
+    });
+
+    document.querySelectorAll('.categoria').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.categoria').forEach(b => b.classList.remove('ativo'));
+            this.classList.add('ativo');
+            filtroCategoria = this.dataset.categoria;
+            filtrar();
+        });
+    });
+
+    // Inicializar
+    filtrar();
+</script>
+
 </body>
 </html>
