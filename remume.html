@@ -30,35 +30,32 @@
         }
 
         .header h1 {
-            font-size: 24px;
-            font-weight: 700;
+            font-size: 28px;
+            font-weight: 800;
             color: #0b1a33;
-            letter-spacing: -0.3px;
+            letter-spacing: -0.5px;
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .badge-remume {
-            background: #0d9488;
-            color: white;
-            font-size: 13px;
-            font-weight: 700;
-            padding: 4px 14px;
-            border-radius: 40px;
-            letter-spacing: 0.5px;
+        .header h1 span {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0d9488;
+            background: #e6f7f5;
+            padding: 2px 14px;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
             text-transform: uppercase;
         }
 
         .header .sub {
             font-size: 14px;
             color: #5e6f8d;
-            margin-top: 6px;
-            border-left: 4px solid #0d9488;
-            padding-left: 12px;
-            background: #f0fdfa;
-            border-radius: 0 8px 8px 0;
+            margin-top: 2px;
+            padding-left: 0;
             line-height: 1.5;
         }
 
@@ -66,8 +63,80 @@
             color: #0d9488;
         }
 
+        .filter-line {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 16px 0 10px;
+            border-bottom: 1px solid #eef2f6;
+            padding-bottom: 12px;
+        }
+
+        .filter-line .label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #5e6f8d;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-right: 6px;
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 4px 14px;
+            border-radius: 30px;
+            border: 1px solid #d0d8e7;
+            background: white;
+            font-size: 12px;
+            font-weight: 600;
+            color: #2c3e5c;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .filter-btn:hover {
+            background: #eef3fc;
+            border-color: #a0b5d3;
+        }
+
+        .filter-btn.active {
+            background: #0d9488;
+            border-color: #0d9488;
+            color: white;
+            box-shadow: 0 2px 8px rgba(13, 148, 136, 0.2);
+        }
+
+        .gestacao-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 6px 0 14px;
+            background: #f9fbfd;
+            padding: 10px 14px;
+            border-radius: 16px;
+            border: 1px solid #eef2f6;
+        }
+
+        .gestacao-filters label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1f2a44;
+            cursor: pointer;
+        }
+
+        .gestacao-filters input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #0d9488;
+            cursor: pointer;
+        }
+
         .search-area {
-            margin: 20px 0 16px;
+            margin: 10px 0 16px;
         }
 
         .search-box {
@@ -83,7 +152,7 @@
         .search-box:focus-within {
             border-color: #0d9488;
             background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
         }
 
         .search-box input {
@@ -118,19 +187,19 @@
             transform: scale(0.97);
         }
 
-        .filters {
+        .categorias {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin: 14px 0 18px;
+            gap: 6px;
+            margin: 12px 0 16px;
         }
 
-        .filter-btn {
-            padding: 6px 16px;
-            border-radius: 40px;
-            border: 1px solid #d0d8e7;
+        .cat-btn {
+            padding: 3px 12px;
+            border-radius: 20px;
+            border: 1px solid #dce3ef;
             background: white;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
             color: #2c3e5c;
             cursor: pointer;
@@ -138,16 +207,15 @@
             text-transform: uppercase;
         }
 
-        .filter-btn:hover {
+        .cat-btn:hover {
             background: #eef3fc;
             border-color: #a0b5d3;
         }
 
-        .filter-btn.active {
+        .cat-btn.active {
             background: #0d9488;
             border-color: #0d9488;
             color: white;
-            box-shadow: 0 4px 8px rgba(13, 148, 136, 0.25);
         }
 
         .list-header {
@@ -164,7 +232,7 @@
             font-weight: 600;
             color: #5e6f8d;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
 
         .list-header .count {
@@ -181,6 +249,7 @@
 
         .med-item {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             padding: 12px 14px;
             border-bottom: 1px solid #f0f4fc;
@@ -195,17 +264,17 @@
         }
 
         .med-item .name {
-            flex: 2;
+            flex: 1 1 180px;
             font-size: 15px;
             color: #0b1a33;
             font-weight: 600;
         }
 
         .med-item .principio {
-            flex: 2;
-            font-size: 14px;
+            flex: 1 1 140px;
+            font-size: 13px;
             color: #4a5a7a;
-            margin: 0 12px;
+            margin: 0 8px 0 0;
         }
 
         .med-item .classe-badge {
@@ -217,8 +286,38 @@
             background: #eef2f6;
             color: #3a4a66;
             white-space: nowrap;
+            margin-right: 6px;
         }
 
+        .med-item .niveis {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-left: auto;
+        }
+
+        .med-item .niveis span {
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 12px;
+            background: #edf2f9;
+            color: #2c3e5c;
+            text-transform: uppercase;
+        }
+
+        .med-item .niveis .ubs { background: #dbeafe; color: #1e3a8a; }
+        .med-item .niveis .ama { background: #d1fae5; color: #065f46; }
+        .med-item .niveis .upa { background: #fef3c7; color: #92400e; }
+        .med-item .niveis .psa { background: #fce4ec; color: #b71c1c; }
+        .med-item .niveis .emergencia { background: #fca5a5; color: #7f1d1d; }
+
+        .med-item .gestacao-icon {
+            font-size: 14px;
+            margin-left: 6px;
+        }
+
+        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -252,14 +351,8 @@
         }
 
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.97);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(30px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .modal-close {
@@ -289,19 +382,18 @@
             font-size: 26px;
             font-weight: 700;
             color: #0b1a33;
-            margin: 4px 0 4px;
         }
 
         .modal-sub {
             font-size: 16px;
             color: #4a5a7a;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .modal-section {
-            margin-top: 18px;
+            margin-top: 16px;
             border-top: 1px solid #edf2f9;
-            padding-top: 16px;
+            padding-top: 14px;
         }
 
         .modal-section h4 {
@@ -309,7 +401,7 @@
             font-weight: 700;
             color: #2c3e5c;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             margin-bottom: 4px;
         }
 
@@ -317,8 +409,20 @@
             font-size: 15px;
             line-height: 1.6;
             color: #1f2a44;
-            padding: 4px 0;
         }
+
+        .modal-gestacao {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 6px;
+        }
+
+        .modal-gestacao.seguro { background: #d1fae5; color: #065f46; }
+        .modal-gestacao.cautela { background: #fef3c7; color: #92400e; }
+        .modal-gestacao.contraindicado { background: #fce4ec; color: #b71c1c; }
 
         .empty-state {
             text-align: center;
@@ -326,43 +430,23 @@
             color: #8895aa;
         }
 
+        .footer-link {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .footer-link a {
+            color: #0d9488;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
         @media (max-width: 600px) {
-            .app-container {
-                padding: 16px 12px;
-            }
-            .modal-card {
-                padding: 24px 16px;
-            }
-            .modal-title {
-                font-size: 20px;
-            }
-            .search-box input {
-                font-size: 14px;
-                padding: 10px 0;
-            }
-            .search-box button {
-                padding: 8px 16px;
-                font-size: 13px;
-            }
-            .med-item {
-                flex-wrap: wrap;
-            }
-            .med-item .principio {
-                flex: 1 1 100%;
-                margin: 2px 0 0 0;
-                font-size: 13px;
-            }
-            .med-item .classe-badge {
-                font-size: 9px;
-                padding: 2px 8px;
-            }
-            .header h1 {
-                font-size: 20px;
-            }
-            .badge-remume {
-                font-size: 11px;
-                padding: 2px 10px;
-            }
+            .app-container { padding: 16px 12px; }
+            .header h1 { font-size: 22px; }
+            .med-item .principio { flex: 1 1 100%; margin: 2px 0; }
+            .med-item .niveis { margin-left: 0; width: 100%; }
+            .modal-card { padding: 24px 16px; }
         }
     </style>
 </head>
@@ -373,42 +457,74 @@
         <div class="header">
             <h1>
                 💊 REMUME
-                <span class="badge-remume">Medicamentos SP</span>
+                <span>Medicamentos SP</span>
             </h1>
             <div class="sub">
                 <strong>Consulta rápida de medicamentos</strong> · Disponível na rede municipal e hospitais particulares
             </div>
         </div>
 
+        <!-- FILTROS DE ATENDIMENTO -->
+        <div class="filter-line">
+            <span class="label">Nível:</span>
+            <button class="filter-btn active" data-filter="todos" onclick="setNivel('todos')">Todos</button>
+            <button class="filter-btn" data-filter="UBS" onclick="setNivel('UBS')">UBS</button>
+            <button class="filter-btn" data-filter="AMA" onclick="setNivel('AMA')">AMA</button>
+            <button class="filter-btn" data-filter="UPA" onclick="setNivel('UPA')">UPA</button>
+            <button class="filter-btn" data-filter="PSA" onclick="setNivel('PSA')">PSA</button>
+            <button class="filter-btn" data-filter="Emergência" onclick="setNivel('Emergência')">Emergência</button>
+        </div>
+
+        <!-- FILTROS DE GESTAÇÃO -->
+        <div class="gestacao-filters">
+            <label><input type="checkbox" id="chkSeguro" onchange="renderList()"> ✅ Gestação Seguro</label>
+            <label><input type="checkbox" id="chkCautela" onchange="renderList()"> ⚠️ Gestação Cautela</label>
+            <label><input type="checkbox" id="chkContra" onchange="renderList()"> ❌ Gestação Contraindicado</label>
+        </div>
+
         <!-- SEARCH -->
         <div class="search-area">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Digite o nome ou princípio ativo..." oninput="renderList()">
+                <input type="text" id="searchInput" placeholder="Digite o nome do medicamento (ex: Amoxicilina)" oninput="renderList()">
                 <button onclick="renderList()">Buscar</button>
             </div>
         </div>
 
-        <!-- FILTERS -->
-        <div class="filters" id="filterContainer">
-            <button class="filter-btn active" data-filter="todos" onclick="setFilter('todos')">Todos</button>
-            <button class="filter-btn" data-filter="Analgésico" onclick="setFilter('Analgésico')">Analgésico</button>
-            <button class="filter-btn" data-filter="Antibiótico" onclick="setFilter('Antibiótico')">Antibiótico</button>
-            <button class="filter-btn" data-filter="Cardiovascular" onclick="setFilter('Cardiovascular')">Cardio</button>
-            <button class="filter-btn" data-filter="Diabetes" onclick="setFilter('Diabetes')">Diabetes</button>
-            <button class="filter-btn" data-filter="Respiratório" onclick="setFilter('Respiratório')">Respiratório</button>
-            <button class="filter-btn" data-filter="GI" onclick="setFilter('GI')">GI</button>
-            <button class="filter-btn" data-filter="Neurológico" onclick="setFilter('Neurológico')">Neuro</button>
-            <button class="filter-btn" data-filter="Topico" onclick="setFilter('Topico')">Tópico</button>
-            <button class="filter-btn" data-filter="Emergência" onclick="setFilter('Emergência')">Emergência</button>
+        <!-- CATEGORIAS -->
+        <div class="categorias" id="categoriaContainer">
+            <button class="cat-btn active" data-cat="todos" onclick="setCategoria('todos')">Todos</button>
+            <button class="cat-btn" data-cat="Analgésicos" onclick="setCategoria('Analgésicos')">Analgésicos</button>
+            <button class="cat-btn" data-cat="Anti-histamínicos" onclick="setCategoria('Anti-histamínicos')">Anti-histamínicos</button>
+            <button class="cat-btn" data-cat="AINEs" onclick="setCategoria('AINEs')">AINEs</button>
+            <button class="cat-btn" data-cat="Antibióticos" onclick="setCategoria('Antibióticos')">Antibióticos</button>
+            <button class="cat-btn" data-cat="Antiespasmódicos" onclick="setCategoria('Antiespasmódicos')">Antiespasmódicos</button>
+            <button class="cat-btn" data-cat="Antifúngicos" onclick="setCategoria('Antifúngicos')">Antifúngicos</button>
+            <button class="cat-btn" data-cat="Antiparasitários" onclick="setCategoria('Antiparasitários')">Antiparasitários</button>
+            <button class="cat-btn" data-cat="Antivirais" onclick="setCategoria('Antivirais')">Antivirais</button>
+            <button class="cat-btn" data-cat="Cardiovascular" onclick="setCategoria('Cardiovascular')">Cardiovascular</button>
+            <button class="cat-btn" data-cat="Dermatológico" onclick="setCategoria('Dermatológico')">Dermatológico</button>
+            <button class="cat-btn" data-cat="Endócrino" onclick="setCategoria('Endócrino')">Endócrino</button>
+            <button class="cat-btn" data-cat="Gastrointestinal" onclick="setCategoria('Gastrointestinal')">Gastrointestinal</button>
+            <button class="cat-btn" data-cat="Neurológico" onclick="setCategoria('Neurológico')">Neurológico</button>
+            <button class="cat-btn" data-cat="Oftálmicos" onclick="setCategoria('Oftálmicos')">Oftálmicos</button>
+            <button class="cat-btn" data-cat="Outros" onclick="setCategoria('Outros')">Outros</button>
+            <button class="cat-btn" data-cat="Respiratório" onclick="setCategoria('Respiratório')">Respiratório</button>
+            <button class="cat-btn" data-cat="Vitaminas" onclick="setCategoria('Vitaminas')">Vitaminas</button>
+            <button class="cat-btn" data-cat="Opioides" onclick="setCategoria('Opioides')">Opioides</button>
+            <button class="cat-btn" data-cat="Antídoto" onclick="setCategoria('Antídoto')">Antídoto</button>
         </div>
 
-        <!-- LIST -->
+        <!-- LISTA -->
         <div class="list-header">
             <span>Medicamento</span>
             <span class="count" id="resultCount">0 resultados</span>
         </div>
         <ul class="med-list" id="medList"></ul>
 
+        <!-- FOOTER -->
+        <div class="footer-link">
+            <a href="index.html">← Voltar para o app principal</a>
+        </div>
     </div>
 
     <!-- MODAL -->
@@ -416,566 +532,210 @@
         <div class="modal-card">
             <button class="modal-close" onclick="closeModal()">✕</button>
             <div class="modal-title" id="modalNome">Medicamento</div>
-            <div class="modal-sub" id="modalPrincipio">Princípio ativo</div>
-
+            <div class="modal-sub" id="modalPrincipio">💊 Princípio ativo</div>
             <div class="modal-section">
                 <h4>📦 Apresentação</h4>
                 <p id="modalApresentacao"></p>
             </div>
-
             <div class="modal-section">
                 <h4>📂 Classe</h4>
                 <p id="modalClasse"></p>
             </div>
-
             <div class="modal-section">
-                <h4>📝 Observações / Uso</h4>
-                <p id="modalObservacoes"></p>
+                <h4>🏥 Níveis de atendimento</h4>
+                <p id="modalNiveis"></p>
             </div>
-
-            <div class="guideline-note" style="background:#f0fdfa; border-left:4px solid #0d9488; border-radius:16px; padding:16px 20px; margin-top:24px; font-size:14px; color:#1a3a6b;">
-                <strong>💡 Dica:</strong> Esta é uma ferramenta de consulta rápida. Sempre verifique a disponibilidade no estoque local e as contraindicações individuais do paciente.
+            <div class="modal-section">
+                <h4>🤰 Gestação</h4>
+                <p id="modalGestacao"></p>
+            </div>
+            <div class="modal-section">
+                <h4>📝 Observações</h4>
+                <p id="modalObservacoes"></p>
             </div>
         </div>
     </div>
 
     <script>
         // ================================================================
-        //  BASE DE DADOS COMPLETA – REMUME
-        //  Mais de 110 medicamentos comuns na rede pública e privada
+        //  BASE DE DADOS – 82 MEDICAMENTOS
+        //  Com níveis, classe, gestação e observações
         // ================================================================
-        const medicamentos = [{
-            nome: 'Dipirona',
-            principio: 'Metamizol sódico',
-            apresentacao: 'Solução injetável 500mg/mL (ampola 2mL) · Comprimido 500mg · Gotas',
-            classe: 'Analgésico',
-            observacoes: 'Analgésico e antitérmico. Contraindicação: alergia a pirazolonas, agranulocitose.'
-        }, {
-            nome: 'Paracetamol',
-            principio: 'Paracetamol',
-            apresentacao: 'Comprimido 500mg · Comprimido 750mg · Solução oral',
-            classe: 'Analgésico',
-            observacoes: 'Antitérmico e analgésico. Dose máxima: 4g/dia (adulto). Hepatotoxicidade em overdose.'
-        }, {
-            nome: 'Ibuprofeno',
-            principio: 'Ibuprofeno',
-            apresentacao: 'Comprimido 400mg · Comprimido 600mg · Suspensão oral',
-            classe: 'Analgésico',
-            observacoes: 'AINE. Contraindicação: insuficiência renal grave, úlcera péptica ativa, alergia a AINEs.'
-        }, {
-            nome: 'Codeína',
-            principio: 'Codeína fosfato',
-            apresentacao: 'Comprimido 30mg (com ou sem paracetamol)',
-            classe: 'Analgésico',
-            observacoes: 'Analgésico opioide. Uso controlado. Pode causar constipação e dependência.'
-        }, {
-            nome: 'Tramadol',
-            principio: 'Tramadol',
-            apresentacao: 'Comprimido 50mg · Solução injetável 50mg/mL',
-            classe: 'Analgésico',
-            observacoes: 'Analgésico opioide atípico. Risco de convulsões e síndrome serotoninérgica.'
-        }, {
-            nome: 'Morfina',
-            principio: 'Morfina sulfato',
-            apresentacao: 'Solução injetável 10mg/mL · Comprimido 10mg',
-            classe: 'Analgésico',
-            observacoes: 'Analgésico opioide potente. Uso restrito em hospitais. Controlado (portaria 344).'
-        }, {
-            nome: 'Amoxicilina',
-            principio: 'Amoxicilina',
-            apresentacao: 'Cápsula 500mg · Suspensão 250mg/5mL e 500mg/5mL',
-            classe: 'Antibiótico',
-            observacoes: 'Penicilina de amplo espectro. Alergia a penicilinas contraindica. Usar com cautela em IR.'
-        }, {
-            nome: 'Amoxicilina + Clavulanato',
-            principio: 'Amoxicilina + Ácido clavulânico',
-            apresentacao: 'Comprimido 500mg+125mg · 875mg+125mg · Suspensão',
-            classe: 'Antibiótico',
-            observacoes: 'Penicilina + inibidor de beta-lactamase. Eficaz contra S. aureus produtor de penicilinase.'
-        }, {
-            nome: 'Azitromicina',
-            principio: 'Azitromicina',
-            apresentacao: 'Comprimido 500mg · Suspensão 200mg/5mL · 600mg (pó)',
-            classe: 'Antibiótico',
-            observacoes: 'Macrolídeo. Dose única ou 3 dias. Eficaz em infecções respiratórias e DSTs.'
-        }, {
-            nome: 'Cefalexina',
-            principio: 'Cefalexina',
-            apresentacao: 'Cápsula 500mg · Suspensão 250mg/5mL',
-            classe: 'Antibiótico',
-            observacoes: 'Cefalosporina de 1ª geração. Infecções de pele, ITU, respiratórias.'
-        }, {
-            nome: 'Ceftriaxona',
-            principio: 'Ceftriaxona',
-            apresentacao: 'Injetável 1g · 2g (frasco ampola)',
-            classe: 'Antibiótico',
-            observacoes: 'Cefalosporina de 3ª geração. Uso IV/IM. Excepcionalmente para meningite, pneumonia, ITU complicada.'
-        }, {
-            nome: 'Ciprofloxacino',
-            principio: 'Ciprofloxacino',
-            apresentacao: 'Comprimido 500mg · Injetável 2mg/mL (100mg/50mL)',
-            classe: 'Antibiótico',
-            observacoes: 'Fluoroquinolona. Contraindicação: crianças, gestantes, tendinite. Risco de ruptura de tendão.'
-        }, {
-            nome: 'Levofloxacino',
-            principio: 'Levofloxacino',
-            apresentacao: 'Comprimido 500mg · Injetável 500mg/100mL',
-            classe: 'Antibiótico',
-            observacoes: 'Fluoroquinolona de 3ª geração. Uso em pneumonia, ITU complicada, prostatite.'
-        }, {
-            nome: 'Norfloxacino',
-            principio: 'Norfloxacino',
-            apresentacao: 'Comprimido 400mg',
-            classe: 'Antibiótico',
-            observacoes: 'Fluoroquinolona. Uso em ITU não complicada, cistite. Não tomar com leite ou antiácidos.'
-        }, {
-            nome: 'Nitrofurantoína',
-            principio: 'Nitrofurantoína',
-            apresentacao: 'Cápsula 100mg',
-            classe: 'Antibiótico',
-            observacoes: 'Uso exclusivo em ITU baixa. Contraindicado em IR (CrCl < 60mL/min).'
-        }, {
-            nome: 'Clindamicina',
-            principio: 'Clindamicina',
-            apresentacao: 'Cápsula 300mg · Injetável 600mg/4mL (ampola) · Gel tópico',
-            classe: 'Antibiótico',
-            observacoes: 'Lincosamida. Eficaz em infecções anaeróbicas, osteomielite, abscessos. Risco de colite pseudomembranosa.'
-        }, {
-            nome: 'Doxiciclina',
-            principio: 'Doxiciclina',
-            apresentacao: 'Comprimido 100mg',
-            classe: 'Antibiótico',
-            observacoes: 'Tetraciclina. Uso em DSTs (clamídia, sífilis), acne, malária. Contraindicação: < 8 anos, gestantes.'
-        }, {
-            nome: 'Metronidazol',
-            principio: 'Metronidazol',
-            apresentacao: 'Comprimido 250mg · 400mg · Injetável 500mg/100mL · Creme vaginal',
-            classe: 'Antibiótico',
-            observacoes: 'Nitroimidazol. Uso em infecções anaeróbicas, DSTs (tricomoníase), vaginose bacteriana.'
-        }, {
-            nome: 'Vancomicina',
-            principio: 'Vancomicina',
-            apresentacao: 'Injetável 500mg · 1g (frasco ampola)',
-            classe: 'Antibiótico',
-            observacoes: 'Glicopeptídeo. Uso em infecções graves por Gram-positivos multirresistentes (MRSA). Risco de nefrotoxicidade.'
-        }, {
-            nome: 'Meropenem',
-            principio: 'Meropenem',
-            apresentacao: 'Injetável 500mg · 1g (frasco ampola)',
-            classe: 'Antibiótico',
-            observacoes: 'Carbapenêmico. Uso restrito para infecções hospitalares graves por bactérias multirresistentes.'
-        }, {
-            nome: 'Losartana',
-            principio: 'Losartana potássica',
-            apresentacao: 'Comprimido 50mg · 100mg',
-            classe: 'Cardiovascular',
-            observacoes: 'BRA (bloqueador do receptor de angiotensina). Hipertensão e nefropatia diabética. Contraindicação: gestantes.'
-        }, {
-            nome: 'Enalapril',
-            principio: 'Enalapril maleato',
-            apresentacao: 'Comprimido 5mg · 10mg · 20mg',
-            classe: 'Cardiovascular',
-            observacoes: 'IECA. Hipertensão, IC. Contraindicação: gestantes, estenose bilateral de artéria renal.'
-        }, {
-            nome: 'Anlodipino',
-            principio: 'Anlodipino besilato',
-            apresentacao: 'Comprimido 5mg · 10mg',
-            classe: 'Cardiovascular',
-            observacoes: 'Bloqueador de canal de cálcio. Hipertensão e angina. Edema de MMII é efeito comum.'
-        }, {
-            nome: 'Hidroclorotiazida',
-            principio: 'Hidroclorotiazida',
-            apresentacao: 'Comprimido 25mg · 50mg',
-            classe: 'Cardiovascular',
-            observacoes: 'Diurético tiazídico. Hipertensão e edema. Monitorar potássio e glicemia.'
-        }, {
-            nome: 'Propranolol',
-            principio: 'Propranolol',
-            apresentacao: 'Comprimido 10mg · 40mg · 80mg',
-            classe: 'Cardiovascular',
-            observacoes: 'Betabloqueador não seletivo. Hipertensão, angina, enxaqueca. Contraindicado em asma e bradicardia.'
-        }, {
-            nome: 'Carvedilol',
-            principio: 'Carvedilol',
-            apresentacao: 'Comprimido 3,125mg · 6,25mg · 12,5mg · 25mg',
-            classe: 'Cardiovascular',
-            observacoes: 'Betabloqueador com ação vasodilatadora. Uso em IC e hipertensão.'
-        }, {
-            nome: 'Amiodarona',
-            principio: 'Amiodarona',
-            apresentacao: 'Comprimido 200mg · Injetável 150mg/3mL',
-            classe: 'Cardiovascular',
-            observacoes: 'Antiarritmico classe III. Efeitos adversos: hipertireoidismo, fibrose pulmonar, depósitos corneanos.'
-        }, {
-            nome: 'Nitroglicerina',
-            principio: 'Nitroglicerina',
-            apresentacao: 'Sublingual 0,5mg · Spray 0,4mg/dose · Injetável 50mg/10mL (ampola)',
-            classe: 'Cardiovascular',
-            observacoes: 'Vasodilatador. Crise anginosa e edema pulmonar agudo. Sublingual: 5min se não aliviar, chamar emergência.'
-        }, {
-            nome: 'AAS (Ácido Acetilsalicílico)',
-            principio: 'AAS',
-            apresentacao: 'Comprimido 100mg · 300mg · 500mg (efervescente)',
-            classe: 'Cardiovascular',
-            observacoes: 'Antiplaquetário. Dose baixa (100mg) para prevenção cardiovascular. Contraindicação: úlcera, asma, <12 anos.'
-        }, {
-            nome: 'Clopidogrel',
-            principio: 'Clopidogrel bisulfato',
-            apresentacao: 'Comprimido 75mg',
-            classe: 'Cardiovascular',
-            observacoes: 'Antiplaquetário. SCA, IC, AVC. Associar com AAS por 12 meses em SCA.'
-        }, {
-            nome: 'Enoxaparina',
-            principio: 'Enoxaparina sódica',
-            apresentacao: 'Injetável 40mg/0,4mL · 60mg/0,6mL · 80mg/0,8mL · 100mg/1,0mL (seringa preenchida)',
-            classe: 'Cardiovascular',
-            observacoes: 'HBPM. Profilaxia e tratamento de TVP/TEP. Ajustar dose em IR grave (CrCl <30).'
-        }, {
-            nome: 'Atorvastatina',
-            principio: 'Atorvastatina cálcica',
-            apresentacao: 'Comprimido 10mg · 20mg · 40mg · 80mg',
-            classe: 'Cardiovascular',
-            observacoes: 'Estatinas. Redução do LDL. Monitorar CPK e função hepática.'
-        }, {
-            nome: 'Sinvastatina',
-            principio: 'Sinvastatina',
-            apresentacao: 'Comprimido 10mg · 20mg · 40mg',
-            classe: 'Cardiovascular',
-            observacoes: 'Estatina. Tomar à noite. Interação com fibratos e ciclosporina.'
-        }, {
-            nome: 'Metformina',
-            principio: 'Metformina',
-            apresentacao: 'Comprimido 500mg · 850mg · 1000mg (liberação prolongada)',
-            classe: 'Diabetes',
-            observacoes: 'Biguanida. Diabetes tipo 2. Risco de acidose lática em IR. Suspender 48h antes de exames com contraste.'
-        }, {
-            nome: 'Glibenclamida',
-            principio: 'Glibenclamida',
-            apresentacao: 'Comprimido 5mg',
-            classe: 'Diabetes',
-            observacoes: 'Sulfonilureia. Diabetes tipo 2. Risco de hipoglicemia. Associar com metformina.'
-        }, {
-            nome: 'Insulina NPH',
-            principio: 'Insulina NPH (isófana)',
-            apresentacao: 'Frasco 100 UI/mL (10mL) · Caneta 100 UI/mL (3mL)',
-            classe: 'Diabetes',
-            observacoes: 'Insulina de ação intermediária. Diabetes tipo 1 e 2. Aplicação SC. Armazenar em geladeira (2-8°C).'
-        }, {
-            nome: 'Insulina Regular',
-            principio: 'Insulina Regular (simples)',
-            apresentacao: 'Frasco 100 UI/mL (10mL) · Caneta 100 UI/mL (3mL)',
-            classe: 'Diabetes',
-            observacoes: 'Insulina de ação rápida. Uso IV/SC. Aplicar 30-60min antes das refeições.'
-        }, {
-            nome: 'Levotiroxina',
-            principio: 'Levotiroxina sódica',
-            apresentacao: 'Comprimido 25mcg · 50mcg · 75mcg · 100mcg · 150mcg',
-            classe: 'Diabetes',
-            observacoes: 'Hormônio tireoidiano. Hipotireoidismo. Tomar em jejum, 30min antes do café.'
-        }, {
-            nome: 'Salbutamol',
-            principio: 'Salbutamol (sulfato)',
-            apresentacao: 'Spray aerossol 100mcg/dose · Comprimido 2mg · 4mg · Xarope 2mg/5mL · Solução para nebulização 5mg/mL',
-            classe: 'Respiratório',
-            observacoes: 'Broncodilatador β2-agonista. Asma e DPOC. Uso inalatório: agudo. Comprimido: manutenção.'
-        }, {
-            nome: 'Brometo de Ipratrópio',
-            principio: 'Brometo de ipratrópio',
-            apresentacao: 'Spray aerossol 20mcg/dose · Solução para nebulização 0,5mg/2mL (frasco ampola)',
-            classe: 'Respiratório',
-            observacoes: 'Broncodilatador anticolinérgico. Associado ao salbutamol nas exacerbações graves. DPOC e asma.'
-        }, {
-            nome: 'Beclometasona',
-            principio: 'Beclometasona dipropionato',
-            apresentacao: 'Spray aerossol 50mcg/dose · 100mcg/dose · 250mcg/dose (inalatório)',
-            classe: 'Respiratório',
-            observacoes: 'Corticoide inalatório. Asma e DPOC (manutenção). Evitar suspensão abrupta.'
-        }, {
-            nome: 'Montelucaste',
-            principio: 'Montelucaste sódico',
-            apresentacao: 'Comprimido 10mg · Granulado 4mg (crianças)',
-            classe: 'Respiratório',
-            observacoes: 'Antileucotrieno. Asma alérgica e rinite. Tomar à noite. Uso adjuvante.'
-        }, {
-            nome: 'Prednisona',
-            principio: 'Prednisona',
-            apresentacao: 'Comprimido 5mg · 20mg',
-            classe: 'Respiratório',
-            observacoes: 'Corticoide oral. Exacerbação de asma/DPOC, doenças autoimunes. Efeitos colaterais: ganho de peso, osteoporose, hiperglicemia.'
-        }, {
-            nome: 'Metilprednisolona',
-            principio: 'Metilprednisolona',
-            apresentacao: 'Injetável 500mg · 1g (frasco ampola) · Comprimido 4mg · 16mg',
-            classe: 'Respiratório',
-            observacoes: 'Corticoide. Exacerbação grave de asma/DPOC, reações alérgicas graves, edema cerebral. Uso IV na urgência.'
-        }, {
-            nome: 'Dexametasona',
-            principio: 'Dexametasona',
-            apresentacao: 'Injetável 4mg/2mL · Comprimido 0,5mg · 4mg · Colírio 0,1%',
-            classe: 'Respiratório',
-            observacoes: 'Corticoide potente. Edema cerebral, asma grave, COVID-19 (SatO2 <94%). Uso tópico ocular.'
-        }, {
-            nome: 'Omeprazol',
-            principio: 'Omeprazol',
-            apresentacao: 'Cápsula 20mg · 40mg · Injetável 40mg (frasco ampola)',
-            classe: 'GI',
-            observacoes: 'IBP. DRGE, úlcera péptica, prevenção de sangramento em UTI. Tomar em jejum.'
-        }, {
-            nome: 'Pantoprazol',
-            principio: 'Pantoprazol sódico',
-            apresentacao: 'Comprimido 40mg · Injetável 40mg (frasco ampola)',
-            classe: 'GI',
-            observacoes: 'IBP. DRGE, úlcera péptica. Menor interação medicamentosa que omeprazol.'
-        }, {
-            nome: 'Escopolamina (Buscopan)',
-            principio: 'Escopolamina (butilbrometo de hioscina)',
-            apresentacao: 'Comprimido 10mg · Injetável 20mg/1mL · 40mg/2mL (ampola)',
-            classe: 'GI',
-            observacoes: 'Antiespasmódico. Cólica intestinal, espasmos do TGI. Não usar em glaucoma ou megacólon.'
-        }, {
-            nome: 'Ondansetrona',
-            principio: 'Ondansetrona',
-            apresentacao: 'Comprimido 4mg · 8mg · Injetável 4mg/2mL · 8mg/4mL (ampola)',
-            classe: 'GI',
-            observacoes: 'Antiemético. Náuseas e vômitos (pós-operatório, quimioterapia, gestantes). Efeito adverso: cefaleia.'
-        }, {
-            nome: 'Metoclopramida',
-            principio: 'Metoclopramida',
-            apresentacao: 'Comprimido 10mg · Injetável 10mg/2mL · Gotas 10mg/mL',
-            classe: 'GI',
-            observacoes: 'Antiemético e pró-cinético. Uso em náuseas e DRGE. Efeito extrapiramidal (evitar em < 20 anos).'
-        }, {
-            nome: 'Bromoprida',
-            principio: 'Bromoprida',
-            apresentacao: 'Comprimido 10mg · Injetável 10mg/2mL (ampola) · Gotas 5mg/mL',
-            classe: 'GI',
-            observacoes: 'Antiemético. Náuseas e vômitos. Menos efeito extrapiramidal que metoclopramida.'
-        }, {
-            nome: 'Amitriptilina',
-            principio: 'Amitriptilina',
-            apresentacao: 'Comprimido 25mg · 50mg · 75mg',
-            classe: 'Neurológico',
-            observacoes: 'Antidepressivo tricíclico. Neuropatia diabética, enxaqueca, fibromialgia. Dose inicial baixa (25mg/noite).'
-        }, {
-            nome: 'Fluoxetina',
-            principio: 'Fluoxetina',
-            apresentacao: 'Cápsula 20mg · Solução oral 20mg/5mL',
-            classe: 'Neurológico',
-            observacoes: 'ISRS. Depressão, TOC, TPM. Efeitos adversos: náusea, insônia, ansiedade inicial.'
-        }, {
-            nome: 'Sertralina',
-            principio: 'Sertralina',
-            apresentacao: 'Comprimido 50mg · 100mg',
-            classe: 'Neurológico',
-            observacoes: 'ISRS. Depressão, ansiedade, TEPT, TOC. Menos interações que fluoxetina.'
-        }, {
-            nome: 'Diazepam',
-            principio: 'Diazepam',
-            apresentacao: 'Comprimido 5mg · 10mg · Injetável 10mg/2mL (ampola)',
-            classe: 'Neurológico',
-            observacoes: 'Benzodiazepínico. Ansiedade, convulsões, sedação. Uso controlado (portaria 344). Risco de dependência.'
-        }, {
-            nome: 'Clonazepam',
-            principio: 'Clonazepam',
-            apresentacao: 'Comprimido 0,5mg · 2mg · Gotas 2,5mg/mL',
-            classe: 'Neurológico',
-            observacoes: 'Benzodiazepínico. Epilepsia, síndrome do pânico. Controlado (portaria 344).'
-        }, {
-            nome: 'Fenitoína',
-            principio: 'Fenitoína sódica',
-            apresentacao: 'Comprimido 100mg · Injetável 250mg/5mL (ampola)',
-            classe: 'Neurológico',
-            observacoes: 'Antiepiléptico. Epilepsia tipo tônico-clônica. Monitorar níveis séricos. Efeitos: gengivite, hirsutismo.'
-        }, {
-            nome: 'Levetiracetam',
-            principio: 'Levetiracetam',
-            apresentacao: 'Comprimido 250mg · 500mg · 750mg · 1000mg · Injetável 500mg/5mL (ampola)',
-            classe: 'Neurológico',
-            observacoes: 'Antiepiléptico de amplo espectro. Menos interações medicamentosas. Efeitos: sonolência, tontura.'
-        }, {
-            nome: 'Carbamazepina',
-            principio: 'Carbamazepina',
-            apresentacao: 'Comprimido 200mg · 400mg (liberação prolongada) · Suspensão 20mg/mL',
-            classe: 'Neurológico',
-            observacoes: 'Antiepiléptico e estabilizador de humor. Epilepsia, neuralgia do trigêmeo. Monitorar sódio e hemograma.'
-        }, {
-            nome: 'Ácido Valproico',
-            principio: 'Ácido valproico (valproato de sódio)',
-            apresentacao: 'Comprimido 250mg · 500mg · Xarope 250mg/5mL · Injetável 500mg/5mL',
-            classe: 'Neurológico',
-            observacoes: 'Antiepiléptico de amplo espectro. Epilepsia, bipolaridade. Contraindicação: hepatopatia grave, gestantes.'
-        }, {
-            nome: 'Tobramicina Colírio',
-            principio: 'Tobramicina',
-            apresentacao: 'Colírio 0,3% (5mL) · Pomada oftálmica 0,3% (3,5g)',
-            classe: 'Tópico',
-            observacoes: 'Aminoglicosídeo tópico. Conjuntivite bacteriana, blefarite, ceratite. Uso tópico ocular 4-6x/dia.'
-        }, {
-            nome: 'Moxifloxacino Colírio',
-            principio: 'Moxifloxacino',
-            apresentacao: 'Colírio 0,5% (5mL)',
-            classe: 'Tópico',
-            observacoes: 'Fluoroquinolona tópica. Conjuntivite bacteriana, ceratite. Uso tópico ocular 3-4x/dia.'
-        }, {
-            nome: 'Dexametasona Colírio',
-            principio: 'Dexametasona',
-            apresentacao: 'Colírio 0,1% (5mL)',
-            classe: 'Tópico',
-            observacoes: 'Corticoide tópico ocular. Processos inflamatórios oculares. Contraindicação: infecção viral/fúngica.'
-        }, {
-            nome: 'Clotrimazol',
-            principio: 'Clotrimazol',
-            apresentacao: 'Creme 1% · Solução 1% · Comprimido vaginal 100mg · 500mg',
-            classe: 'Tópico',
-            observacoes: 'Antifúngico imidazólico. Candidíase, pitiríase, onicomicose. Tópico/uso vaginal.'
-        }, {
-            nome: 'Miconazol',
-            principio: 'Miconazol',
-            apresentacao: 'Creme 2% · Creme vaginal 2% · Solução 1% · Spray',
-            classe: 'Tópico',
-            observacoes: 'Antifúngico. Candidíase, dermatofitoses. Uso tópico 2x/dia.'
-        }, {
-            nome: 'Permetrina',
-            principio: 'Permetrina',
-            apresentacao: 'Creme 5% (escabiose) · Loção 1% (pediculose)',
-            classe: 'Tópico',
-            observacoes: 'Escabicida e pediculicida. Aplicar em todo o corpo (exceto face) por 8-12h. Repetir em 7-14 dias.'
-        }, {
-            nome: 'Ivermectina',
-            principio: 'Ivermectina',
-            apresentacao: 'Comprimido 6mg',
-            classe: 'Tópico',
-            observacoes: 'Antiparasitário. Escabiose, pediculose, estrongiloidíase. Dose 200mcg/kg (dose única, repetir 7-14 dias).'
-        }, {
-            nome: 'Complexo B Injetável',
-            principio: 'Complexo B (vitaminas B1, B6, B12, etc.)',
-            apresentacao: 'Ampola 2mL · 3mL (via IM/IV)',
-            classe: 'Suplemento',
-            observacoes: 'Suplementação vitamínica. Alcoolismo, neuropatias, desnutrição, vômitos prolongados. IM/IV.'
-        }, {
-            nome: 'Adrenalina (Epinefrina)',
-            principio: 'Adrenalina',
-            apresentacao: 'Ampola 1mg/1mL (1:1000) · 1mg/10mL (1:10000) · Auto-injetor (0,3mg)',
-            classe: 'Emergência',
-            observacoes: 'Choque anafilático, PCR, broncoespasmo grave. IM 0,3-0,5mg (1:1000) – repetir 5min.'
-        }, {
-            nome: 'Noradrenalina',
-            principio: 'Noradrenalina (norepinefrina)',
-            apresentacao: 'Ampola 4mg/4mL (1mg/mL) · 8mg/4mL (2mg/mL)',
-            classe: 'Emergência',
-            observacoes: 'Vasopressor. Choque séptico, neurogênico. Infusão contínua em bomba de infusão. Uso em UTI.'
-        }, {
-            nome: 'Dobutamina',
-            principio: 'Dobutamina',
-            apresentacao: 'Ampola 250mg/20mL · Frasco 250mg (pó)',
-            classe: 'Emergência',
-            observacoes: 'Inotrópico. Choque cardiogênico, IC descompensada. Infusão contínua. Monitorizar ECG.'
-        }, {
-            nome: 'Dopamina',
-            principio: 'Dopamina',
-            apresentacao: 'Ampola 50mg/10mL (5mg/mL) · 250mg/5mL (50mg/mL) (concentrada)',
-            classe: 'Emergência',
-            observacoes: 'Vasopressor/inotrópico. Choque, hipotensão. Dose baixa (efeito dopaminérgico renal) – evidência questionável.'
-        }, {
-            nome: 'Nifedipino',
-            principio: 'Nifedipino',
-            apresentacao: 'Cápsula 10mg · 20mg · Comprimido sublingual 10mg (uso emergencial)',
-            classe: 'Emergência',
-            observacoes: 'Bloqueador de canal de cálcio. Crise hipertensiva. Sublingual: 10mg, ação rápida. Cuidado: hipotensão abrupta.'
-        }, {
-            nome: 'Sulfato de Magnésio',
-            principio: 'Sulfato de magnésio heptaidratado',
-            apresentacao: 'Ampola 10mL (50%) - 5g/10mL',
-            classe: 'Emergência',
-            observacoes: 'Pré-eclâmpsia/eclâmpsia (ataque 5g IV, manutenção 1g/h). Arritmias (torsades). Monitorar reflexos patelares.'
-        }, {
-            nome: 'Gluconato de Cálcio',
-            principio: 'Gluconato de cálcio',
-            apresentacao: 'Ampola 10mL (1g/10mL) – 10%',
-            classe: 'Emergência',
-            observacoes: 'Hipocalcemia, hipercalemia, antagonista de bloqueadores de canal de cálcio. IV lento.'
-        }, {
-            nome: 'Bicarbonato de Sódio',
-            principio: 'Bicarbonato de sódio',
-            apresentacao: 'Ampola 10mL (8,4%) · 20mL (8,4%) · Solução 5% (500mL)',
-            classe: 'Emergência',
-            observacoes: 'Acidose metabólica grave (pH <7,1), hipercalemia. Uso em PCR e sepse. IV lento.'
-        }, {
-            nome: 'Vacina Antitetânica (dT)',
-            principio: 'Toxoide tetânico (dT)',
-            apresentacao: 'Seringa preenchida 0,5mL (IM)',
-            classe: 'Vacina',
-            observacoes: 'Profilaxia do tétano. Feridas contaminadas. Reforço a cada 10 anos. Em feridas graves, associar soro antitetânico.'
-        }, {
-            nome: 'Vacina Antirrábica',
-            principio: 'Vacina inativada contra raiva',
-            apresentacao: 'Seringa preenchida (IM) – esquema 0, 3, 7, 14, 28 dias',
-            classe: 'Vacina',
-            observacoes: 'Profilaxia da raiva. Mordedura por animal não vacinado ou desconhecido. Associar soro antirrábico se ferida grave.'
-        }, {
-            nome: 'Hidrocortisona',
-            principio: 'Hidrocortisona',
-            apresentacao: 'Injetável 100mg · 500mg (pó liofilizado) · 1g · Creme 1%',
-            classe: 'Emergência',
-            observacoes: 'Corticoide. Choque séptico (se refratário), insuficiência adrenal, asma grave. Dose: 100mg IV 6/6h.'
-        }, {
-            nome: 'Furosemida',
-            principio: 'Furosemida',
-            apresentacao: 'Comprimido 40mg · Injetável 40mg/2mL · 100mg/10mL (ampola)',
-            classe: 'Cardiovascular',
-            observacoes: 'Diurético de alça. IC, edema pulmonar, IR. Monitorar eletrólitos. Ototoxicidade (altas doses).'
-        }, {
-            nome: 'Captopril',
-            principio: 'Captopril',
-            apresentacao: 'Comprimido 12,5mg · 25mg · 50mg',
-            classe: 'Cardiovascular',
-            observacoes: 'IECA. Hipertensão, IC. Sublingual em crise hipertensiva (25mg). Contraindicação: gestantes.'
-        }, {
-            nome: 'Eritromicina',
-            principio: 'Eritromicina',
-            apresentacao: 'Comprimido 500mg · Suspensão 500mg/5mL · Pomada oftálmica 0,5%',
-            classe: 'Antibiótico',
-            observacoes: 'Macrolídeo. Alergia a penicilina, infecções respiratórias, DSTs. Uso tópico ocular (profilaxia neonatal).'
-        }];
+        const medicamentos = [
+            // --- Analgésicos ---
+            { nome: 'Dipirona', principio: 'Metamizol sódico', apresentacao: 'Solução injetável 500mg/mL · Comp 500mg · Gotas', classe: 'Analgésicos', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'cautela', obs: 'Analgésico e antitérmico. Contraindicação: alergia a pirazolonas, agranulocitose.' },
+            { nome: 'Paracetamol', principio: 'Paracetamol', apresentacao: 'Comp 500mg · Comp 750mg · Solução oral', classe: 'Analgésicos', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'seguro', obs: 'Antitérmico e analgésico. Dose máxima 4g/dia. Hepatotoxicidade em overdose.' },
+            { nome: 'Ibuprofeno', principio: 'Ibuprofeno', apresentacao: 'Comp 400mg · Comp 600mg · Suspensão oral', classe: 'AINEs', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela', obs: 'AINE. Contraindicação: IR grave, úlcera péptica, alergia a AINEs.' },
+            { nome: 'Codeína', principio: 'Codeína fosfato', apresentacao: 'Comp 30mg (com ou sem paracetamol)', classe: 'Opioides', niveis: ['UPA','PSA','Emergência'], gestacao: 'contraindicado', obs: 'Opioide. Uso controlado. Pode causar constipação e dependência.' },
+            { nome: 'Tramadol', principio: 'Tramadol', apresentacao: 'Comp 50mg · Solução injetável 50mg/mL', classe: 'Opioides', niveis: ['UPA','PSA','Emergência'], gestacao: 'contraindicado', obs: 'Opioide atípico. Risco de convulsões e síndrome serotoninérgica.' },
+            { nome: 'Morfina', principio: 'Morfina sulfato', apresentacao: 'Solução injetável 10mg/mL · Comp 10mg', classe: 'Opioides', niveis: ['Emergência'], gestacao: 'contraindicado', obs: 'Opioide potente. Uso restrito em hospitais. Controlado (portaria 344).' },
+            // --- Antibióticos ---
+            { nome: 'Amoxicilina', principio: 'Amoxicilina', apresentacao: 'Cápsula 500mg · Suspensão 250mg/5mL', classe: 'Antibióticos', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'seguro', obs: 'Penicilina de amplo espectro. Alergia a penicilinas contraindica.' },
+            { nome: 'Amoxicilina + Clavulanato', principio: 'Amoxicilina + ác. clavulânico', apresentacao: 'Comp 500+125mg · 875+125mg · Suspensão', classe: 'Antibióticos', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'seguro', obs: 'Penicilina + inibidor de beta-lactamase. Eficaz contra S. aureus produtor de penicilinase.' },
+            { nome: 'Azitromicina', principio: 'Azitromicina', apresentacao: 'Comp 500mg · Suspensão 200mg/5mL · 600mg pó', classe: 'Antibióticos', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'seguro', obs: 'Macrolídeo. Dose única ou 3 dias. Eficaz em infecções respiratórias e DSTs.' },
+            { nome: 'Cefalexina', principio: 'Cefalexina', apresentacao: 'Cápsula 500mg · Suspensão 250mg/5mL', classe: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'seguro', obs: 'Cefalosporina de 1ª geração. Infecções de pele, ITU, respiratórias.' },
+            { nome: 'Ceftriaxona', principio: 'Ceftriaxona', apresentacao: 'Injetável 1g · 2g (frasco ampola)', classe: 'Antibióticos', niveis: ['UPA','PSA','Emergência'], gestacao: 'cautela', obs: 'Cefalosporina de 3ª geração. Uso IV/IM. Meningite, pneumonia, ITU complicada.' },
+            { nome: 'Ciprofloxacino', principio: 'Ciprofloxacino', apresentacao: 'Comp 500mg · Injetável 100mg/50mL', classe: 'Antibióticos', niveis: ['UPA','PSA','Emergência'], gestacao: 'contraindicado', obs: 'Fluoroquinolona. Contraindicação: crianças, gestantes, tendinite.' },
+            { nome: 'Levofloxacino', principio: 'Levofloxacino', apresentacao: 'Comp 500mg · Injetável 500mg/100mL', classe: 'Antibióticos', niveis: ['UPA','PSA','Emergência'], gestacao: 'contraindicado', obs: 'Fluoroquinolona de 3ª geração. Pneumonia, ITU complicada, prostatite.' },
+            { nome: 'Norfloxacino', principio: 'Norfloxacino', apresentacao: 'Comp 400mg', classe: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'contraindicado', obs: 'Fluoroquinolona. ITU não complicada, cistite. Não tomar com leite ou antiácidos.' },
+            { nome: 'Nitrofurantoína', principio: 'Nitrofurantoína', apresentacao: 'Cápsula 100mg', classe: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'seguro', obs: 'ITU baixa. Contraindicado em IR (CrCl <60mL/min).' },
+            { nome: 'Clindamicina', principio: 'Clindamicina', apresentacao: 'Cápsula 300mg · Injetável 600mg/4mL · Gel tópico', classe: 'Antibióticos', niveis: ['UPA','PSA','Emergência'], gestacao: 'cautela', obs: 'Lincosamida. Infecções anaeróbicas, osteomielite. Risco de colite pseudomembranosa.' },
+            { nome: 'Doxiciclina', principio: 'Doxiciclina', apresentacao: 'Comp 100mg', classe: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'contraindicado', obs: 'Tetraciclina. DSTs (clamídia, sífilis), acne. Contraindicação: <8 anos, gestantes.' },
+            { nome: 'Metronidazol', principio: 'Metronidazol', apresentacao: 'Comp 250mg · 400mg · Injetável 500mg/100mL · Creme vaginal', classe: 'Antibióticos', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela', obs: 'Nitroimidazol. Infecções anaeróbicas, DSTs (tricomoníase), vaginose bacteriana.' },
+            { nome: 'Vancomicina', principio: 'Vancomicina', apresentacao: 'Injetável 500mg · 1g (frasco ampola)', classe: 'Antibióticos', niveis: ['Emergência'], gestacao: 'cautela', obs: 'Glicopeptídeo. MRSA, infecções graves. Risco de nefrotoxicidade.' },
+            { nome: 'Meropenem', principio: 'Meropenem', apresentacao: 'Injetável 500mg · 1g (frasco ampola)', classe: 'Antibióticos', niveis: ['Emergência'], gestacao: 'cautela', obs: 'Carbapenêmico. Infecções hospitalares por bactérias multirresistentes.' },
+            // --- Cardiovascular ---
+            { nome: 'Losartana', principio: 'Losartana potássica', apresentacao: 'Comp 50mg · 100mg', classe: 'Cardiovascular', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'contraindicado', obs: 'BRA. Hipertensão, nefropatia diabética. Contraindicação: gestantes.' },
+            { nome: 'Enalapril', principio: 'Enalapril maleato', apresentacao: 'Comp 5mg · 10mg · 20mg', classe: 'Cardiovascular', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'contraindicado', obs: 'IECA. Hipertensão, IC. Contraindicação: gestantes, estenose bilateral de artéria renal.' },
+            { nome: 'Anlodipino', principio: 'Anlodipino besilato', apresentacao: 'Comp 5mg · 10mg', classe: 'Cardiovascular', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela', obs: 'Bloqueador de canal de cálcio. Hipertensão, angina. Edema de MMII comum.' },
+            { nome: 'Hidroclorotiazida', principio: 'Hidroclorotiazida', apresentacao: 'Comp 25mg · 50mg', classe: 'Cardiovascular', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela', obs: 'Diurético tiazídico. Monitorar potássio e glicemia.' },
+            { nome: 'Propranolol', principio: 'Propranolol', apresentacao: 'Comp 10mg · 40mg · 80mg', classe: 'Cardiovascular', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela', obs: 'Betabloqueador não seletivo. Contraindicação: asma e bradicardia.' },
+            { nome: 'Carvedilol', principio: 'Carvedilol', apresentacao: 'Comp 3,125mg · 6,25mg · 12,5mg · 25mg', classe: 'Cardiovascular', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela', obs: 'Betabloqueador vasodilatador. IC e hipertensão.' },
+            { nome: 'Amiodarona', principio: 'Amiodarona', apresentacao: 'Comp 200mg · Injetável 150mg/3mL', classe: 'Cardiovascular', niveis: ['UPA','PSA','Emergência'], gestacao: 'contraindicado', obs: 'Antiarritmico classe III. Efeitos: hipertireoidismo, fibrose pulmonar, depósitos corneanos.' },
+            { nome: 'Nitroglicerina', principio: 'Nitroglicerina', apresentacao: 'Sublingual 0,5mg · Spray · Injetável 50mg/10mL', classe: 'Cardiovascular', niveis: ['UPA','PSA','Emergência'], gestacao: 'cautela', obs: 'Vasodilatador. Crise anginosa e edema pulmonar agudo.' },
+            { nome: 'AAS', principio: 'Ácido acetilsalicílico', apresentacao: 'Comp 100mg · 300mg · 500mg (efervescente)', classe: 'Cardiovascular', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'contraindicado', obs: 'Antiplaquetário. Dose baixa 100mg. Contraindicação: úlcera, asma, <12 anos.' },
+            { nome: 'Clopidogrel', principio: 'Clopidogrel bisulfato', apresentacao: 'Comp 75mg', classe: 'Cardiovascular', niveis: ['UPA','PSA','Emergência'], gestacao: 'cautela', obs: 'Antiplaquetário. SCA, IC, AVC. Associar com AAS por 12 meses.' },
+            { nome: 'Enoxaparina', principio: 'Enoxaparina sódica', apresentacao: 'Seringa 40mg/0,4mL · 60mg/0,6mL · 80mg/0,8mL · 100mg/1,0mL', classe: 'Cardiovascular', niveis: ['UPA','PSA','Emergência'], gestacao: 'seguro', obs: 'HBPM. Profilaxia e tratamento de TVP/TEP. Ajustar em IR grave.' },
+            { nome: 'Atorvastatina', principio: 'Atorvastatina cálcica', apresentacao: 'Comp 10mg · 20mg · 40mg · 80mg', classe: 'Cardiovascular', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'contraindicado', obs: 'Estatina. Redução LDL. Monitorar CPK e função hepática.' },
+            { nome: 'Sinvastatina', principio: 'Sinvastatina', apresentacao: 'Comp 10mg · 20mg · 40mg', classe: 'Cardiovascular', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'contraindicado', obs: 'Estatina. Tomar à noite. Interação com fibratos e ciclosporina.' },
+            { nome: 'Furosemida', principio: 'Furosemida', apresentacao: 'Comp 40mg · Injetável 40mg/2mL · 100mg/10mL', classe: 'Cardiovascular', niveis: ['UPA','PSA','Emergência'], gestacao: 'cautela', obs: 'Diurético de alça. IC, edema pulmonar. Monitorar eletrólitos, ototoxicidade.' },
+            { nome: 'Captopril', principio: 'Captopril', apresentacao: 'Comp 12,5mg · 25mg · 50mg', classe: 'Cardiovascular', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'contraindicado', obs: 'IECA. Sublingual em crise hipertensiva (25mg). Contraindicação: gestantes.' },
+            // --- Diabetes ---
+            { nome: 'Metformina', principio: 'Metformina', apresentacao: 'Comp 500mg · 850mg · 1000mg (liberação prolongada)', classe: 'Endócrino', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'seguro', obs: 'Biguanida. Diabetes tipo 2. Risco de acidose lática em IR.' },
+            { nome: 'Glibenclamida', principio: 'Glibenclamida', apresentacao: 'Comp 5mg', classe: 'Endócrino', niveis: ['UBS','AMA','UPA'], gestacao: 'cautela', obs: 'Sulfonilureia. Risco de hipoglicemia.' },
+            { nome: 'Insulina NPH', principio: 'Insulina NPH', apresentacao: 'Frasco 100 UI/mL · Caneta 100 UI/mL', classe: 'Endócrino', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'seguro', obs: 'Insulina de ação intermediária. Armazenar em geladeira (2-8°C).' },
+            { nome: 'Insulina Regular', principio: 'Insulina regular', apresentacao: 'Frasco 100 UI/mL · Caneta 100 UI/mL', classe: 'Endócrino', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'seguro', obs: 'Insulina de ação rápida. Aplicar 30-60min antes das refeições.' },
+            { nome: 'Levotiroxina', principio: 'Levotiroxina sódica', apresentacao: 'Comp 25mcg · 50mcg · 75mcg · 100mcg · 150mcg', classe: 'Endócrino', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'seguro', obs: 'Hormônio tireoidiano. Tomar em jejum, 30min antes do café.' },
+            // --- Respiratório ---
+            { nome: 'Salbutamol', principio: 'Salbutamol (sulfato)', apresentacao: 'Spray 100mcg/dose · Comp 2mg · 4mg · Xarope · Nebulização 5mg/mL', classe: 'Respiratório', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'seguro', obs: 'Broncodilatador β2-agonista. Asma e DPOC.' },
+            { nome: 'Brometo de Ipratrópio', principio: 'Brometo de ipratrópio', apresentacao: 'Spray 20mcg/dose · Nebulização 0,5mg/2mL', classe: 'Respiratório', niveis: ['UPA','PSA','Emergência'], gestacao: 'cautela', obs: 'Anticolinérgico. Associado ao salbutamol em exacerbações graves.' },
+            { nome: 'Beclometasona', principio: 'Beclometasona dipropionato', apresentacao: 'Spray 50mcg · 100mcg · 250mcg/dose (inalatório)', classe: 'Respiratório', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'seguro', obs: 'Corticoide inalatório. Asma e DPOC (manutenção).' },
+            { nome: 'Montelucaste', principio: 'Montelucaste sódico', apresentacao: 'Comp 10mg · Granulado 4mg', classe: 'Respiratório', niveis: ['UBS','AMA','UPA'], gestacao: 'seguro', obs: 'Antileucotrieno. Asma alérgica e rinite. Tomar à noite.' },
+            { nome: 'Prednisona', principio: 'Prednisona', apresentacao: 'Comp 5mg · 20mg', classe: 'Respiratório', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'cautela', obs: 'Corticoide oral. Efeitos: ganho de peso, osteoporose, hiperglicemia.' },
+            { nome: 'Metilprednisolona', principio: 'Metilprednisolona', apresentacao: 'Injetável 500mg · 1g · Comp 4mg · 16mg', classe: 'Emergência', niveis: ['Emergência'], gestacao: 'cautela', obs: 'Corticoide IV. Exacerbação grave de asma/DPOC, edema cerebral.' },
+            { nome: 'Dexametasona', principio: 'Dexametasona', apresentacao: 'Injetável 4mg/2mL · Comp 0,5mg · 4mg · Colírio 0,1%', classe: 'Respiratório', niveis: ['UPA','PSA','Emergência'], gestacao: 'cautela', obs: 'Corticoide potente. Edema cerebral, COVID-19 (SatO2 <94%).' },
+            // --- Gastrointestinal ---
+            { nome: 'Omeprazol', principio: 'Omeprazol', apresentacao: 'Cápsula 20mg · 40mg · Injetável 40mg', classe: 'Gastrointestinal', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'seguro', obs: 'IBP. DRGE, úlcera, prevenção de sangramento em UTI.' },
+            { nome: 'Pantoprazol', principio: 'Pantoprazol sódico', apresentacao: 'Comp 40mg · Injetável 40mg', classe: 'Gastrointestinal', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'seguro', obs: 'IBP. Menor interação medicamentosa que omeprazol.' },
+            { nome: 'Escopolamina (Buscopan)', principio: 'Escopolamina butilbrometo', apresentacao: 'Comp 10mg · Injetável 20mg/1mL · 40mg/2mL', classe: 'Antiespasmódicos', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'cautela', obs: 'Antiespasmódico. Não usar em glaucoma ou megacólon.' },
+            { nome: 'Ondansetrona', principio: 'Ondansetrona', apresentacao: 'Comp 4mg · 8mg · Injetável 4mg/2mL · 8mg/4mL', classe: 'Gastrointestinal', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'seguro', obs: 'Antiemético. Náuseas, vômitos pós-operatório, quimioterapia, gestantes.' },
+            { nome: 'Metoclopramida', principio: 'Metoclopramida', apresentacao: 'Comp 10mg · Injetável 10mg/2mL · Gotas 10mg/mL', classe: 'Gastrointestinal', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'cautela', obs: 'Antiemético e pró-cinético. Efeito extrapiramidal (evitar <20 anos).' },
+            { nome: 'Bromoprida', principio: 'Bromoprida', apresentacao: 'Comp 10mg · Injetável 10mg/2mL · Gotas 5mg/mL', classe: 'Gastrointestinal', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela', obs: 'Antiemético. Menos efeito extrapiramidal que metoclopramida.' },
+            // --- Neurológico ---
+            { nome: 'Amitriptilina', principio: 'Amitriptilina', apresentacao: 'Comp 25mg · 50mg · 75mg', classe: 'Neurológico', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela', obs: 'Antidepressivo tricíclico. Neuropatia, enxaqueca, fibromialgia. Dose inicial baixa.' },
+            { nome: 'Fluoxetina', principio: 'Fluoxetina', apresentacao: 'Cápsula 20mg · Solução oral 20mg/5mL', classe: 'Neurológico', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela', obs: 'ISRS. Depressão, TOC, TPM. Efeitos: náusea, insônia, ansiedade.' },
+            { nome: 'Sertralina', principio: 'Sertralina', apresentacao: 'Comp 50mg · 100mg', classe: 'Neurológico', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela', obs: 'ISRS. Depressão, ansiedade, TEPT, TOC. Menos interações que fluoxetina.' },
+            { nome: 'Diazepam', principio: 'Diazepam', apresentacao: 'Comp 5mg · 10mg · Injetável 10mg/2mL', classe: 'Neurológico', niveis: ['UPA','PSA','Emergência'], gestacao: 'contraindicado', obs: 'Benzodiazepínico. Controlado (portaria 344). Risco de dependência.' },
+            { nome: 'Clonazepam', principio: 'Clonazepam', apresentacao: 'Comp 0,5mg · 2mg · Gotas 2,5mg/mL', classe: 'Neurológico', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'contraindicado', obs: 'Benzodiazepínico. Epilepsia, síndrome do pânico. Controlado.' },
+            { nome: 'Fenitoína', principio: 'Fenitoína sódica', apresentacao: 'Comp 100mg · Injetável 250mg/5mL', classe: 'Neurológico', niveis: ['UPA','PSA','Emergência'], gestacao: 'contraindicado', obs: 'Antiepiléptico. Monitorar níveis séricos. Efeitos: gengivite, hirsutismo.' },
+            { nome: 'Levetiracetam', principio: 'Levetiracetam', apresentacao: 'Comp 250mg · 500mg · 750mg · 1000mg · Injetável 500mg/5mL', classe: 'Neurológico', niveis: ['UPA','PSA','Emergência'], gestacao: 'cautela', obs: 'Antiepiléptico de amplo espectro. Menos interações.' },
+            { nome: 'Carbamazepina', principio: 'Carbamazepina', apresentacao: 'Comp 200mg · 400mg (LP) · Suspensão 20mg/mL', classe: 'Neurológico', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'contraindicado', obs: 'Antiepiléptico e estabilizador de humor. Monitorar sódio e hemograma.' },
+            { nome: 'Ácido Valproico', principio: 'Valproato de sódio', apresentacao: 'Comp 250mg · 500mg · Xarope · Injetável 500mg/5mL', classe: 'Neurológico', niveis: ['UPA','PSA','Emergência'], gestacao: 'contraindicado', obs: 'Antiepiléptico. Contraindicação: hepatopatia grave, gestantes.' },
+            // --- Tópicos e oftalmológicos ---
+            { nome: 'Tobramicina Colírio', principio: 'Tobramicina', apresentacao: 'Colírio 0,3% (5mL) · Pomada oftálmica 0,3% (3,5g)', classe: 'Oftálmicos', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'seguro', obs: 'Aminoglicosídeo tópico. Conjuntivite bacteriana, blefarite.' },
+            { nome: 'Moxifloxacino Colírio', principio: 'Moxifloxacino', apresentacao: 'Colírio 0,5% (5mL)', classe: 'Oftálmicos', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela', obs: 'Fluoroquinolona tópica. Conjuntivite bacteriana, ceratite.' },
+            { nome: 'Dexametasona Colírio', principio: 'Dexametasona', apresentacao: 'Colírio 0,1% (5mL)', classe: 'Oftálmicos', niveis: ['UBS','AMA','UPA','PSA'], gestacao: 'cautela', obs: 'Corticoide tópico. Contraindicação: infecção viral/fúngica.' },
+            // --- Dermatológicos ---
+            { nome: 'Clotrimazol', principio: 'Clotrimazol', apresentacao: 'Creme 1% · Solução 1% · Comp vaginal 100mg · 500mg', classe: 'Antifúngicos', niveis: ['UBS','AMA','UPA'], gestacao: 'seguro', obs: 'Antifúngico imidazólico. Candidíase, pitiríase.' },
+            { nome: 'Miconazol', principio: 'Miconazol', apresentacao: 'Creme 2% · Creme vaginal 2% · Solução 1% · Spray', classe: 'Antifúngicos', niveis: ['UBS','AMA','UPA'], gestacao: 'seguro', obs: 'Antifúngico. Candidíase, dermatofitoses.' },
+            { nome: 'Permetrina', principio: 'Permetrina', apresentacao: 'Creme 5% (escabiose) · Loção 1% (pediculose)', classe: 'Dermatológico', niveis: ['UBS','AMA','UPA'], gestacao: 'cautela', obs: 'Escabicida e pediculicida. Aplicar 8-12h. Repetir 7-14 dias.' },
+            // --- Antiparasitários / Vitaminas ---
+            { nome: 'Ivermectina', principio: 'Ivermectina', apresentacao: 'Comp 6mg', classe: 'Antiparasitários', niveis: ['UBS','AMA','UPA'], gestacao: 'cautela', obs: 'Antiparasitário. Escabiose, pediculose, estrongiloidíase. Dose 200mcg/kg.' },
+            { nome: 'Complexo B Injetável', principio: 'Vitaminas B1, B6, B12', apresentacao: 'Ampola 2mL · 3mL (IM/IV)', classe: 'Vitaminas', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'seguro', obs: 'Suplementação. Alcoolismo, neuropatias, desnutrição, vômitos prolongados.' },
+            // --- Antivirais ---
+            { nome: 'Aciclovir Oral', principio: 'Aciclovir', apresentacao: 'Comp 200mg · 400mg · 800mg', classe: 'Antivirais', niveis: ['UBS','AMA','UPA'], gestacao: 'seguro', obs: 'Antiviral. Herpes zoster, herpes genital, varicela.' },
+            { nome: 'Aciclovir Tópico', principio: 'Aciclovir', apresentacao: 'Creme 5% (3g · 10g)', classe: 'Antivirais', niveis: ['UBS','AMA','UPA'], gestacao: 'seguro', obs: 'Antiviral tópico. Herpes labial, herpes genital (lesões leves).' },
+            // --- Emergência / Antídotos ---
+            { nome: 'Adrenalina (Epinefrina)', principio: 'Adrenalina', apresentacao: 'Ampola 1mg/1mL (1:1000) · Auto-injetor 0,3mg', classe: 'Emergência', niveis: ['Emergência'], gestacao: 'seguro', obs: 'Choque anafilático, PCR, broncoespasmo grave. IM 0,3-0,5mg.' },
+            { nome: 'Noradrenalina', principio: 'Noradrenalina', apresentacao: 'Ampola 4mg/4mL · 8mg/4mL', classe: 'Emergência', niveis: ['Emergência'], gestacao: 'cautela', obs: 'Vasopressor. Choque séptico, neurogênico. Infusão contínua em bomba.' },
+            { nome: 'Dobutamina', principio: 'Dobutamina', apresentacao: 'Ampola 250mg/20mL · Frasco 250mg (pó)', classe: 'Emergência', niveis: ['Emergência'], gestacao: 'cautela', obs: 'Inotrópico. Choque cardiogênico, IC descompensada.' },
+            { nome: 'Dopamina', principio: 'Dopamina', apresentacao: 'Ampola 50mg/10mL · 250mg/5mL', classe: 'Emergência', niveis: ['Emergência'], gestacao: 'cautela', obs: 'Vasopressor/inotrópico. Choque, hipotensão.' },
+            { nome: 'Nifedipino', principio: 'Nifedipino', apresentacao: 'Cápsula 10mg · 20mg · Sublingual 10mg', classe: 'Emergência', niveis: ['Emergência'], gestacao: 'contraindicado', obs: 'Bloqueador de canal de cálcio. Crise hipertensiva. Cuidado: hipotensão abrupta.' },
+            { nome: 'Sulfato de Magnésio', principio: 'Sulfato de magnésio', apresentacao: 'Ampola 10mL (50%) - 5g/10mL', classe: 'Emergência', niveis: ['Emergência'], gestacao: 'seguro', obs: 'Pré-eclâmpsia/eclâmpsia. Monitorar reflexos patelares.' },
+            { nome: 'Gluconato de Cálcio', principio: 'Gluconato de cálcio', apresentacao: 'Ampola 10mL (1g/10mL) - 10%', classe: 'Antídoto', niveis: ['Emergência'], gestacao: 'seguro', obs: 'Hipocalcemia, hipercalemia, antagonista de bloqueadores de canal de cálcio.' },
+            { nome: 'Bicarbonato de Sódio', principio: 'Bicarbonato de sódio', apresentacao: 'Ampola 10mL (8,4%) · 20mL (8,4%) · Solução 5% (500mL)', classe: 'Antídoto', niveis: ['Emergência'], gestacao: 'cautela', obs: 'Acidose metabólica grave (pH <7,1), hipercalemia.' },
+            // --- Anti-histamínicos ---
+            { nome: 'Cetirizina', principio: 'Cetirizina', apresentacao: 'Comp 10mg · Xarope 1mg/mL', classe: 'Anti-histamínicos', niveis: ['UBS','AMA','UPA'], gestacao: 'seguro', obs: 'Anti-histamínico não sedante. Rinite, urticária.' },
+            { nome: 'Loratadina', principio: 'Loratadina', apresentacao: 'Comp 10mg · Xarope 5mg/5mL', classe: 'Anti-histamínicos', niveis: ['UBS','AMA','UPA'], gestacao: 'seguro', obs: 'Anti-histamínico não sedante. Rinite, urticária.' },
+            // --- Outros / completar 82 ---
+            { nome: 'Eritromicina', principio: 'Eritromicina', apresentacao: 'Comp 500mg · Suspensão 500mg/5mL · Pomada oftálmica 0,5%', classe: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'seguro', obs: 'Macrolídeo. Alergia a penicilina, infecções respiratórias, DSTs.' },
+            { nome: 'Hidrocortisona', principio: 'Hidrocortisona', apresentacao: 'Injetável 100mg · 500mg · 1g (pó) · Creme 1%', classe: 'Emergência', niveis: ['Emergência'], gestacao: 'cautela', obs: 'Corticoide. Choque séptico (refratário), insuficiência adrenal, asma grave.' },
+            { nome: 'Fosfomicina', principio: 'Fosfomicina trometamol', apresentacao: 'Granulado 3g (sachê)', classe: 'Antibióticos', niveis: ['UBS','AMA','UPA'], gestacao: 'seguro', obs: 'Antibiótico. ITU baixa não complicada. Dose única.' },
+            { nome: 'Vacina Antitetânica (dT)', principio: 'Toxoide tetânico', apresentacao: 'Seringa 0,5mL (IM)', classe: 'Outros', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'seguro', obs: 'Profilaxia do tétano. Feridas contaminadas. Reforço a cada 10 anos.' },
+            { nome: 'Vacina Antirrábica', principio: 'Vacina inativada contra raiva', apresentacao: 'Seringa (IM) – esquema 0,3,7,14,28d', classe: 'Outros', niveis: ['UBS','AMA','UPA','PSA','Emergência'], gestacao: 'seguro', obs: 'Profilaxia da raiva. Mordedura por animal não vacinado.' },
+        ];
 
         // ================================================================
         //  ENGINE
         // ================================================================
-        let currentFilter = 'todos';
+        let currentNivel = 'todos';
+        let currentCategoria = 'todos';
 
         function renderList() {
             const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
             const list = document.getElementById('medList');
             const count = document.getElementById('resultCount');
 
-            const results = medicamentos.filter(item => {
-                const matchFilter = currentFilter === 'todos' || item.classe === currentFilter;
+            const chkSeguro = document.getElementById('chkSeguro').checked;
+            const chkCautela = document.getElementById('chkCautela').checked;
+            const chkContra = document.getElementById('chkContra').checked;
+
+            const resultados = medicamentos.filter(item => {
+                // Filtro por nível
+                const matchNivel = currentNivel === 'todos' || item.niveis.includes(currentNivel);
+                // Filtro por categoria
+                const matchCat = currentCategoria === 'todos' || item.classe === currentCategoria;
+                // Filtro por busca
                 const matchSearch = item.nome.toLowerCase().includes(searchTerm) ||
-                    item.principio.toLowerCase().includes(searchTerm) ||
-                    item.classe.toLowerCase().includes(searchTerm);
-                return matchFilter && matchSearch;
+                                    item.principio.toLowerCase().includes(searchTerm) ||
+                                    item.classe.toLowerCase().includes(searchTerm);
+                // Filtro por gestação
+                let matchGest = true;
+                if (chkSeguro || chkCautela || chkContra) {
+                    matchGest = false;
+                    if (chkSeguro && item.gestacao === 'seguro') matchGest = true;
+                    if (chkCautela && item.gestacao === 'cautela') matchGest = true;
+                    if (chkContra && item.gestacao === 'contraindicado') matchGest = true;
+                }
+
+                return matchNivel && matchCat && matchSearch && matchGest;
             });
 
-            count.textContent = `${results.length} resultados (total: ${medicamentos.length} medicamentos)`;
+            count.textContent = `${resultados.length} resultados (total: ${medicamentos.length} medicamentos)`;
 
-            if (results.length === 0) {
-                list.innerHTML = `<li class="empty-state">Nenhum medicamento encontrado para este filtro/busca.</li>`;
+            if (resultados.length === 0) {
+                list.innerHTML = `<li class="empty-state">Nenhum medicamento encontrado.</li>`;
                 return;
             }
 
-            list.innerHTML = results.map(item => `
-                        <li class="med-item" onclick="openModal('${item.nome}')">
-                            <span class="name">${item.nome}</span>
-                            <span class="principio">${item.principio}</span>
-                            <span class="classe-badge">${item.classe}</span>
-                        </li>
-                    `).join('');
+            list.innerHTML = resultados.map(item => {
+                const gestIcon = item.gestacao === 'seguro' ? '✅' :
+                                 item.gestacao === 'cautela' ? '⚠️' : '❌';
+                const niveisHtml = item.niveis.map(n => `<span class="${n.toLowerCase()}">${n}</span>`).join('');
+                return `
+                    <li class="med-item" onclick="openModal('${item.nome}')">
+                        <span class="name">${item.nome}</span>
+                        <span class="principio">${item.principio}</span>
+                        <span class="classe-badge">${item.classe}</span>
+                        <span class="gestacao-icon">${gestIcon}</span>
+                        <div class="niveis">${niveisHtml}</div>
+                    </li>
+                `;
+            }).join('');
         }
 
-        function setFilter(filter) {
-            currentFilter = filter;
+        function setNivel(nivel) {
+            currentNivel = nivel;
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.filter === filter);
+                btn.classList.toggle('active', btn.dataset.filter === nivel);
+            });
+            renderList();
+        }
+
+        function setCategoria(cat) {
+            currentCategoria = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.cat === cat);
             });
             renderList();
         }
@@ -988,7 +748,11 @@
             document.getElementById('modalPrincipio').textContent = `💊 ${item.principio}`;
             document.getElementById('modalApresentacao').textContent = item.apresentacao;
             document.getElementById('modalClasse').textContent = item.classe;
-            document.getElementById('modalObservacoes').textContent = item.observacoes;
+            document.getElementById('modalNiveis').textContent = item.niveis.join(' · ');
+            const gestLabel = item.gestacao === 'seguro' ? '✅ Seguro' :
+                              item.gestacao === 'cautela' ? '⚠️ Cautela' : '❌ Contraindicado';
+            document.getElementById('modalGestacao').textContent = gestLabel;
+            document.getElementById('modalObservacoes').textContent = item.obs;
 
             document.getElementById('modalOverlay').classList.add('open');
             document.body.style.overflow = 'hidden';
