@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conduta Médica – Hospitais Particulares | PSA / Emergência</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f4f6fa;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 820px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            padding: 24px 20px 40px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0b1a33;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .badge-privado {
+            background: #1a73e8;
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 40px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .header .sub {
+            font-size: 14px;
+            color: #5e6f8d;
+            margin-top: 6px;
+            border-left: 4px solid #1a73e8;
+            padding-left: 12px;
+            background: #f0f5ff;
+            border-radius: 0 8px 8px 0;
+            line-height: 1.5;
+        }
+
+        .header .sub strong {
+            color: #1a73e8;
+        }
+
+        .header .sub .aviso {
+            display: block;
+            font-size: 12px;
+            color: #b71c1c;
+            background: #ffebee;
+            padding: 4px 12px;
+            border-radius: 30px;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .search-area {
+            margin: 20px 0 16px;
+        }
+
+        .search-box {
+            display: flex;
+            background: #f0f3f8;
+            border-radius: 60px;
+            padding: 4px 4px 4px 18px;
+            align-items: center;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+
+        .search-box:focus-within {
+            border-color: #1a73e8;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 12px 0;
+            font-size: 15px;
+            outline: none;
+            color: #1a2639;
+        }
+
+        .search-box input::placeholder {
+            color: #8895aa;
+        }
+
+        .search-box button {
+            background: #1a73e8;
+            border: none;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.15s;
+            letter-spacing: 0.3px;
+        }
+
+        .search-box button:hover {
+            background: #1557b0;
+            transform: scale(0.97);
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 14px 0 18px;
+        }
+
+        .filter-btn {
+            padding: 6px 16px;
+            border-radius: 40px;
+            border: 1px solid #d0d8e7;
+            background: white;
+            font-size: 13px;
+            font-weight: 500;
+            color: #2c3e5c;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .filter-btn:hover {
+            background: #eef3fc;
+            border-color: #a0b5d3;
+        }
+
+        .filter-btn.active {
+            background: #1a73e8;
+            border-color: #1a73e8;
+            color: white;
+            box-shadow: 0 4px 8px rgba(26, 115, 232, 0.25);
+        }
+
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 8px 4px 12px;
+            border-bottom: 2px solid #edf2f9;
+            margin-top: 4px;
+        }
+
+        .list-header span {
+            font-size: 13px;
+            font-weight: 600;
+            color: #5e6f8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .list-header .count {
+            background: #e9ecf3;
+            padding: 2px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+        }
+
+        .cid-list {
+            list-style: none;
+            margin-top: 6px;
+        }
+
+        .cid-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 14px;
+            border-bottom: 1px solid #f0f4fc;
+            cursor: pointer;
+            transition: 0.1s;
+            border-radius: 12px;
+            margin: 2px 0;
+        }
+
+        .cid-item:hover {
+            background: #f5f9ff;
+        }
+
+        .cid-item .code {
+            font-weight: 700;
+            color: #1a73e8;
+            background: #e6effb;
+            padding: 2px 12px;
+            border-radius: 30px;
+            font-size: 13px;
+            min-width: 60px;
+            text-align: center;
+            margin-right: 14px;
+        }
+
+        .cid-item .diag {
+            flex: 1;
+            font-size: 15px;
+            color: #0b1a33;
+            font-weight: 500;
+        }
+
+        .cid-item .badge-setting {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 2px 10px;
+            border-radius: 30px;
+            background: #eef2f6;
+            color: #3a4a66;
+        }
+
+        .badge-setting.emergência {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .badge-setting.psa {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-card {
+            background: white;
+            max-width: 720px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 32px;
+            padding: 32px 28px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.25s ease;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-close {
+            position: sticky;
+            top: 0;
+            float: right;
+            background: #f0f3f8;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 40px;
+            font-size: 22px;
+            cursor: pointer;
+            color: #2c3e5c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.15s;
+            margin-bottom: 8px;
+        }
+
+        .modal-close:hover {
+            background: #e0e6f0;
+        }
+
+        .modal-code {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1a73e8;
+            background: #e6effb;
+            display: inline-block;
+            padding: 2px 20px;
+            border-radius: 40px;
+            margin-bottom: 6px;
+        }
+
+        .modal-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0b1a33;
+            margin: 8px 0 16px;
+        }
+
+        .modal-setting {
+            display: inline-block;
+            padding: 4px 18px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            background: #eef2f6;
+            color: #2c3e5c;
+            margin-bottom: 20px;
+        }
+
+        .modal-setting.emergência {
+            background: #ffebee;
+            color: #b71c1c;
+        }
+        .modal-setting.psa {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+
+        .modal-section {
+            margin-top: 22px;
+            border-top: 1px solid #edf2f9;
+            padding-top: 18px;
+        }
+
+        .modal-section h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #2c3e5c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-section h4 i {
+            font-style: normal;
+            font-size: 18px;
+        }
+
+        .modal-section ul {
+            list-style: none;
+            padding-left: 6px;
+        }
+
+        .modal-section li {
+            padding: 4px 0 4px 20px;
+            position: relative;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #1f2a44;
+        }
+
+        .modal-section li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #1a73e8;
+            font-weight: bold;
+        }
+
+        .modal-section p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #1f2a44;
+            padding: 4px 0 4px 20px;
+        }
+
+        .guideline-note {
+            background: #f0f7fe;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-top: 24px;
+            font-size: 14px;
+            color: #1a3a6b;
+            border-left: 4px solid #1a73e8;
+        }
+
+        .guideline-note strong {
+            color: #0b1a33;
+        }
+
+        .cadastro-area {
+            margin-top: 36px;
+            border-top: 2px dashed #dce3ef;
+            padding-top: 28px;
+        }
+
+        .cadastro-area h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0b1a33;
+            margin-bottom: 14px;
+        }
+
+        .cadastro-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .cadastro-row input,
+        .cadastro-row select {
+            flex: 1;
+            min-width: 140px;
+            padding: 10px 16px;
+            border-radius: 60px;
+            border: 1px solid #d0d8e7;
+            background: white;
+            font-size: 14px;
+            outline: none;
+            transition: 0.15s;
+        }
+
+        .cadastro-row input:focus,
+        .cadastro-row select:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+
+        .cadastro-row button {
+            background: #0b1a33;
+            color: white;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .cadastro-row button:hover {
+            background: #1a2d4f;
+            transform: scale(0.97);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 10px;
+            color: #8895aa;
+        }
+
+        @media (max-width: 600px) {
+            .app-container {
+                padding: 16px 12px;
+            }
+            .modal-card {
+                padding: 24px 16px;
+            }
+            .modal-code {
+                font-size: 26px;
+            }
+            .modal-title {
+                font-size: 20px;
+            }
+            .search-box input {
+                font-size: 14px;
+                padding: 10px 0;
+            }
+            .search-box button {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+            .cid-item {
+                flex-wrap: wrap;
+            }
+            .cid-item .code {
+                min-width: 50px;
+                font-size: 12px;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+            .badge-privado {
+                font-size: 11px;
+                padding: 2px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>
+                🏥 Conduta Médica
+                <span class="badge-privado">PRIVADO</span>
+            </h1>
+            <div class="sub">
+                <strong>Atendimento em Hospitais Particulares / Convênios</strong> · Diretrizes SBEM / SBC / MS para <strong>PSA e Emergência</strong>
+                <span class="aviso">⚠️ Esta versão NÃO inclui AMA/UPA e considera exames de alta complexidade (RM, angioTC, trombectomia, etc.)</span>
+            </div>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="search-area">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Digite o diagnóstico ou CID..." oninput="renderList()">
+                <button onclick="renderList()">Buscar</button>
+            </div>
+        </div>
+
+        <!-- FILTERS -->
+        <div class="filters" id="filterContainer">
+            <button class="filter-btn active" data-filter="todos" onclick="setFilter('todos')">Todos</button>
+            <button class="filter-btn" data-filter="PSA" onclick="setFilter('PSA')">PSA</button>
+            <button class="filter-btn" data-filter="Emergência" onclick="setFilter('Emergência')">Emergência</button>
+        </div>
+
+        <!-- LIST -->
+        <div class="list-header">
+            <span>CID · Diagnóstico</span>
+            <span class="count" id="resultCount">0 resultados</span>
+        </div>
+        <ul class="cid-list" id="cidList"></ul>
+
+        <!-- CADASTRO -->
+        <div class="cadastro-area">
+            <h3>📋 Cadastrar nova conduta</h3>
+            <div class="cadastro-row">
+                <input type="text" id="newCid" placeholder="CID (ex: I10)">
+                <input type="text" id="newDiag" placeholder="Diagnóstico">
+                <select id="newSetting">
+                    <option value="PSA">PSA</option>
+                    <option value="Emergência">Emergência</option>
+                </select>
+            </div>
+            <div class="cadastro-row" style="gap:8px;">
+                <input type="text" id="newExames" placeholder="Exames (separados por vírgula)" style="flex:2;">
+                <input type="text" id="newTrat" placeholder="Tratamento (separado por vírgula)" style="flex:2;">
+                <button onclick="addNewProtocol()">Adicionar</button>
+            </div>
+            <p style="font-size:12px; color:#8895aa; margin-top:6px;">* Protocolos adicionados localmente para demonstração.</p>
+        </div>
+
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div class="modal-code" id="modalCode">CID</div>
+            <div class="modal-title" id="modalDiag">Diagnóstico</div>
+            <div class="modal-setting" id="modalSetting">PSA</div>
+
+            <div class="modal-section">
+                <h4><i>🧪</i> Exames a solicitar</h4>
+                <ul id="modalExames"></ul>
+            </div>
+
+            <div class="modal-section">
+                <h4><i>💊</i> Tratamento</h4>
+                <ul id="modalTratamento"></ul>
+            </div>
+
+            <div class="modal-section">
+                <h4><i>📋</i> Conduta geral (Diretrizes Brasileiras)</h4>
+                <p id="modalConduta"></p>
+            </div>
+
+            <div class="guideline-note">
+                <strong>🔬 Base científica:</strong> <span id="modalGuidelineRef">SBEM / SBC / MS</span> – Ferramenta auxiliar. Decisão final do médico assistente.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================================================================
+        //  PROTOCOLOS PARA HOSPITAIS PARTICULARES / CONVÊNIOS
+        //  TODOS OS 59 CIDs – PSA e Emergência
+        // ================================================================
+        const protocolsData = [{
+            cid: 'A54',
+            diag: 'Gonorreia',
+            setting: 'PSA',
+            exames: ['Gram e cultura de secreção', 'PCR para Neisseria gonorrhoeae', 'Teste rápido para sífilis/HIV'],
+            tratamento: ['Ceftriaxona 500mg IM (dose única)', 'Azitromicina 1g VO (dose única)', 'Doxiciclina 100mg 12/12h por 7 dias (se coinfecção clamídia)'],
+            conduta: 'Notificação compulsória. Orientar abstinência sexual até conclusão do tratamento e tratar parceiros. Coleta de swab uretral/cervical. Seguir fluxo da SMS-SP para IST.',
+            ref: 'MS / SBU'
+        }, {
+            cid: 'A90',
+            diag: 'Dengue (Classificação de risco)',
+            setting: 'Emergência',
+            exames: ['Hemograma + plaquetas + hematócrito', 'PCR / NS1 (até 5 dias)', 'Sorologia IgM (após 6 dias)', 'Eletrólitos, função renal'],
+            tratamento: ['Hidratação vigorosa (SF 0,9% ou Ringer) 20ml/kg/hora', 'Paracetamol 500mg 6/6h (dor/febre)', 'NÃO usar AAS, AINEs ou corticoides'],
+            conduta: 'Classificar em A/B/C/D. Internar B, C e D. Monitorar diurese (meta >1ml/kg/h). Se choque, UTI. Seguir fluxo MS/SBEM.',
+            ref: 'MS / SBEM'
+        }, {
+            cid: 'B01',
+            diag: 'Varicela (Catapora)',
+            setting: 'PSA',
+            exames: ['Diagnóstico clínico', 'Sorologia IgM/IgG (se dúvida)', 'PCR de lesão (casos graves)'],
+            tratamento: ['Suporte: antitérmicos (dipirona)', 'Aciclovir 20mg/kg/dose VO 5x/dia (se >12 anos, imunossuprimido ou gestante)'],
+            conduta: 'Isolamento respiratório e de contato até todas as lesões virarem crostas. Notificar SIVEP-Gripe. Evitar contato com gestantes e imunossuprimidos.',
+            ref: 'MS / SBI'
+        }, {
+            cid: 'B02',
+            diag: 'Herpes Zoster (Cobreiro)',
+            setting: 'PSA',
+            exames: ['Diagnóstico clínico', 'Teste de sensibilidade (dermatomo)', 'Sorologia (casos atípicos)'],
+            tratamento: ['Aciclovir 800mg VO 5x/dia por 7 dias', 'Analgésicos (dipirona ou paracetamol)', 'Se oftálmico: Aciclovir IV + avaliação oftalmológica'],
+            conduta: 'Analgesia adequada. Se dor neuropática, associar amitriptilina ou gabapentina. Manter lesões cobertas. Isolamento para gestantes/imunossuprimidos.',
+            ref: 'SBD / MS'
+        }, {
+            cid: 'B04',
+            diag: 'Mpox (Varíola dos macacos)',
+            setting: 'Emergência',
+            exames: ['PCR para Orthopoxvirus (swab de lesão)', 'Hemograma', 'Função hepática/renal'],
+            tratamento: ['Suporte clínico', 'Analgesia (dipirona)', 'Antiviral: Tecovirimat (uso compassivo/grave)'],
+            conduta: 'Isolamento imediato. Notificação compulsória em 24h. Seguir protocolo do MS/CONASS. Avaliar necessidade de internação em leito de isolamento.',
+            ref: 'MS / ANVISA / SBEM'
+        }, {
+            cid: 'B26',
+            diag: 'Caxumba (Parotidite epidêmica)',
+            setting: 'PSA',
+            exames: ['Diagnóstico clínico', 'Amilase sérica', 'Sorologia IgM (casos duvidosos)'],
+            tratamento: ['Suporte: antitérmicos, analgésicos', 'Compressas mornas', 'Hidratação e dieta pastosa'],
+            conduta: 'Isolamento respiratório por 5 dias após início do aumento parotídeo. Notificar ao serviço de vigilância. Vacinação MMR em contactantes susceptíveis.',
+            ref: 'MS / SBI'
+        }, {
+            cid: 'B26.0',
+            diag: 'Orquite por Caxumba (Complicação)',
+            setting: 'PSA',
+            exames: ['Ultrassom testicular (Doppler)', 'Hemograma', 'PCR', 'Amilase'],
+            tratamento: ['Repouso', 'Suporte escrotal', 'AINEs (ibuprofeno 400mg 8/8h)', 'Analgesia'],
+            conduta: 'Avaliar urgência urológica. Internar se dor intensa, febre alta ou suspeita de abscesso. Corticoides em casos selecionados (sem evidência forte).',
+            ref: 'SBU / MS'
+        }, {
+            cid: 'B86',
+            diag: 'Escabiose (Sarna)',
+            setting: 'PSA',
+            exames: ['Diagnóstico clínico (túneis, prurido noturno)', 'Dermatoscopia (se disponível)'],
+            tratamento: ['Permetrina 5% creme (aplicação noturna por 3 dias)', 'Ivermectina 200mcg/kg VO (dose única, repetir em 7-14 dias)'],
+            conduta: 'Tratar todos os contactantes domiciliares simultaneamente. Lavar roupas de cama e roupas em água quente. Orientar sobre prurido pós-tratamento.',
+            ref: 'SBD / MS'
+        }, {
+            cid: 'E05.9',
+            diag: 'Crise Tireotóxica (Tempestade Tireoidiana)',
+            setting: 'Emergência',
+            exames: ['TSH, T4 livre', 'Eletrólitos, glicemia, gasometria', 'ECG', 'Função hepática', 'Hemograma'],
+            tratamento: ['Propranolol 20-40mg VO 6/6h (ou esmolol IV)', 'Metimazol 20-40mg VO 6/6h', 'Hidrocortisona 100mg IV 6/6h', 'Lugol (após tioamida)'],
+            conduta: 'Admissão em UTI. Monitorizar ritmo cardíaco. Controle térmico com compressas. Evitar salicilatos. Buscar fator precipitante (infecção, ACO).',
+            ref: 'SBEM / SBEM'
+        }, {
+            cid: 'E10.1',
+            diag: 'Cetoacidose Diabética (CAD)',
+            setting: 'Emergência',
+            exames: ['Glicemia capilar e venosa', 'Gasometria venosa/arterial', 'Corpos cetônicos (sangue/urina)', 'Íons (Na, K, Cl)', 'Função renal', 'ECG', 'PCR'],
+            tratamento: ['SF 0,9% 15-20ml/kg/h na 1ªh', 'Insulina regular IV 0,1U/kg/h', 'Reposição de potássio (se K <5,5)', 'Bicarbonato (se pH <6,9)'],
+            conduta: 'Meta: redução glicêmica de 50-75mg/dL/h. Monitorar glicemia, eletrólitos e pH a cada 1-2h. Buscar fator precipitante. Internar em UTI.',
+            ref: 'SBEM / SBD'
+        }, {
+            cid: 'E11.0',
+            diag: 'Estado Hiperosmolar Hiperglicêmico (EHH)',
+            setting: 'Emergência',
+            exames: ['Glicemia', 'Osmolalidade sérica', 'Íons', 'Gasometria', 'Função renal', 'Hemograma'],
+            tratamento: ['SF 0,9% 1L/h (reposição volêmica agressiva)', 'Insulina regular IV 0,05U/kg/h (após hidratação)', 'Monitorar potássio'],
+            conduta: 'Corrigir desidratação (déficit ~ 6-9L). Quando glicemia atingir 250-300mg/dL, adicionar glicose. Internar em UTI. Profilaxia de TVP.',
+            ref: 'SBEM / SBD'
+        }, {
+            cid: 'E16',
+            diag: 'Hipoglicemia severa',
+            setting: 'Emergência',
+            exames: ['Glicemia capilar', 'Insulina, peptídeo C (se recorrente)', 'Função hepática/renal', 'Cortisol (se suspeita adrenal)'],
+            tratamento: ['Glicose 50% 20-40ml IV se inconsciente', 'Glicose 10% IV contínua', 'Glucagon IM (se sem acesso venoso)'],
+            conduta: 'Se refratária, investigar insulinoma, insuficiência adrenal, hepatopatia. Internar para monitorização. Orientar alimentação fracionada.',
+            ref: 'SBEM / SBD'
+        }, {
+            cid: 'E86',
+            diag: 'Gastroenterite Aguda com Desidratação',
+            setting: 'PSA',
+            exames: ['Eletrólitos', 'Função renal', 'Hemograma', 'PCR', 'Coproparasitológico (se >7 dias)'],
+            tratamento: ['TRO (soro caseiro ou soro de reidratação oral)', 'SF 0,9% ou Ringer IV (se desidratação grave): 30ml/kg em 2h', 'Zinco 10-20mg/dia (crianças)', 'Antiemético (ondansetrona) se vômitos'],
+            conduta: 'Classificar desidratação (leve/moderada/grave). Manter dieta leve. Antibiótico apenas se disenteria ou febre alta. Seguir fluxo MS para cólera/diarreia.',
+            ref: 'MS / SBP'
+        }, {
+            cid: 'G40',
+            diag: 'Crise Epiléptica – Epilético conhecido',
+            setting: 'Emergência',
+            exames: ['Glicemia capilar', 'Eletrólitos', 'Níveis de drogas antiepilépticas', 'TC de crânio (se primeira crise ou déficit)'],
+            tratamento: ['Diazepam 10mg IV (repetir 10min se necessário)', 'Fenitoína 20mg/kg IV (carga) ou Levetiracetam 20mg/kg IV'],
+            conduta: 'Se status >5min: protocolo de emergência. Intubar se não cessar. Admissão em UTI se mal epiléptico. Ajustar dose de manutenção.',
+            ref: 'SBEM / SBN'
+        }, {
+            cid: 'G41',
+            diag: 'Estado de Mal Epiléptico',
+            setting: 'Emergência',
+            exames: ['Glicemia', 'Eletrólitos', 'Gasometria', 'TC crânio (urgente)', 'EEG contínuo (se disponível)'],
+            tratamento: ['Midazolam IV/IM 0,2mg/kg', 'Fenitoína 20mg/kg IV', 'Propofol ou Tiopental (refratário)', 'Suporte ventilatório'],
+            conduta: 'Intubação orotraqueal precoce. UTI. Buscar causa (AVC, infecção, hipoglicemia, ACO). Monitorização contínua. Neuroproteção.',
+            ref: 'SBEM / SBN'
+        }, {
+            cid: 'G43.0',
+            diag: 'Enxaqueca sem aura',
+            setting: 'PSA',
+            exames: ['Exame neurológico completo', 'TC crânio (se atípico ou sinais de alarme)', 'Fundoscopia'],
+            tratamento: ['Dipirona 1g IV (ou 40 gotas VO)', 'Clorpromazina 0,1mg/kg IV (ou 25mg IM)', 'Sumatriptano 50-100mg VO (se migranoso típico)'],
+            conduta: 'Repouso em ambiente escuro e silencioso. Hidratação. Se não responder em 1h, considerar internação para observação. Evitar opioides.',
+            ref: 'SBN / SBEM'
+        }, {
+            cid: 'H00.0',
+            diag: 'Hordéolo (Terço)',
+            setting: 'PSA',
+            exames: ['Exame oftalmológico (lâmpada de fenda se disponível)', 'Cultura (se recidivante)'],
+            tratamento: ['Compressas mornas 3-4x/dia', 'Pomada antibiótica (tobramicina ou eritromicina) 4x/dia', 'Analgésicos simples'],
+            conduta: 'Orientar higiene palpebral. Não manipular/exprimir. Se celulite periorbitária, encaminhar ao PSA. Avaliar comorbidades (diabetes, imunossupressão).',
+            ref: 'CBO'
+        }, {
+            cid: 'H10.9',
+            diag: 'Conjuntivite aguda não especificada',
+            setting: 'PSA',
+            exames: ['Exame clínico (hiperemia, secreção)', 'Cultura bacteriana (se grave ou recidivante)'],
+            tratamento: ['Lavagem com soro fisiológico', 'Lubrificante ocular (lágrima artificial)', 'Se bacteriana: colírio de moxifloxacino ou tobramicina 4x/dia'],
+            conduta: 'Higiene rigorosa, não compartilhar toalhas. Afastamento escolar/trabalho até 24h de tratamento. Se suspeita viral (adenoviral), orientar evolução autolimitada.',
+            ref: 'CBO / MS'
+        }, {
+            cid: 'H83.0',
+            diag: 'Labirintite (Inflamação do labirinto)',
+            setting: 'PSA',
+            exames: ['Avaliação otoneurológica', 'Videohead impulse test (VHIT)', 'TC ou RM de crânio (se dúvida central)', 'Audiometria'],
+            tratamento: ['Benzodiazepínicos (diazepam 5-10mg VO) para vertigem', 'Dimenidrato 50mg 6/6h', 'Corticoides (prednisona 60mg/dia)'],
+            conduta: 'Se vertigem de repetição, investigar Doença de Ménière ou neurite vestibular. Encaminhar ao otorrino. Evitar drogas ototóxicas.',
+            ref: 'ABORL'
+        }, {
+            cid: 'I10',
+            diag: 'Hipertensão Arterial Sistêmica – Crise',
+            setting: 'PSA',
+            exames: ['Creatinina, ureia, eletrólitos', 'ECG', 'Fundo de olho', 'Lipidograma', 'Hemograma'],
+            tratamento: ['Losartana 50mg VO (ou anlodipino 5mg)', 'Hidroclorotiazida 25mg 1x/dia', 'AAS 100mg (se risco CV)'],
+            conduta: 'Confirmar com MAPA ou MRPA. Iniciar mudanças de estilo de vida (DASH). Meta <140x90 mmHg (<130x80 se DM/DRC). Reavaliar em 1-3 meses.',
+            ref: 'SBC (Diretrizes 2020/2024)'
+        }, {
+            cid: 'I16',
+            diag: 'Crise Hipertensiva com lesão de órgão-alvo',
+            setting: 'Emergência',
+            exames: ['Creatinina, ureia', 'Eletrólitos', 'ECG', 'Fundo de olho', 'Ecocardiograma (se dispneia)', 'TC crânio (se neurológico)'],
+            tratamento: ['Nitroprussiato de sódio IV (titulação)', 'Labetalol IV (se taquicardia)', 'Controle rigoroso da PA'],
+            conduta: 'Emergência hipertensiva: reduzir PA gradualmente (20-25% na 1ªh). Internar em UTI. Evitar quedas bruscas. Buscar causa secundária.',
+            ref: 'SBC / SBEM'
+        }, {
+            cid: 'I21.0',
+            diag: 'IAM com Supra ST (IAMCSST)',
+            setting: 'Emergência',
+            exames: ['ECG 15 derivações (urgente)', 'Troponina ultrassensível', 'Hemograma, creatinina, coagulação', 'Ecocardiograma (se disponível)'],
+            tratamento: ['AAS 200mg mastigado', 'Ticagrelor 180mg VO (ou prasugrel)', 'Heparina não fracionada 60UI/kg IV', 'Morfina 2-4mg IV (se dor)'],
+            conduta: 'ATIVAÇÃO DA VIA VERDE – IAMCSST. Angioplastia primária <90min (padrão ouro). Se >120min, trombólise. Internar em UCO. Betabloqueador + estatina precoce.',
+            ref: 'SBC (Diretriz IAM 2021) / SBEM'
+        }, {
+            cid: 'I21.4',
+            diag: 'IAM sem Supra ST (IAMSST) – alto risco',
+            setting: 'Emergência',
+            exames: ['ECG', 'Troponina (alta sensibilidade) 0h/1h/3h', 'Hemograma, creatinina, coagulação', 'Ecocardiograma'],
+            tratamento: ['AAS 200mg VO', 'Ticagrelor 180mg (ou clopidogrel 600mg)', 'Enoxaparina 1mg/kg 12/12h SC', 'Betabloqueador (se não contraindicado)'],
+            conduta: 'Estratificar risco (GRACE). Se alto risco, angioplastia precoce (<24h). Se baixo/moderado, teste provocativo (cintilografia/ECO estresse).',
+            ref: 'SBC / SBEM'
+        }, {
+            cid: 'I48',
+            diag: 'Arritmias Cardíacas (FA / TV / FV)',
+            setting: 'Emergência',
+            exames: ['ECG', 'Eletrólitos (K, Mg)', 'Função tireoidiana (TSH)', 'Ecocardiograma transesofágico (se trombo?)', 'Coagulação'],
+            tratamento: ['FA instável: cardioversão elétrica sincronizada', 'FA estável: controle de frequência (diltiazem, metoprolol)', 'TV estável: amiodarona IV 300mg'],
+            conduta: 'Se FA >48h ou desconhecida: anticoagular (heparina) e considerar ECO TE antes da cardioversão. Buscar causa reversível. UTI se instável.',
+            ref: 'SBC / SBEM'
+        }, {
+            cid: 'I50',
+            diag: 'Insuficiência Cardíaca Aguda Descompensada',
+            setting: 'Emergência',
+            exames: ['BNP (NT-proBNP)', 'ECG', 'RX tórax', 'Ecocardiograma (urgente)', 'Creatinina, ureia, eletrólitos'],
+            tratamento: ['Furosemida IV (dose conforme função renal)', 'Oxigênio (SatO2 >92%)', 'Nitrato sublingual (se congestão + PA alta)', 'CPAP/BPAP (se edema agudo)'],
+            conduta: 'Classificar em IC descompensada vs choque cardiogênico. Internar em UCO/UTI. Restrição hídrica (1,5L/dia). Avaliar inotrópicos se choque.',
+            ref: 'SBC (Diretriz IC 2018) / SBEM'
+        }, {
+            cid: 'I60',
+            diag: 'Hemorragia Subaracnoide (HSA)',
+            setting: 'Emergência',
+            exames: ['TC crânio sem contraste (urgente)', 'AngioTC (ou DSA)', 'Punção lombar (se TC negativa e suspeita)'],
+            tratamento: ['Nimodipino 60mg 4/4h VO', 'Controle pressórico rigoroso (PAS <160)', 'Hidratação', 'Cirurgia/embolização precoce'],
+            conduta: 'Admissão em UTI (ou centro de referência com neurocirurgia). Evitar hipotensão. Buscar aneurisma. Neuroproteção.',
+            ref: 'SBN / SBEM'
+        }, {
+            cid: 'I61.9',
+            diag: 'AVC Hemorrágico (AVCH)',
+            setting: 'Emergência',
+            exames: ['TC crânio (urgente)', 'AngioTC (buscar malformação)', 'Hemograma, coagulação (INR, TTPA)', 'Glicemia, função renal'],
+            tratamento: ['Controle pressórico (PAS <140)', 'Reversão de anticoagulantes (vitamina K, PFC, protamina)', 'Cirurgia (hematoma >30ml)'],
+            conduta: 'Internar em UTI. Monitorizar PIC. Profilaxia de TEP. Evitar AAS/anticoagulantes. Buscar etiologia (angioTC/RM).',
+            ref: 'SBN / SBEM'
+        }, {
+            cid: 'I63.9',
+            diag: 'AVC Isquêmico Agudo – Janela de trombólise',
+            setting: 'Emergência',
+            exames: ['TC crânio (excluir hemorragia)', 'AngioTC (avaliar oclusão e penumbra)', 'Glicemia, coagulação', 'ECG'],
+            tratamento: ['Alteplase (rt-PA) 0,9mg/kg IV (até 4,5h)', 'Controle pressórico (PAS <185/110 para trombolisar)', 'AAS 200mg (após 24h se não trombólise)'],
+            conduta: 'Ativar "Código AVC". Trombectomia mecânica com stent retriever se oclusão de grande vaso (até 24h). Internar em UTI/unidade de AVC.',
+            ref: 'SBN / SBEM / MS'
+        }, {
+            cid: 'I80.9',
+            diag: 'Trombose Venosa Profunda (TVP) proximal',
+            setting: 'PSA',
+            exames: ['Ultrassom Doppler venoso de MMII', 'D-dímero (se baixa probabilidade)', 'Hemograma, coagulação, creatinina'],
+            tratamento: ['Enoxaparina 1mg/kg 12/12h SC (ou heparina IV)', 'Apixaban/Rivaroxaban (segundo diretriz)', 'Meia compressão (após fase aguda)'],
+            conduta: 'Escala de Wells. Se TVP proximal, anticoagular. Avaliar trombofilia (se idade <50 ou recorrente). Não deambular sem anticoagulação.',
+            ref: 'SBACV / MS'
+        }, {
+            cid: 'J11',
+            diag: 'Síndrome Gripal / Dengue',
+            setting: 'PSA',
+            exames: ['Teste rápido para COVID-19/Influenza', 'Hemograma (se dengue)', 'PCR / NS1 (se indicação)'],
+            tratamento: ['Sintomático: dipirona/paracetamol', 'Hidratação', 'Se alto risco: oseltamivir para influenza (até 48h)'],
+            conduta: 'Diferenciar entre gripe, COVID e dengue. Se dengue, seguir classificação de risco. Isolamento respiratório (máscara). Notificar SIVEP-Gripe.',
+            ref: 'MS / SBEM'
+        }, {
+            cid: 'J44',
+            diag: 'Exacerbação de DPOC / Asma Grave',
+            setting: 'Emergência',
+            exames: ['Gasometria arterial', 'Rx tórax', 'Hemograma, PCR', 'ECG', 'Dosagem de teofilina (se em uso)'],
+            tratamento: ['Oxigênio (meta SatO2 88-92%)', 'Nebulização: salbutamol 5mg + ipratrópio 0,5mg (repetir)', 'Metilprednisolona 60mg IV', 'VNI (se acidose)'],
+            conduta: 'Se asma: broncodilatador a cada 20min na 1ªh. Se DPOC: corticosteróide. Intubar se acidose grave/depressão SNC. UTI se refratário.',
+            ref: 'SBPT / SBEM'
+        }, {
+            cid: 'K35',
+            diag: 'Apendicite Aguda com suspeita de perfuração',
+            setting: 'Emergência',
+            exames: ['Hemograma, PCR', 'USG ou TC de abdome (urgente)', 'EAS (excluir ITU)'],
+            tratamento: ['Dieta zero', 'SF 0,9% (manutenção)', 'Antibiótico (ceftriaxona + metronidazol)', 'Analgesia (dipirona, morfina)'],
+            conduta: 'Cirurgia de urgência (laparoscópica ou aberta). Não administrar laxantes. Se perfuração, cirurgia imediata. Pontuação de Alvarado.',
+            ref: 'SBCP / SBEM'
+        }, {
+            cid: 'K56',
+            diag: 'Obstrução Intestinal (Íleo paralítico / Brida)',
+            setting: 'Emergência',
+            exames: ['Rx abdome (níveis hidroaéreos)', 'TC abdome (com contraste)', 'Hemograma, eletrólitos, função renal'],
+            tratamento: ['SNG (drenagem gástrica)', 'Hidratação venosa (SF 0,9%)', 'Correção de eletrólitos', 'NPO'],
+            conduta: 'Avaliar indicação cirúrgica (hérnia encarcerada, estrangulamento, perfuração). Se íleo paralítico, tratar causa base. Internar para observação.',
+            ref: 'SBCP / SBEM'
+        }, {
+            cid: 'K80.3',
+            diag: 'Coledocolitíase com colangite',
+            setting: 'Emergência',
+            exames: ['USG abdome (vias biliares)', 'Fosfatase alcalina, GGT, bilirrubinas', 'Hemograma, amilase/lipase', 'CPRE (urgente)'],
+            tratamento: ['Hidratação', 'Analgesia (dipirona, morfina)', 'Antibiótico (piperacilina/tazobactam ou ceftriaxona + metronidazol)', 'NPO'],
+            conduta: 'Se colangite (febre + icterícia + dor): emergência – CPRE precoce + esfincterotomia. Avaliar colecistectomia após resolução.',
+            ref: 'SBCP / SBEM'
+        }, {
+            cid: 'K81.0',
+            diag: 'Colecistite Aguda com sepse',
+            setting: 'Emergência',
+            exames: ['USG abdome (espessamento, Murphy)', 'Hemograma, PCR', 'Bilirrubinas, amilase', 'TC abdome (se dúvida)'],
+            tratamento: ['Dieta zero', 'Hidratação IV', 'Analgesia (dipirona, morfina)', 'Antibiótico (piperacilina/tazobactam ou ceftriaxona + metronidazol)'],
+            conduta: 'Colecistectomia precoce (<72h) ou drenagem percutânea (se alto risco). Se perfuração ou sepse, cirurgia de urgência. Escala de Tokyo.',
+            ref: 'SBCP / SBEM'
+        }, {
+            cid: 'K85',
+            diag: 'Pancreatite Aguda Grave',
+            setting: 'Emergência',
+            exames: ['Amilase e lipase', 'USG/TC abdome (contraste)', 'Hemograma, creatinina, cálcio, albumina', 'Gasometria', 'PCR'],
+            tratamento: ['Hidratação vigorosa (RL ou SF, 5-10ml/kg/h)', 'Analgesia (dipirona, morfina)', 'NPO', 'SNG (se vômitos/íleo)'],
+            conduta: 'Classificar gravidade (Ranson, APACHE II, CTI). Se necrose infectada ou falência de órgãos, UTI. Buscar etiologia (litiase, álcool, triglicerídeos).',
+            ref: 'SBCP / SBEM'
+        }, {
+            cid: 'N10',
+            diag: 'Pielonefrite Aguda (ITU Complicada)',
+            setting: 'PSA',
+            exames: ['EAS + urocultura', 'Hemograma', 'PCR', 'Creatinina', 'USG renal (se >60 anos ou diabético)'],
+            tratamento: ['Ceftriaxona 1-2g IV (ou pipetacilina/tazobactam)', 'Hidratação', 'Analgesia (dipirona)', 'Avaliar internação (se sepse, idoso, DM)'],
+            conduta: 'Se paciente clinicamente estável: alta com antibioticoterapia oral (ciprofloxacino ou levofloxacino) por 7-14 dias. Se instável: internar.',
+            ref: 'SBU / MS'
+        }, {
+            cid: 'N20.0',
+            diag: 'Litíase Urinária Obstrutiva com Hidronefrose e ITU',
+            setting: 'Emergência',
+            exames: ['USG renal e vias urinárias (urgente)', 'TC abdome (se dúvida)', 'EAS, urocultura', 'Creatinina, eletrólitos'],
+            tratamento: ['Analgesia (dipirona + escopolamina, morfina se refratária)', 'Hidratação', 'Antibiótico (ceftriaxona ou ciprofloxacino)'],
+            conduta: 'Se anúria ou hidronefrose grave + infecção: desobstrução urgente (cateter duplo J ou nefrostomia percutânea). Encaminhar ao urologista.',
+            ref: 'SBU'
+        }, {
+            cid: 'N23',
+            diag: 'Cólica renal refratária',
+            setting: 'PSA',
+            exames: ['EAS (hematúria)', 'USG renal', 'Creatinina', 'TC baixa dose (se dúvida)'],
+            tratamento: ['Dipirona 1g IV + escopolamina 20mg IV', 'Cetoprofeno 100mg IM (se sem contraindicação)', 'Hidratação oral/venosa'],
+            conduta: 'Se dor refratária, considerar internação para analgesia. Se febre ou anúria, descartar pielonefrite obstrutiva. Orientar cistoscopia se necessário.',
+            ref: 'SBU'
+        }, {
+            cid: 'N39',
+            diag: 'Infecção do Trato Urinário (ITU)',
+            setting: 'PSA',
+            exames: ['EAS com urocultura', 'Hemograma (se suspeita de pielonefrite)'],
+            tratamento: ['Nitrofurantoína 100mg 6/6h por 5dias (ou fosfomicina 3g dose única)', 'Ciprofloxacino 500mg 12/12h por 3dias (se cistite)'],
+            conduta: 'Orientar ingestão hídrica. Evitar antibióticos se assintomática (exceto gestantes e procedimentos urológicos). Ajustar conforme urocultura.',
+            ref: 'SBU / MS'
+        }, {
+            cid: 'N44',
+            diag: 'Torção Testicular',
+            setting: 'Emergência',
+            exames: ['USG com Doppler (fluxo diminuído/ausente) – se disponível e rápido', 'Hemograma, EAS'],
+            tratamento: ['Cirurgia de urgência (detorção + orquipexia)', 'Analgesia (morfina, dipirona)'],
+            conduta: 'Tempo é testículo: cirurgia em até 4-6h. Se dúvida diagnóstica, explorar. Não perder tempo com exames se clínica típica.',
+            ref: 'SBU'
+        }, {
+            cid: 'O14',
+            diag: 'Pré-eclâmpsia grave / Eclâmpsia',
+            setting: 'Emergência',
+            exames: ['Pressão arterial', 'Proteinúria 24h (ou relação P/C)', 'Hemograma (plaquetas)', 'Creatinina, ácido úrico', 'Transaminases'],
+            tratamento: ['Metildopa 250mg 8/8h (ou labetalol)', 'Sulfato de magnésio IV 5g (ataque) + 1g/h', 'Corticoides (maturação fetal)'],
+            conduta: 'Se eclâmpsia: convulsão – diazepam IV. Internação em UTI obstétrica. Não usar AAS. Parto é a cura definitiva, avaliar idade gestacional.',
+            ref: 'FEBRASGO / MS'
+        }, {
+            cid: 'O21',
+            diag: 'Hiperêmese Gravídica (Vômitos na gravidez)',
+            setting: 'PSA',
+            exames: ['Eletrólitos (Na, K, Cl)', 'Função renal', 'TSH (excluir tireotoxicose)', 'Urina (cetonúria)'],
+            tratamento: ['Ondansetrona 4mg IV 8/8h', 'Bromoprida 10mg IV', 'Hidratação vigorosa (SF 0,9%)', 'Tiamina 100mg IV (prevenção Wernicke)'],
+            conduta: 'Se cetonúria persistente ou perda de peso >5%, internar. Suporte psicológico. Dieta fracionada. Avaliar causas secundárias.',
+            ref: 'FEBRASGO'
+        }, {
+            cid: 'R04.0',
+            diag: 'Epistaxe grave (sangramento nasal)',
+            setting: 'Emergência',
+            exames: ['Hemograma', 'Coagulação (INR, TTPA)', 'Pressão arterial', 'Níveis de anticoagulantes (se em uso)'],
+            tratamento: ['Compressão digital (10-15min)', 'Algodão com adrenalina 1:1000 ou fenilefrina', 'Cauterização química (nitrato de prata) ou elétrica'],
+            conduta: 'Se sangramento posterior (sem controle): tamponamento anterior e posterior, encaminhar ao otorrino. Avaliar coagulopatias, hipertensão, uso de AAS/anticoagulantes.',
+            ref: 'ABORL / MS'
+        }, {
+            cid: 'R06.0',
+            diag: 'Dispneia grave (Insuficiência Respiratória)',
+            setting: 'Emergência',
+            exames: ['Oximetria', 'Gasometria arterial', 'Rx tórax', 'ECG', 'Hemograma, BNP (se suspeita cardíaca)'],
+            tratamento: ['Oxigênio (meta SatO2 ≥92%)', 'Posição de semi-Fowler', 'Broncodilatador (se sibilos)', 'Diurético (se edema pulmonar)'],
+            conduta: 'ABC da emergência. Avaliar gravidade: insuficiência respiratória (intubar se falha). Buscar causas (DPOC, asma, IC, TEP, pneumonia). UTI se necessário.',
+            ref: 'SBEM / SBC'
+        }, {
+            cid: 'R07.4',
+            diag: 'Dor Torácica – suspeita de SCA ou Dissecção Aórtica',
+            setting: 'Emergência',
+            exames: ['ECG (urgente)', 'Troponina ultrassensível', 'RX tórax', 'AngioTC de tórax (se dissecção)'],
+            tratamento: ['AAS 200mg (se isquemia)', 'Oxigênio (se SatO2 <94%)', 'Morfina (se dor refratária)', 'Controle pressórico (se dissecção)'],
+            conduta: 'Protocolo de dor torácica: descartar IAM, embolia pulmonar, dissecção aórtica, pneumotórax. Escore HEART. Se alto risco, internar em UCO.',
+            ref: 'SBC / SBEM'
+        }, {
+            cid: 'R10.0',
+            diag: 'Abdômen Agudo com Peritonite',
+            setting: 'Emergência',
+            exames: ['Hemograma, PCR', 'Amilase/lipase', 'Função renal, eletrólitos', 'TC abdome (com contraste)', 'Beta-HCG (mulheres)'],
+            tratamento: ['Analgesia (morfina, dipirona)', 'Hidratação IV', 'NPO', 'Antibiótico (ceftriaxona + metronidazol)'],
+            conduta: 'Classificar em cirúrgico, ginecológico, médico. Se peritonite (irritação peritoneal) ou obstrução, avaliação cirúrgica imediata. Não usar laxantes.',
+            ref: 'SBCP / SBEM'
+        }, {
+            cid: 'R33',
+            diag: 'Retenção Urinária Aguda com insuficiência renal',
+            setting: 'Emergência',
+            exames: ['USG bexiga (resíduo pós-miccional)', 'EAS', 'Creatinina, ureia', 'Eletrólitos'],
+            tratamento: ['Sondagem vesical (alívio imediato)', 'Se próstata: tansulosina 0,4mg/dia', 'Analgésicos'],
+            conduta: 'Se resíduo >500ml, manter sonda. Buscar causas (hiperplasia prostática, medicamentos, neurológica). Avaliar necessidade de urologia.',
+            ref: 'SBU'
+        }, {
+            cid: 'R42',
+            diag: 'Tontura com sinais de alarme (AVC?)',
+            setting: 'Emergência',
+            exames: ['Exame neurológico (HINTS)', 'Glicemia', 'ECG', 'RM crânio (se suspeita central)'],
+            tratamento: ['Dimenidrato 50mg 6/6h', 'Betaistina 8mg 8/8h', 'Hidratação', 'Manobra de Epley (se periférica)'],
+            conduta: 'Diferenciar tontura periférica x central. Se ataxia, disartria, diplopia, ou nistagmo vertical -> urgência neurológica (AVC).',
+            ref: 'SBN / SBEM'
+        }, {
+            cid: 'R51',
+            diag: 'Cefaleia em "trovão" (suspeita de HSA ou dissecção)',
+            setting: 'Emergência',
+            exames: ['Exame neurológico', 'TC crânio sem contraste', 'AngioTC (se suspeita dissecção)', 'Punção lombar (se TC negativa)'],
+            tratamento: ['Dipirona 1g IV (se dor leve)', 'Morfina (se dor intensa)', 'Controle pressórico (se HSA)'],
+            conduta: 'Sinais de alarme: piora progressiva, início súbito ("trovão"), febre, rigidez de nuca, déficit focal. Se alarme, internar e investigar (TC/LP).',
+            ref: 'SBN / SBEM'
+        }, {
+            cid: 'R65.2',
+            diag: 'Sepse / Choque Séptico',
+            setting: 'Emergência',
+            exames: ['Hemograma, PCR, procalcitonina', 'Lactato', 'Hemocultura (2 amostras)', 'Gasometria', 'Creatinina, bilirrubinas', 'Coagulação'],
+            tratamento: ['SF 0,9% 30ml/kg na 1ªh', 'Antibiótico empírico em 1h (cefepime + vancomicina)', 'Vasopressor (noradrenalina) se MAP <65', 'Controle glicêmico'],
+            conduta: 'Protocolo de 1 hora (SOAP). Admissão em UTI. Monitorizar débito urinário. Reavaliar lactato em 2h. Se refratário, considerar hidrocortisona.',
+            ref: 'SBEM / ILAS'
+        }, {
+            cid: 'S06',
+            diag: 'Traumatismo Cranioencefálico (TCE) grave',
+            setting: 'Emergência',
+            exames: ['TC crânio (urgente)', 'Hemograma, coagulação', 'Glicemia', 'Exame neurológico (Glasgow)'],
+            tratamento: ['Manter via aérea e estabilidade cervical', 'Manitol 20% 0,5-1g/kg (se sinais de herniação)', 'Controle da PA (PAS >100)'],
+            conduta: 'Classificar em leve (GCS 13-15), moderado (9-12), grave (3-8). Se grave, intubar precoce. Monitorizar PIC. Evitar hipotensão e hipóxia.',
+            ref: 'SBEM / SBN'
+        }, {
+            cid: 'S27',
+            diag: 'Trauma Torácico Grave',
+            setting: 'Emergência',
+            exames: ['RX tórax', 'FAST (USG abdominal)', 'TC total (se estável)', 'Hemograma, gasometria'],
+            tratamento: ['Suporte ABCDE', 'Drenagem de tórax (se pneumotórax ou hemotórax)', 'Controle da dor'],
+            conduta: 'Atendimento inicial do PHTLS. Avaliar lesões de órgãos sólidos. Se instabilidade hemodinâmica, protocolo de transfusão maciça. Cirurgia de urgência.',
+            ref: 'PHTLS / SBEM / SBCP'
+        }, {
+            cid: 'S36',
+            diag: 'Trauma Abdominal Grave',
+            setting: 'Emergência',
+            exames: ['FAST (USG abdominal)', 'TC abdome com contraste (se estável)', 'Hemograma, gasometria', 'EAS'],
+            tratamento: ['Suporte ABCDE', 'Laparotomia (se instável com FAST + ou peritonite)', 'Analgesia (morfina)', 'Antibiótico (se perfuração)'],
+            conduta: 'Atendimento inicial do PHTLS. Se instabilidade hemodinâmica, protocolo de transfusão maciça. Avaliar lesões de vísceras maciças. Cirurgia de urgência.',
+            ref: 'PHTLS / SBEM / SBCP'
+        }, {
+            cid: 'T63',
+            diag: 'Acidente por animal peçonhento (grave)',
+            setting: 'Emergência',
+            exames: ['Hemograma', 'Coagulação (TTPA, INR, fibrinogênio)', 'Creatinina', 'Gasometria'],
+            tratamento: ['Soro antiofídico/escorpiônico específico', 'Analgesia (dipirona, morfina)', 'Hidratação', 'Vacina antitetânica'],
+            conduta: 'Identificar animal. Classificar em leve, moderado, grave. Aplicar soro específico na urgência. Monitorizar sinais de hemorragia ou insuficiência renal.',
+            ref: 'MS / SBEM'
+        }, {
+            cid: 'T78.2',
+            diag: 'Choque anafilático',
+            setting: 'Emergência',
+            exames: ['Triptase (se disponível)', 'Gasometria', 'ECG', 'PCT/hemograma (excluir infecção)'],
+            tratamento: ['Adrenalina IM 0,3-0,5mg (1mg/ml 1:1000) – repetir 5min', 'Oxigênio 100%', 'SF 0,9% rápido (20ml/kg)', 'Corticosteróide IV (hidrocortisona 200mg)'],
+            conduta: 'Avaliar vias aéreas (edema de glote). Posição supina com elevação de MMII. Se parada cardiorrespiratória, iniciar RCP. Observar por 6-12h.',
+            ref: 'SBEM / ASBAI'
+        }, {
+            cid: 'U07.1',
+            diag: 'COVID-19 – Síndrome Respiratória Aguda',
+            setting: 'Emergência',
+            exames: ['RT-PCR ou antígeno', 'Oximetria', 'Hemograma, PCR, D-dímero', 'RX tórax ou TC (se dispneia)'],
+            tratamento: ['Oxigênio (SatO2 >93%)', 'Corticóide (dexametasona 6mg/dia) se SatO2 <94%', 'Anticoagulação profilática (heparina SC)', 'Remdesivir (se indicação)'],
+            conduta: 'Internar se SatO2 <94%, dispneia, comorbidades. UTI se necessidade de suporte ventilatório. Isolamento respiratório. Vacinação em dia.',
+            ref: 'MS / SBEM / SBP'
+        }, {
+            cid: 'W54',
+            diag: 'Mordedura de cão',
+            setting: 'PSA',
+            exames: ['Avaliação da ferida (profundidade, infecção)', 'Hemograma (se infecção)', 'Raio-x (se fratura)'],
+            tratamento: ['Limpeza com SF e sabão', 'Antibiótico profilático (amoxicilina-clavulanato) se ferida profunda', 'Vacina antirrábica (se animal não vacinado)'],
+            conduta: 'Avaliar risco de raiva e tétano. Se animal desconhecido ou ferida grave, indicar soro antirrábico. Orientar sobre sinais de infecção.',
+            ref: 'MS / SBIM'
+        }, {
+            cid: 'W57',
+            diag: 'Picada de inseto não venenoso',
+            setting: 'PSA',
+            exames: ['Exame clínico (reação local)'],
+            tratamento: ['Compressa fria', 'Anti-histamínico oral (cetirizina 10mg)', 'Corticoide tópico (se prurido intenso)'],
+            conduta: 'Observar sinais de anafilaxia (urticária, dispneia). Se reação local extensa, considerar prednisona 20mg/dia por 3-5 dias.',
+            ref: 'SBEM / ASBAI'
+        }];
+
+        // ================================================================
+        //  ENGINE
+        // ================================================================
+        let currentFilter = 'todos';
+        let filteredData = [...protocolsData];
+
+        function renderList() {
+            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+            const list = document.getElementById('cidList');
+            const count = document.getElementById('resultCount');
+
+            const results = protocolsData.filter(item => {
+                const matchFilter = currentFilter === 'todos' || item.setting === currentFilter;
+                const matchSearch = item.cid.toLowerCase().includes(searchTerm) ||
+                    item.diag.toLowerCase().includes(searchTerm);
+                return matchFilter && matchSearch;
+            });
+
+            filteredData = results;
+            count.textContent = `${results.length} resultados (total: ${protocolsData.length} CIDs)`;
+
+            if (results.length === 0) {
+                list.innerHTML = `<li class="empty-state">Nenhum protocolo encontrado para este filtro/busca.</li>`;
+                return;
+            }
+
+            list.innerHTML = results.map(item => `
+                        <li class="cid-item" onclick="openModal('${item.cid}')">
+                            <span class="code">${item.cid}</span>
+                            <span class="diag">${item.diag}</span>
+                            <span class="badge-setting ${item.setting === 'Emergência' ? 'emergência' : 'psa'}">${item.setting}</span>
+                        </li>
+                    `).join('');
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            renderList();
+        }
+
+        function openModal(cid) {
+            const item = protocolsData.find(p => p.cid === cid);
+            if (!item) return;
+
+            document.getElementById('modalCode').textContent = item.cid;
+            document.getElementById('modalDiag').textContent = item.diag;
+            const settingEl = document.getElementById('modalSetting');
+            settingEl.textContent = item.setting;
+            settingEl.className = `modal-setting ${item.setting === 'Emergência' ? 'emergência' : 'psa'}`;
+
+            document.getElementById('modalExames').innerHTML = item.exames.map(e => `<li>${e}</li>`).join('');
+            document.getElementById('modalTratamento').innerHTML = item.tratamento.map(t => `<li>${t}</li>`).join('');
+            document.getElementById('modalConduta').textContent = item.conduta;
+            document.getElementById('modalGuidelineRef').textContent = item.ref || 'SBEM / SBC / MS';
+
+            document.getElementById('modalOverlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Cadastro
+        function addNewProtocol() {
+            const cid = document.getElementById('newCid').value.trim();
+            const diag = document.getElementById('newDiag').value.trim();
+            const setting = document.getElementById('newSetting').value;
+            const examesRaw = document.getElementById('newExames').value.trim();
+            const tratRaw = document.getElementById('newTrat').value.trim();
+
+            if (!cid || !diag) {
+                alert('Preencha pelo menos CID e Diagnóstico.');
+                return;
+            }
+
+            const exames = examesRaw ? examesRaw.split(',').map(s => s.trim()) : ['A definir'];
+            const tratamento = tratRaw ? tratRaw.split(',').map(s => s.trim()) : ['A definir'];
+
+            const novo = {
+                cid: cid.toUpperCase(),
+                diag: diag,
+                setting: setting,
+                exames: exames,
+                tratamento: tratamento,
+                conduta: 'Conduta cadastrada pelo usuário. Revisar conforme diretrizes oficiais.',
+                ref: 'Usuário'
+            };
+
+            protocolsData.push(novo);
+            renderList();
+
+            document.getElementById('newCid').value = '';
+            document.getElementById('newDiag').value = '';
+            document.getElementById('newExames').value = '';
+            document.getElementById('newTrat').value = '';
+
+            alert(`Protocolo ${cid} adicionado com sucesso!`);
+        }
+
+        // Init
+        renderList();
+    </script>
+</body>
+</html>
