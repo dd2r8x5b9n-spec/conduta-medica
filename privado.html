@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Conduta Médica – Hospitais Particulares | PSA / Emergência</title>
     <style>
         * {
@@ -64,17 +64,6 @@
 
         .header .sub strong {
             color: #1a73e8;
-        }
-
-        .header .sub .aviso {
-            display: block;
-            font-size: 12px;
-            color: #b71c1c;
-            background: #ffebee;
-            padding: 4px 12px;
-            border-radius: 30px;
-            margin-top: 6px;
-            font-weight: 500;
         }
 
         .search-area {
@@ -522,14 +511,13 @@
             </h1>
             <div class="sub">
                 <strong>Atendimento em Hospitais Particulares / Convênios</strong> · Diretrizes SBEM / SBC / MS para <strong>PSA e Emergência</strong>
-                <span class="aviso">⚠️ Esta versão NÃO inclui AMA/UPA e considera exames de alta complexidade (RM, angioTC, trombectomia, etc.)</span>
             </div>
         </div>
 
         <!-- SEARCH -->
         <div class="search-area">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Digite o diagnóstico ou CID..." oninput="renderList()">
+                <input type="text" id="searchInput" placeholder="Digite o diagnóstico ou CID..." oninput="renderList()" />
                 <button onclick="renderList()">Buscar</button>
             </div>
         </div>
@@ -552,16 +540,16 @@
         <div class="cadastro-area">
             <h3>📋 Cadastrar nova conduta</h3>
             <div class="cadastro-row">
-                <input type="text" id="newCid" placeholder="CID (ex: I10)">
-                <input type="text" id="newDiag" placeholder="Diagnóstico">
+                <input type="text" id="newCid" placeholder="CID (ex: I10)" />
+                <input type="text" id="newDiag" placeholder="Diagnóstico" />
                 <select id="newSetting">
                     <option value="PSA">PSA</option>
                     <option value="Emergência">Emergência</option>
                 </select>
             </div>
             <div class="cadastro-row" style="gap:8px;">
-                <input type="text" id="newExames" placeholder="Exames (separados por vírgula)" style="flex:2;">
-                <input type="text" id="newTrat" placeholder="Tratamento (separado por vírgula)" style="flex:2;">
+                <input type="text" id="newExames" placeholder="Exames (separados por vírgula)" style="flex:2;" />
+                <input type="text" id="newTrat" placeholder="Tratamento (separado por vírgula)" style="flex:2;" />
                 <button onclick="addNewProtocol()">Adicionar</button>
             </div>
             <p style="font-size:12px; color:#8895aa; margin-top:6px;">* Protocolos adicionados localmente para demonstração.</p>
